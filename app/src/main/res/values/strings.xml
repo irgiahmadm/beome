@@ -28,4 +28,15 @@
     <string name="follower_count">Follower\n%1$d</string>
     <string name="post_count">Post\n%1$d</string>
     <string name="post">Post</string>
+    <string name="reason">Reason</string>
+    <string name="report_detail">Report detail</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="select_a_reason">Select a reason</string>
+    <string name="describe_why_you_report">Describe why you report this…</string>
+    <string name="Ok">ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="post_date">Yesterday</string>
+    <string name="tags">Tags</string>
+    <string name="title">Title</string>
+    <string name="feedback">Feedback</string>
 </resources>
