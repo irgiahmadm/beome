@@ -9,13 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Beome">
-        <activity android:name=".ui.feedback.PostDetailActivity"></activity>
+        <activity android:name=".FeedbackActivity"></activity>
+        <activity android:name=".ui.feedback.PostDetailActivity" />
         <activity android:name=".ui.report.ReportActivity" />
         <activity android:name=".ui.add.AddPostActivity" />
         <activity android:name=".ui.profile.ProfilePreviewActivity" />
         <activity android:name=".ui.authentication.signup.SignUpActivity" />
         <activity
             android:name=".ui.authentication.login.LoginActivity"
+            android:label="@string/signin"
             android:theme="@style/Theme.Beome" />
         <activity android:name=".ui.authentication.AuthenticationActivity" />
         <activity

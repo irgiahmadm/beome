@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="dark">#2E2E2E</color>
     <color name="darkSecond">#2E2E2E</color>
     <color name="grey">#979797</color>
-    <color name="grey_background_tags">#40979797</color>
+    <color name="text_color_primary">#2E2E2E</color>
+    <color name="color_primary">#315CFD</color>
+    <color name="grey_background_tags">#40315CFD</color>
     <color name="grey_divider">#F2F2F2</color>
-    <color name="grey_edit_text">#B3979797</color>
+    <color name="grey_edit_text">#979797</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>

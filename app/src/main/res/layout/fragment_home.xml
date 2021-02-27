@@ -11,10 +11,11 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/white"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         android:gravity="center"
+        android:elevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textColor="@color/white"
+            android:textColor="@color/text_color_primary"
             android:textSize="24sp"
             android:layout_gravity="center"
             android:id="@+id/toolbar_title" />
@@ -45,13 +46,12 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dark"
-        android:elevation="8dp"
+        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorColor="@color/color_primary"
         app:tabIndicatorHeight="4dp"
-        app:tabSelectedTextColor="@color/white"
+        app:tabSelectedTextColor="@color/color_primary"
         app:tabTextColor="@color/grey" />
 </androidx.constraintlayout.widget.ConstraintLayout>

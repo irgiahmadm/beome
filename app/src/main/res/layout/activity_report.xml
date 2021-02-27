@@ -15,7 +15,7 @@
         android:text="@string/reason"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@color/dark"
+        android:textColor="@color/text_color_primary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,7 +37,7 @@
         android:text="@string/report_detail"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@color/dark"
+        android:textColor="@color/text_color_primary"
         app:layout_constraintStart_toStartOf="@+id/textViewSelectReason"
         app:layout_constraintTop_toBottomOf="@+id/textViewSelectReason" />
 
@@ -68,7 +68,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/background_rounded_button_dark"
+        android:background="@drawable/background_rounded_button"
         android:text="@string/submit_report"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

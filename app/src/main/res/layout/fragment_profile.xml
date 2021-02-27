@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/fullname"
-        android:textColor="@color/dark"
+        android:textColor="@color/text_color_primary"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/imageViewUserProfile"
@@ -85,7 +85,7 @@
         android:text="@string/edit_profile"
         android:paddingLeft="64dp"
         android:paddingRight="64dp"
-        android:background="@drawable/background_rounded_button_dark"
+        android:background="@drawable/background_rounded_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewPostCount" />

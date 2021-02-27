@@ -78,4 +78,14 @@
         app:layout_constraintTop_toBottomOf="@+id/textView7"
         app:layout_constraintVertical_bias="0.0" />
 
+    <TextView
+        android:id="@+id/textViewDateFeedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/post_date"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewOptions"
+        app:layout_constraintEnd_toStartOf="@+id/textViewOptions"
+        app:layout_constraintTop_toTopOf="@+id/textViewOptions" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
