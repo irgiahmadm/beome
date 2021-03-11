@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "25093834963",
+    "project_id": "beome-5de0b",
+    "storage_bucket": "beome-5de0b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25093834963:android:3d90be1ec36e387f5e6c26",
+        "android_client_info": {
+          "package_name": "com.beome"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "25093834963-4hu4n6980fs3s39d8jcf512ia97eson6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARJcLrON2Z1udmnv5Nv3olbCzgn3GK5EA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "25093834963-4hu4n6980fs3s39d8jcf512ia97eson6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

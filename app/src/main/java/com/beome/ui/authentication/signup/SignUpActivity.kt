@@ -1,12 +1,87 @@
 package com.beome.ui.authentication.signup
 
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.beome.R
+import android.text.InputType
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import com.beome.databinding.ActivitySignUpBinding
+import com.beome.model.User
+import com.beome.ui.authentication.login.LoginActivity
+import com.beome.utilities.GlobalHelper
+import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
+    private lateinit var binding : ActivitySignUpBinding
+    private val viewModel: SignupViewModel by lazy {
+        ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(SignupViewModel::class.java)
+    }
+
+    private val c = Calendar.getInstance()
+    private val year = c.get(Calendar.YEAR)
+    private val month = c.get(Calendar.MONTH)
+    private val day = c.get(Calendar.DAY_OF_MONTH)
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
+        binding = ActivitySignUpBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.buttonSignup.setOnClickListener {
+            registerUser()
+        }
+        binding.textViewSignIn.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
+        binding.editTextBirthDate.inputType = InputType.TYPE_NULL
+        binding.editTextBirthDate.setOnClickListener {
+            val dpd = DatePickerDialog(this, { _, year, month, dayOfMonth ->
+                val monthStr = if (month.toString().length > 1){
+                    month.toString()
+                }else{
+                    "0${(month+1)}"
+                }
+                val dayStr = if(dayOfMonth.toString().length > 1){
+                    dayOfMonth.toString()
+                }else{
+                    "0$dayOfMonth"
+                }
+                binding.editTextBirthDate.setText("$dayStr-$monthStr-$year")
+            }, year, month, day)
+            dpd.show()
+        }
+    }
+
+    private fun registerUser(){
+        val username = binding.editTextUsername.text.toString()
+        val email = binding.editTextEmail.text.toString()
+        val password = binding.editTextPassword.text.toString()
+        val birthDate = binding.editTextBirthDate.text.toString()
+        val fullname = binding.editTextName.text.toString()
+        val authKey = "${GlobalHelper.getRandomString(12)}${System.currentTimeMillis()}"
+        val createdAt = Date().toString()
+        val updatedAt = Date().toString()
+        if(username.isNotEmpty() || email.isNotEmpty() || password.isNotEmpty() || birthDate.isNotEmpty() || fullname.isNotEmpty()){
+            val user = User(
+                fullname,
+                username,
+                email,
+                GlobalHelper.sha256(password),
+                birthDate,
+                0,
+                0,
+                authKey,
+                1,
+                createdAt,
+                updatedAt
+            )
+            viewModel.setUpRegisterUser()
+            viewModel.registerUser(user)
+        }else{
+            Toast.makeText(this, "Fill all form", Toast.LENGTH_SHORT).show()
+        }
     }
 }
