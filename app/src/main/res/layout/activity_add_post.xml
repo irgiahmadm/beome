@@ -63,6 +63,14 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@tools:sample/avatars" />
 
+                <ProgressBar
+                    android:id="@+id/imageProgress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/imagePost" />
+
                 <TextView
                     android:id="@+id/textViewChangeImage"
                     android:layout_width="match_parent"
@@ -73,7 +81,7 @@
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imagePost"/>
+                    app:layout_constraintTop_toBottomOf="@+id/imageProgress" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -156,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="64dp"
+                android:layout_marginBottom="32dp"
                 android:background="@drawable/background_rounded_button_outlined"
                 android:drawableLeft="@drawable/ic_plus"
                 android:onClick="onAddFieldFeedback"

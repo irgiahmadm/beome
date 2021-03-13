@@ -21,41 +21,32 @@ import com.beome.utilities.GlobalHelper
 import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.model.Image
+import com.google.firebase.storage.FirebaseStorage
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.component_feedback.view.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.util.*
 
 class AddPostActivity : AppCompatActivity() {
     private lateinit var binding : ActivityAddPostBinding
     private var image : Image? = null
+    private var imageCroppedResult : Uri? = null
+    private val storageRef = FirebaseStorage.getInstance().getReference("imagepost")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        GlobalHelper.startImagePickerFromActvitty(this)
-       /*
-       val layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        layoutParams.bottomMargin = 8
-        val initialEditText = EditText(this)
-        binding.feedbackComponent.addView(initialEditText)
-        listFeedbackComponent.add(initialEditText)
-        binding.buttonAddFeedback.setOnClickListener {
-            if(listFeedbackComponent.size < 5){
-                val newEditText = EditText(this)
-                binding.feedbackComponent.addView(newEditText)
-                listFeedbackComponent.add(newEditText)
-            }else{
-                Toast.makeText(this, "Component is full", Toast.LENGTH_SHORT).show()
-            }
-
-        }*/
+        if(image == null){
+            binding.imageViewAddImage.visibility = View.VISIBLE
+            binding.textViewAddImage.visibility = View.VISIBLE
+            binding.textViewChangeImage.visibility = View.GONE
+        }else{
+            binding.imageViewAddImage.visibility = View.GONE
+            binding.textViewAddImage.visibility = View.GONE
+            binding.textViewChangeImage.visibility = View.VISIBLE
+        }
         //init feedback field
         addFeedbackField()
 
@@ -65,6 +56,29 @@ class AddPostActivity : AppCompatActivity() {
         binding.buttonPublish.setOnClickListener {
             if(image == null){
                 Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
+            }
+            if(imageCroppedResult != null){
+                val reference = storageRef.child("${imageCroppedResult!!.lastPathSegment}")
+
+
+                reference.putFile(imageCroppedResult!!)
+                    .addOnSuccessListener {
+                        binding.imageProgress.progress = 0
+                        Toast.makeText(this, "Success to upload image", Toast.LENGTH_SHORT).show()
+                      reference.downloadUrl.addOnSuccessListener {
+                          val downloadUri = it
+                          Log.d("image_url", downloadUri.toString())
+                      }
+                    }
+                    .addOnFailureListener{
+                        Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
+                        Log.d("err_upload_image", it.localizedMessage!!.toString())
+                    }
+                    .addOnProgressListener {
+                        binding.imageProgress.visibility = View.VISIBLE
+                        val progress = (100.0 * it.bytesTransferred / it.totalByteCount)
+                        binding.imageProgress.progress = progress.toInt()
+                    }
             }
             getDataFeedbackField()
         }
@@ -87,13 +101,14 @@ class AddPostActivity : AppCompatActivity() {
                 val selectedBitmap: Bitmap = getBitmap(this, image!!.uri)!!
                 val selectedImgFile = File(
                     getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                    Date().toString() + "_selectedImg.jpg"
+                    GlobalHelper.getRandomString(20) + ".jpg"
                 )
                 convertBitmaptoFile(selectedImgFile, selectedBitmap)
                 val croppedImgFile = File(
                     getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                    Date().toString() + "_croppedImg.jpg"
+                    GlobalHelper.getRandomString(20) + ".jpg"
                 )
+                imageCroppedResult = Uri.fromFile(croppedImgFile)
                 openCropActivity(Uri.fromFile(selectedImgFile), Uri.fromFile(croppedImgFile))
 
             }
