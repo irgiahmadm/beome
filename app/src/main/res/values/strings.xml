@@ -56,4 +56,5 @@
     <string name="describe_your_work">Describe your work</string>
     <string name="rate_feedback_information">You can add up to 5 feedback. Your feedback will be rate from 1 - 5.</string>
     <string name="add_feedback">Add feedback</string>
+    <string name="add_component">Add component</string>
 </resources>

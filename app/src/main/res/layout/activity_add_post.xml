@@ -15,9 +15,9 @@
             android:id="@+id/imagePost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:layout_gravity="center"
             tools:src="@tools:sample/avatars" />
 
         <TextView
@@ -57,11 +57,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:gravity="top|left"
-            android:paddingTop="8dp"
             android:background="@drawable/background_edit_text"
+            android:gravity="top|left"
             android:hint="@string/describe_your_work"
             android:paddingStart="8dp"
+            android:paddingTop="8dp"
             android:paddingEnd="8dp" />
 
         <TextView
@@ -73,6 +73,7 @@
             android:text="@string/feedback"
             android:textColor="@color/text_color_primary"
             android:textSize="20sp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,24 +81,67 @@
             android:layout_marginEnd="16dp"
             android:text="@string/rate_feedback_information"
             android:textSize="14sp" />
+
         <LinearLayout
             android:id="@+id/feedbackComponent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/editTextFeedbackComponent"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/background_edit_text"
+                    android:hint="@string/add_component"
+                    android:importantForAutofill="no"
+                    android:inputType="textEmailAddress"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageViewDeleteFeedbackComponent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageViewDeleteFeedbackComponent"
+                    android:layout_width="31dp"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/editTextFeedbackComponent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:onClick="onDeleteFieldFeedback"
+                    app:layout_constraintTop_toTopOf="@+id/editTextFeedbackComponent"
+                    app:srcCompat="@drawable/ic_close" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
+
         <Button
+            android:id="@+id/buttonAddFeedback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/add_feedback"
-            android:textColor="@color/color_primary"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/background_rounded_button_outlined"
+            android:drawableLeft="@drawable/ic_plus"
+            android:onClick="onAddFieldFeedback"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
-            android:layout_marginTop="8dp"
-            android:drawableLeft="@drawable/ic_plus"
-            android:background="@drawable/background_rounded_button_outlined"
+            android:text="@string/add_feedback"
+            android:textColor="@color/color_primary"
             tools:ignore="RtlHardcoded" />
     </LinearLayout>
 </ScrollView>

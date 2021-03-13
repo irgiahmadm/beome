@@ -1,5 +1,6 @@
 package com.beome.ui.add
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -7,11 +8,12 @@ import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
-import androidx.core.net.toUri
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.beome.R
 import com.beome.databinding.ActivityAddPostBinding
 import com.bumptech.glide.Glide
@@ -29,21 +31,45 @@ class AddPostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ImagePicker.create(this)
+
+        /*ImagePicker.create(this)
             .single()
             .showCamera(false)
-            .start()
+            .start()*/
+       /*
+       val layoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        layoutParams.bottomMargin = 8
+        val initialEditText = EditText(this)
+        binding.feedbackComponent.addView(initialEditText)
+        listFeedbackComponent.add(initialEditText)
+        binding.buttonAddFeedback.setOnClickListener {
+            if(listFeedbackComponent.size < 5){
+                val newEditText = EditText(this)
+                binding.feedbackComponent.addView(newEditText)
+                listFeedbackComponent.add(newEditText)
+            }else{
+                Toast.makeText(this, "Component is full", Toast.LENGTH_SHORT).show()
+            }
+
+        }*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(ImagePicker.shouldHandle(requestCode, resultCode, data)){
             val image : Image = ImagePicker.getFirstImageOrNull(data)
             val selectedBitmap: Bitmap = getBitmap(this, image.uri)!!
-            val selectedImgFile = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), Date().toString() + "_selectedImg.jpg")
+            val selectedImgFile = File(
+                getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                Date().toString() + "_selectedImg.jpg"
+            )
             convertBitmaptoFile(selectedImgFile, selectedBitmap)
             val croppedImgFile = File(
                 getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                Date().toString() + "_croppedImg.jpg")
+                Date().toString() + "_croppedImg.jpg"
+            )
             openCropActivity(Uri.fromFile(selectedImgFile), Uri.fromFile(croppedImgFile))
         }
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
@@ -53,6 +79,26 @@ class AddPostActivity : AppCompatActivity() {
             } catch (e: Exception) { e.printStackTrace()}
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    @SuppressLint("InflateParams")
+    private fun addFeedbackField(){
+        if(binding.feedbackComponent.childCount < 5){
+            val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val rowView: View = inflater.inflate(R.layout.component_feedback, null)
+            binding.feedbackComponent.addView(rowView, binding.feedbackComponent.childCount - 1)
+        }else{
+            Toast.makeText(this, "Feedback components is full", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    fun onAddFieldFeedback(v: View) {
+        addFeedbackField()
+    }
+
+    fun onDeleteFieldFeedback(v: View) {
+        binding.feedbackComponent.removeView(v.parent as View)
     }
 
     private fun getBitmap(context: Context, imageUri: Uri): Bitmap? {
@@ -70,7 +116,7 @@ class AddPostActivity : AppCompatActivity() {
         }
     }
 
-    fun convertBitmaptoFile(destinationFile: File, bitmap: Bitmap) {
+    private fun convertBitmaptoFile(destinationFile: File, bitmap: Bitmap) {
         //create a file to write bitmap data
         destinationFile.createNewFile()   //Convert bitmap to byte array
         val bos = ByteArrayOutputStream()
@@ -82,7 +128,7 @@ class AddPostActivity : AppCompatActivity() {
         fos.close()
     }
 
-    private fun openCropActivity(sourceUri : Uri, destinationUri : Uri) {
+    private fun openCropActivity(sourceUri: Uri, destinationUri: Uri) {
         val options = UCrop.Options()
         options.setHideBottomControls(true)
         UCrop.of(sourceUri, destinationUri)
