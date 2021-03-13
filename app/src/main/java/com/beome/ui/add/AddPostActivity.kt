@@ -22,12 +22,12 @@ import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.model.Image
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageTask
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.component_feedback.view.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.util.*
 
 class AddPostActivity : AppCompatActivity() {
     private lateinit var binding : ActivityAddPostBinding
@@ -145,16 +145,26 @@ class AddPostActivity : AppCompatActivity() {
 
     private fun getDataFeedbackField(){
         val feedbackCount = binding.feedbackComponent.childCount
+        val listOfFeedback = arrayListOf<String>()
         if(feedbackCount == 1){
             val row: View = binding.feedbackComponent.getChildAt(0)
             if(row.editTextFeedbackComponent.text.isEmpty()){
                 Toast.makeText(this, "Feedback name is still empty", Toast.LENGTH_SHORT).show()
             }
         }
+        listOfFeedback.clear()
         for (i in 0 until feedbackCount){
             val row: View = binding.feedbackComponent.getChildAt(i)
             if(row.editTextFeedbackComponent.text.isNotEmpty()){
-                Log.d("data_feedback", row.editTextFeedbackComponent.text.toString())
+                listOfFeedback.add(row.editTextFeedbackComponent.text.toString()
+                    .toLowerCase(Locale.getDefault()))
+            }
+        }
+        for(i in 0 until feedbackCount){
+            val row: View = binding.feedbackComponent.getChildAt(i)
+            if(row.editTextFeedbackComponent.text.toString().toLowerCase(Locale.getDefault()) == listOfFeedback[i]){
+                Toast.makeText(this, "There is same feedback name, please change", Toast.LENGTH_SHORT).show()
+                break
             }
         }
     }
