@@ -1,5 +1,8 @@
 package com.beome.utilities
 
+import android.app.Activity
+import androidx.fragment.app.Fragment
+import com.esafirm.imagepicker.features.ImagePicker
 import java.security.MessageDigest
 
 object GlobalHelper {
@@ -24,5 +27,19 @@ object GlobalHelper {
         } catch (ex: Exception) {
             throw RuntimeException(ex)
         }
+    }
+
+    fun startImagePickerFromActvitty(activity : Activity){
+        ImagePicker.create(activity)
+            .single()
+            .showCamera(false)
+            .start()
+    }
+
+    fun startImagePickerFromFragment(fragment : Fragment){
+        ImagePicker.create(fragment)
+            .single()
+            .showCamera(false)
+            .start()
     }
 }
