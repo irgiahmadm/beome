@@ -66,6 +66,7 @@ class SignUpActivity : AppCompatActivity() {
         val updatedAt = Date().toString()
         if(username.isNotEmpty() || email.isNotEmpty() || password.isNotEmpty() || birthDate.isNotEmpty() || fullname.isNotEmpty()){
             val user = User(
+                "",
                 fullname,
                 username,
                 email,

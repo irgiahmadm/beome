@@ -59,4 +59,5 @@
     <string name="add_component">Add component</string>
     <string name="publish">Publish</string>
     <string name="change_image">Change Image</string>
+    <string name="add_image">Add Image</string>
 </resources>

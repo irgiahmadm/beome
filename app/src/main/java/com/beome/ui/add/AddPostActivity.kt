@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.model.Image
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageTask
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.component_feedback.view.*
 import java.io.ByteArrayOutputStream
@@ -68,15 +69,19 @@ class AddPostActivity : AppCompatActivity() {
                       reference.downloadUrl.addOnSuccessListener {
                           val downloadUri = it
                           Log.d("image_url", downloadUri.toString())
+                          binding.imageProgress.visibility = View.GONE
                       }
+                        binding.buttonPublish.isEnabled = true
                     }
                     .addOnFailureListener{
                         Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
                         Log.d("err_upload_image", it.localizedMessage!!.toString())
                     }
                     .addOnProgressListener {
+                        binding.buttonPublish.isEnabled = false
                         binding.imageProgress.visibility = View.VISIBLE
-                        val progress = (100.0 * it.bytesTransferred / it.totalByteCount)
+                        binding.buttonPublish.text = ""
+                        val progress: Double = (100.0 * it.bytesTransferred) / it.totalByteCount
                         binding.imageProgress.progress = progress.toInt()
                     }
             }

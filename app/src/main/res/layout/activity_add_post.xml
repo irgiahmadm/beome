@@ -40,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Add Image"
+                    android:text="@string/add_image"
                     android:textColor="@color/color_primary"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -63,25 +63,18 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@tools:sample/avatars" />
 
-                <ProgressBar
-                    android:id="@+id/imageProgress"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@+id/imagePost" />
-
                 <TextView
                     android:id="@+id/textViewChangeImage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:text="@string/change_image"
                     android:textColor="@color/color_primary"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageProgress" />
+                    app:layout_constraintTop_toBottomOf="@+id/imagePost" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -188,17 +181,29 @@
             android:id="@+id/buttonPublish"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_rounded_button"
-            android:text="@string/publish"
-            android:letterSpacing=".3"
-            android:textColor="@color/white"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
+            android:background="@drawable/background_rounded_button"
+            android:backgroundTint="@color/color_primary"
+            android:letterSpacing=".3"
+            android:text="@string/publish"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <ProgressBar
+            android:id="@+id/imageProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:visibility="gone"
+            android:indeterminateTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/buttonPublish"
+            app:layout_constraintEnd_toEndOf="@+id/buttonPublish"
+            app:layout_constraintStart_toStartOf="@+id/buttonPublish"
+            app:layout_constraintTop_toTopOf="@+id/buttonPublish" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
