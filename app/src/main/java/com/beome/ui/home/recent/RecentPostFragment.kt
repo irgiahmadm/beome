@@ -1,5 +1,6 @@
 package com.beome.ui.home.recent
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,8 +9,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
+import com.beome.constant.ConstantPost
 import com.beome.databinding.FragmentRecentPostBinding
 import com.beome.model.Post
+import com.beome.ui.feedback.PostDetailActivity
 import com.beome.utilities.AdapterUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -42,8 +45,10 @@ class RecentPostFragment : Fragment() {
                 view.textViewUsername.text = post.username
                 view.textViewCountFeedback.text = post.feedbackCount.toString()
                 view.textViewCountLike.text = post.likeCount.toString()
-            },{ _, _ ->
-
+            },{ _, post ->
+                val intent = Intent(requireContext(), PostDetailActivity::class.java)
+                intent.putExtra(ConstantPost.CONSTANT_ID_POST, post.idPost)
+                startActivity(intent)
             })
         viewModel.getListRecentPost().observe(viewLifecycleOwner,{
             adapterRecentPost.data = it

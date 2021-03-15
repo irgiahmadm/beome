@@ -60,4 +60,5 @@
     <string name="publish">Publish</string>
     <string name="change_image">Change Image</string>
     <string name="add_image">Add Image</string>
+    <string name="give_feedback">Give Feedback</string>
 </resources>

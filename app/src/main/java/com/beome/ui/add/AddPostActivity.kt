@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.beome.MainActivity
 import com.beome.R
 import com.beome.constant.ConstantAuth
+import com.beome.constant.ConstantPost
 import com.beome.databinding.ActivityAddPostBinding
 import com.beome.model.ComponentFeedbackPost
 import com.beome.model.Post
@@ -36,6 +37,7 @@ import kotlinx.android.synthetic.main.component_feedback.view.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -92,6 +94,7 @@ class AddPostActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun publishPost() {
         val feedbackCounter = binding.feedbackComponent.childCount
         val rowFirst: View = binding.feedbackComponent.getChildAt(0)
@@ -115,13 +118,16 @@ class AddPostActivity : AppCompatActivity() {
                 error = "Feedback component can not be empty"
                 requestFocus()
             }
+        }else{
+            isFeedBackComponentValid = true
         }
-        else if (isFeedBackComponentValid) {
+        if (isFeedBackComponentValid) {
             idPost = GlobalHelper.getRandomString(20)
             val title = binding.editTextPostTitle.text.toString()
             val desc = binding.editTextPostDesc.text.toString()
             val username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME)!!
             val imageUser = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_IMAGE)!!
+            val createdDate = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(Date())
             if (image == null) {
                 Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
             }
@@ -154,8 +160,8 @@ class AddPostActivity : AppCompatActivity() {
                                 0,
                                 0,
                                 1,
-                                Date().toString(),
-                                Date().toString()
+                                createdDate,
+                                createdDate
                             )
                             viewModel.addPost(post)
                         }

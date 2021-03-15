@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.beome.model.Post
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 
 class RecentPostViewModel : ViewModel() {
@@ -12,7 +13,10 @@ class RecentPostViewModel : ViewModel() {
     private val recentPostRepo = RecentPostRepository()
 
     fun getListRecentPost() : LiveData<List<Post>>{
-        recentPostRepo.getRecentPost().addSnapshotListener { querySnapshot, error ->
+        recentPostRepo.getRecentPost()
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .whereEqualTo("status", 1)
+            .addSnapshotListener { querySnapshot, error ->
             error?.let{
                 Log.e("err_get_recet_post", error.localizedMessage!!)
                 return@addSnapshotListener
