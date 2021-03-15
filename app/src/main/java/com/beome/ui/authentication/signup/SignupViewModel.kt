@@ -8,13 +8,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SignupViewModel : ViewModel(){
-    private val registerRepo = SignupRepository()
+    private val registerRepo = SignupRepository(Dispatchers.IO)
     lateinit var registerState : LiveData<NetworkState>
     private val _registerRepository = MutableLiveData<SignupRepository>()
 
     fun setUpRegisterUser(){
         registerState = Transformations.switchMap(_registerRepository, SignupRepository::networkState)
-        _registerRepository.postValue(SignupRepository())
+        _registerRepository.postValue(registerRepo)
     }
 
     fun registerUser(user: User) = viewModelScope.launch {

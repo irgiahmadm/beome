@@ -22,9 +22,7 @@ class AddPostFragment : Fragment() {
         addPostViewModel = ViewModelProvider(this).get(AddPostViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_add_post, container, false)
         val textView: TextView = root.findViewById(R.id.text_notifications)
-        addPostViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+
         return root
     }
 }

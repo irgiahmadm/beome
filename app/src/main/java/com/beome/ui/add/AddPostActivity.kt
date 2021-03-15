@@ -15,12 +15,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import com.beome.MainActivity
 import com.beome.R
+import com.beome.constant.ConstantAuth
 import com.beome.databinding.ActivityAddPostBinding
+import com.beome.model.ComponentFeedbackPost
+import com.beome.model.Post
+import com.beome.ui.authentication.login.LoginActivity
 import com.beome.utilities.GlobalHelper
+import com.beome.utilities.NetworkState
+import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.model.Image
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.storage.FirebaseStorage
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.component_feedback.view.*
@@ -28,80 +37,234 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import kotlin.collections.ArrayList
 
 class AddPostActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityAddPostBinding
-    private var image : Image? = null
-    private var imageCroppedResult : Uri? = null
+    private lateinit var binding: ActivityAddPostBinding
+    private lateinit var sharedPrefUtil: SharedPrefUtil
+    private lateinit var listOfFeedback: ArrayList<String>
+    private lateinit var idPost: String
+    private var isFeedBackComponentValid = false
+    private val viewModel: AddPostViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ViewModelProvider.NewInstanceFactory()
+        ).get(AddPostViewModel::class.java)
+    }
+    private var image: Image? = null
+    private var imageCroppedResult: Uri? = null
+    private lateinit var authKey: String
     private val storageRef = FirebaseStorage.getInstance().getReference("imagepost")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        sharedPrefUtil = SharedPrefUtil()
+        sharedPrefUtil.start(this, ConstantAuth.CONSTANT_PREFERENCE)
 
-        if(image == null){
-            binding.imageViewAddImage.visibility = View.VISIBLE
-            binding.textViewAddImage.visibility = View.VISIBLE
-            binding.textViewChangeImage.visibility = View.GONE
-        }else{
-            binding.imageViewAddImage.visibility = View.GONE
-            binding.textViewAddImage.visibility = View.GONE
-            binding.textViewChangeImage.visibility = View.VISIBLE
+        //check auth is not empty
+        if (sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY).isNullOrEmpty()) {
+            startActivity(Intent(this, LoginActivity::class.java))
+        } else {
+            authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY)!!
+            if (image == null) {
+                binding.imageViewAddImage.visibility = View.VISIBLE
+                binding.textViewAddImage.visibility = View.VISIBLE
+                binding.textViewChangeImage.visibility = View.GONE
+            } else {
+                binding.imageViewAddImage.visibility = View.GONE
+                binding.textViewAddImage.visibility = View.GONE
+                binding.textViewChangeImage.visibility = View.VISIBLE
+            }
+            //init feedback field
+            addFeedbackField()
+            viewModel.setUpAddPost()
+            getAddPostState()
+            binding.imageViewAddImage.setOnClickListener {
+                GlobalHelper.startImagePickerFromActvitty(this)
+            }
+            binding.buttonPublish.setOnClickListener {
+                publishPost()
+            }
+            binding.textViewChangeImage.setOnClickListener {
+                GlobalHelper.startImagePickerFromActvitty(this)
+            }
         }
-        //init feedback field
-        addFeedbackField()
+    }
 
-        binding.imageViewAddImage.setOnClickListener {
-            GlobalHelper.startImagePickerFromActvitty(this)
+    private fun publishPost() {
+        val feedbackCounter = binding.feedbackComponent.childCount
+        val rowFirst: View = binding.feedbackComponent.getChildAt(0)
+        listOfFeedback = arrayListOf()
+        listOfFeedback.clear()
+        for (i in 0 until feedbackCounter) {
+            val newRow: View = binding.feedbackComponent.getChildAt(i)
+            if (newRow.editTextFeedbackComponent.text.isNotEmpty()) {
+                listOfFeedback.add(
+                    newRow.editTextFeedbackComponent.text.toString()
+                        .toLowerCase(Locale.getDefault())
+                )
+            }
         }
-        binding.buttonPublish.setOnClickListener {
-            if(image == null){
+        Log.d("list of feedback", listOfFeedback.toString())
+        if (feedbackCounter != 1) {
+            isFeedBackComponentValid = listOfFeedback.size == listOfFeedback.distinct().count()
+        }
+        if (feedbackCounter == 1 && rowFirst.editTextFeedbackComponent.text.toString().isEmpty()) {
+            rowFirst.editTextFeedbackComponent.apply {
+                error = "Feedback component can not be empty"
+                requestFocus()
+            }
+        }
+        else if (isFeedBackComponentValid) {
+            idPost = GlobalHelper.getRandomString(20)
+            val title = binding.editTextPostTitle.text.toString()
+            val desc = binding.editTextPostDesc.text.toString()
+            val username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME)!!
+            val imageUser = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_IMAGE)!!
+            if (image == null) {
                 Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
             }
-            if(imageCroppedResult != null){
+            if (title.isEmpty()) {
+                binding.editTextPostTitle.apply {
+                    error = "Title can not be empty"
+                    requestFocus()
+                }
+            }
+            if (desc.isEmpty()) {
+                binding.editTextPostDesc.apply {
+                    error = "Description can not be empty"
+                    requestFocus()
+                }
+            }
+            if (imageCroppedResult != null) {
                 val reference = storageRef.child("${imageCroppedResult!!.lastPathSegment}")
-
-
                 reference.putFile(imageCroppedResult!!)
                     .addOnSuccessListener {
-                        binding.imageProgress.progress = 0
-                        Toast.makeText(this, "Success to upload image", Toast.LENGTH_SHORT).show()
-                      reference.downloadUrl.addOnSuccessListener {
-                          val downloadUri = it
-                          Log.d("image_url", downloadUri.toString())
-                          binding.imageProgress.visibility = View.GONE
-                      }
+                        reference.downloadUrl.addOnSuccessListener {
+                            val downloadUri = it.toString()
+                            val post = Post(
+                                idPost,
+                                authKey,
+                                username,
+                                imageUser,
+                                downloadUri,
+                                title,
+                                desc,
+                                0,
+                                0,
+                                1,
+                                Date().toString(),
+                                Date().toString()
+                            )
+                            viewModel.addPost(post)
+                        }
                         binding.buttonPublish.isEnabled = true
                     }
-                    .addOnFailureListener{
+                    .addOnFailureListener {
                         Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
                         Log.d("err_upload_image", it.localizedMessage!!.toString())
                     }
                     .addOnProgressListener {
                         binding.buttonPublish.isEnabled = false
-                        binding.imageProgress.visibility = View.VISIBLE
-                        binding.buttonPublish.text = ""
-                        val progress: Double = (100.0 * it.bytesTransferred) / it.totalByteCount
-                        binding.imageProgress.progress = progress.toInt()
+                        /*val progress: Double = (100.0 * it.bytesTransferred) / it.totalByteCount
+                        binding.imageProgress.progress = progress.toInt()*/
                     }
+            }else{
+                Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
             }
-            getDataFeedbackField()
-        }
-        binding.textViewChangeImage.setOnClickListener {
-            GlobalHelper.startImagePickerFromActvitty(this)
+
+        } else {
+            Toast.makeText(
+                this,
+                "There is same feedback name, please change",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
+    private fun getAddPostState() {
+        viewModel.addPostState.observe(this, {
+            when (it) {
+                NetworkState.LOADING -> {
+
+                }
+                NetworkState.SUCCESS -> {
+                    viewModel.setUpComponentFeedback()
+                    getComponentFeedbackState()
+                    var counter = 0
+                    (0 until listOfFeedback.size).forEach { i ->
+                        counter++
+                        val randomString = GlobalHelper.getRandomString(10)
+                        val componentFeedbackPost =
+                            ComponentFeedbackPost(randomString, idPost, listOfFeedback[i])
+                        viewModel.addComponentFeedbackPost(
+                            componentFeedbackPost,
+                            listOfFeedback.size,
+                            counter
+                        )
+                    }
+                }
+                NetworkState.FAILED -> {
+                    Toast.makeText(this, "Add post failed", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(
+                        this,
+                        "Add post failed, something went wrong",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+    }
+
+    private fun getComponentFeedbackState() {
+        viewModel.addComponentState.observe(this, {
+            when (it) {
+                NetworkState.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                NetworkState.SUCCESS -> {
+                    binding.buttonPublish.text = ""
+                    binding.progressBar.visibility = View.GONE
+                    Snackbar.make(
+                        this,
+                        binding.constraintLayoutAddPost,
+                        "Your artwork is published",
+                        Snackbar.LENGTH_SHORT
+                    )
+                    startActivity(
+                        Intent(
+                            this,
+                            MainActivity::class.java
+                        ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    )
+                }
+                NetworkState.FAILED -> {
+                    Toast.makeText(this, "Add component failed", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(
+                        this,
+                        "Add component failed, something went wrong",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(data == null){
+        if (data == null) {
             binding.imageViewAddImage.visibility = View.VISIBLE
             binding.textViewAddImage.visibility = View.VISIBLE
             binding.textViewChangeImage.visibility = View.GONE
-        }else{
+        } else {
             binding.imageViewAddImage.visibility = View.GONE
             binding.textViewAddImage.visibility = View.GONE
             binding.textViewChangeImage.visibility = View.VISIBLE
-            if(ImagePicker.shouldHandle(requestCode, resultCode, data)){
+            if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
                 image = ImagePicker.getFirstImageOrNull(data)
                 val selectedBitmap: Bitmap = getBitmap(this, image!!.uri)!!
                 val selectedImgFile = File(
@@ -118,11 +281,13 @@ class AddPostActivity : AppCompatActivity() {
 
             }
             if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
-                val resultUri =  UCrop.getOutput(data)
-                if(resultUri != null){
+                val resultUri = UCrop.getOutput(data)
+                if (resultUri != null) {
                     try {
                         Glide.with(this).load(resultUri).into(binding.imagePost)
-                    } catch (e: Exception) { e.printStackTrace()}
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
         }
@@ -132,41 +297,15 @@ class AddPostActivity : AppCompatActivity() {
     }
 
     @SuppressLint("InflateParams")
-    private fun addFeedbackField(){
-        if(binding.feedbackComponent.childCount < 5){
+    private fun addFeedbackField() {
+        if (binding.feedbackComponent.childCount < 5) {
             val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val rowView: View = inflater.inflate(R.layout.component_feedback, null)
             binding.feedbackComponent.addView(rowView)
-        }else{
+        } else {
             Toast.makeText(this, "Feedback components is full", Toast.LENGTH_SHORT).show()
         }
 
-    }
-
-    private fun getDataFeedbackField(){
-        val feedbackCount = binding.feedbackComponent.childCount
-        val listOfFeedback = arrayListOf<String>()
-        if(feedbackCount == 1){
-            val row: View = binding.feedbackComponent.getChildAt(0)
-            if(row.editTextFeedbackComponent.text.isEmpty()){
-                Toast.makeText(this, "Feedback name is still empty", Toast.LENGTH_SHORT).show()
-            }
-        }
-        listOfFeedback.clear()
-        for (i in 0 until feedbackCount){
-            val row: View = binding.feedbackComponent.getChildAt(i)
-            if(row.editTextFeedbackComponent.text.isNotEmpty()){
-                listOfFeedback.add(row.editTextFeedbackComponent.text.toString()
-                    .toLowerCase(Locale.getDefault()))
-            }
-        }
-        for(i in 0 until feedbackCount){
-            val row: View = binding.feedbackComponent.getChildAt(i)
-            if(row.editTextFeedbackComponent.text.toString().toLowerCase(Locale.getDefault()) == listOfFeedback[i]){
-                Toast.makeText(this, "There is same feedback name, please change", Toast.LENGTH_SHORT).show()
-                break
-            }
-        }
     }
 
     fun onAddFieldFeedback(v: View) {
@@ -175,9 +314,9 @@ class AddPostActivity : AppCompatActivity() {
 
     fun onDeleteFieldFeedback(v: View) {
         val feedbackCount = binding.feedbackComponent.childCount
-        if(feedbackCount >= 2){
+        if (feedbackCount >= 2) {
             binding.feedbackComponent.removeView(v.parent as View)
-        }else{
+        } else {
             Toast.makeText(this, "You should add at least 1 feedback", Toast.LENGTH_SHORT).show()
         }
 
@@ -192,7 +331,7 @@ class AddPostActivity : AppCompatActivity() {
                 )
             )
         } else {
-            context.contentResolver.openInputStream(imageUri) ?.use { inputStream ->
+            context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
                 BitmapFactory.decodeStream(inputStream)
             }
         }

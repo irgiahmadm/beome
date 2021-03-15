@@ -6,21 +6,30 @@ import com.beome.model.User
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
+import kotlin.coroutines.CoroutineContext
 
-class SignupRepository {
+class SignupRepository(coroutineContext: CoroutineContext) {
     private val collectionUserRef = Firebase.firestore.collection("user")
     val networkState = MutableLiveData<NetworkState>()
+    private val job= Job()
+    private val scope = CoroutineScope(coroutineContext+job)
 
-    suspend fun registerUser(user : User){
-        try {
-            networkState.postValue(NetworkState.LOADING)
-            collectionUserRef.add(user).await()
-            networkState.postValue(NetworkState.SUCCESS)
-        }catch(e : Exception){
-            networkState.postValue(NetworkState.FAILED)
-            Log.d("error_signup", e.localizedMessage!!)
+    fun registerUser(user : User){
+        scope.launch {
+            try {
+                networkState.postValue(NetworkState.LOADING)
+                collectionUserRef.add(user).await()
+                networkState.postValue(NetworkState.SUCCESS)
+            }catch(e : Exception){
+                networkState.postValue(NetworkState.FAILED)
+                Log.d("error_signup", e.localizedMessage!!)
+            }
         }
+
     }
 }
