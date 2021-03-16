@@ -1,6 +1,7 @@
 package com.beome.ui.feedback
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -30,6 +31,16 @@ class PostDetailActivity : AppCompatActivity() {
 
         if(intent.getStringExtra(ConstantPost.CONSTANT_ID_POST) != null){
             idPost = intent.getStringExtra(ConstantPost.CONSTANT_ID_POST) as String
+            //give feedback
+            binding.buttonGiveFeedback.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        FeedbackActivity::class.java
+                    ).putExtra(ConstantPost.CONSTANT_ID_POST, idPost)
+                )
+            }
+            //get data detail
             viewModel.getPostDetail(idPost).observe(this,{
                 Glide.with(this)
                     .load(it.imagePost)

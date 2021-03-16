@@ -37,5 +37,10 @@
         android:id="@+id/mainActivity"
         android:name="com.beome.MainActivity"
         android:label="MainActivity" />
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.beome.ui.authentication.login.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
 
 </navigation>

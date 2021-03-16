@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.Window
-import com.beome.R
 import com.beome.databinding.ActivityReportBinding
 import com.beome.databinding.ComponentDialogReportBinding
 

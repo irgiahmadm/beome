@@ -47,7 +47,7 @@
     <string name="terms_of_use">Terms of Use</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="signin">Sign In</string>
-    <string name="provide_feedback">Please provide feedback to the image using scale\nfrom 1–5</string>
+    <string name="provide_feedback">Please provide feedback to the image using scale \n from 1–5</string>
     <string name="component_name">Component</string>
     <string name="one">1</string>
     <string name="submit">Submit</string>
@@ -61,4 +61,8 @@
     <string name="change_image">Change Image</string>
     <string name="add_image">Add Image</string>
     <string name="give_feedback">Give Feedback</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
+    <string name="five">5</string>
 </resources>

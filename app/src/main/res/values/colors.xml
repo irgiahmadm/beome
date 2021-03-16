@@ -5,6 +5,7 @@
     <color name="text_color_primary">#2E2E2E</color>
     <color name="color_primary">#315CFD</color>
     <color name="grey_background_tags">#40315CFD</color>
+    <color name="background_layout">#FAF8FF</color>
     <color name="grey_divider">#F2F2F2</color>
     <color name="grey_edit_text">#979797</color>
     <color name="purple_700">#FF3700B3</color>

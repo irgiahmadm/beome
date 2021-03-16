@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -39,7 +40,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class AddPostActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddPostBinding
@@ -68,6 +68,8 @@ class AddPostActivity : AppCompatActivity() {
         if (sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY).isNullOrEmpty()) {
             startActivity(Intent(this, LoginActivity::class.java))
         } else {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowHomeEnabled(true)
             authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY)!!
             if (image == null) {
                 binding.imageViewAddImage.visibility = View.VISIBLE
@@ -127,7 +129,9 @@ class AddPostActivity : AppCompatActivity() {
             val desc = binding.editTextPostDesc.text.toString()
             val username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME)!!
             val imageUser = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_IMAGE)!!
-            val createdDate = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(Date())
+            val createdDate = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(
+                Date()
+            )
             if (image == null) {
                 Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
             }
@@ -362,5 +366,30 @@ class AddPostActivity : AppCompatActivity() {
             .withAspectRatio(1f, 1f)
             .withOptions(options)
             .start(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == android.R.id.home){
+            startActivity(
+                Intent(
+                    this,
+                    MainActivity::class.java
+                ).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            )
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        startActivity(
+            Intent(
+                this,
+                MainActivity::class.java
+            ).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        )
+        finish()
+        super.onBackPressed()
     }
 }

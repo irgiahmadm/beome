@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.beome">
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,23 +13,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Beome">
-        <activity android:name=".FeedbackActivity"></activity>
+        <activity android:name=".ui.feedback.FeedbackPostActivity"></activity>
+        <activity android:name=".ui.feedback.FeedbackActivity" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".ui.feedback.PostDetailActivity" />
         <activity android:name=".ui.report.ReportActivity" />
         <activity android:name=".ui.add.AddPostActivity" />
         <activity android:name=".ui.profile.ProfilePreviewActivity" />
-        <activity android:name=".ui.authentication.signup.SignUpActivity">
-
-        </activity>
+        <activity android:name=".ui.authentication.signup.SignUpActivity"></activity>
         <activity
             android:name=".ui.authentication.login.LoginActivity"
             android:label="@string/signin"
-            android:theme="@style/Theme.Beome">
-        </activity>
+            android:theme="@style/Theme.Beome"></activity>
         <activity android:name=".ui.authentication.AuthenticationActivity" />
         <activity
             android:name=".MainActivity"

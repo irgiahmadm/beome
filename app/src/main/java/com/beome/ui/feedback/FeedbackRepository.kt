@@ -9,4 +9,7 @@ class FeedbackRepository {
         return Firebase.firestore.collection("post")
     }
 
+    fun getFeedbackComponent(): CollectionReference{
+        return Firebase.firestore.collection("feedback_component")
+    }
 }
