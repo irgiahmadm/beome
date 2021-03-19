@@ -1,17 +1,25 @@
 package com.beome.ui.feedback
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.beome.model.ComponentFeedbackPost
+import com.beome.model.FeedbackPostUser
+import com.beome.model.FeedbackPostUserValue
 import com.beome.model.Post
+import com.beome.ui.add.AddPostRepository
+import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FeedbackViewModel : ViewModel() {
     private val detailPost = MutableLiveData<Post>()
     private val listFeedbackComponent = MutableLiveData<List<ComponentFeedbackPost>>()
-    private val feedbackRepo = FeedbackRepository()
+    private val feedbackRepo = FeedbackRepository(Dispatchers.IO)
+    lateinit var addUserFeedbackState : LiveData<NetworkState>
+    lateinit var addFeedbackValueState : LiveData<NetworkState>
+    private val _feedbackRepo = MutableLiveData<FeedbackRepository>()
 
     fun getPostDetail(idPost : String) : LiveData<Post> {
         feedbackRepo.getDetailPost()
@@ -50,4 +58,27 @@ class FeedbackViewModel : ViewModel() {
             }
         return listFeedbackComponent
     }
+
+    fun setUpUsertoFeedback(){
+        addUserFeedbackState = Transformations.switchMap(_feedbackRepo, FeedbackRepository::addDataUserState)
+        _feedbackRepo.postValue(feedbackRepo)
+    }
+
+    fun addUsertoFeedback(idPost: String, idUser : String, user : FeedbackPostUser) = viewModelScope.launch {
+        withContext(Dispatchers.IO){
+            feedbackRepo.addUsertoFeedback(idPost, idUser, user)
+        }
+    }
+
+    fun setUpFeedbackValue(){
+        addFeedbackValueState = Transformations.switchMap(_feedbackRepo, FeedbackRepository::addDataFeedbackValueState)
+        _feedbackRepo.postValue(feedbackRepo)
+    }
+
+    fun addFeedbackValue(idPost:String, idUser: String, feedbackValue : FeedbackPostUserValue, listSize : Int, counter : Int, idFeedbackPost : String) = viewModelScope.launch{
+        withContext(Dispatchers.IO){
+            feedbackRepo.addFeedbackValue(idPost, idUser, feedbackValue, listSize, counter, idFeedbackPost)
+        }
+    }
+
 }

@@ -65,4 +65,6 @@
     <string name="three">3</string>
     <string name="four">4</string>
     <string name="five">5</string>
+    <string name="anything_that_can_be_improve">Anything that can be improve?</string>
+    <string name="add_comment">Add comment...</string>
 </resources>
