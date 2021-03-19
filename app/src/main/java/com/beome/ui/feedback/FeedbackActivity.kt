@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.RadioButton
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -24,7 +23,6 @@ import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_feedback_value.view.*
 import java.text.SimpleDateFormat
 
@@ -40,6 +38,7 @@ class FeedbackActivity : AppCompatActivity() {
             ViewModelProvider.NewInstanceFactory()
         ).get(FeedbackViewModel::class.java)
     }
+    private val idFeedbackPost = GlobalHelper.getRandomString(20)
     private lateinit var idPost: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +95,7 @@ class FeedbackActivity : AppCompatActivity() {
             username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME) as String
             val feedbackPostUser = FeedbackPostUser(authKey,username, image, comment)
             viewModel.setUpUsertoFeedback()
-            viewModel.addUsertoFeedback(idPost, authKey, feedbackPostUser)
+            viewModel.addUsertoFeedback(idPost, authKey, feedbackPostUser, idFeedbackPost)
         } else {
             Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
         }
@@ -133,14 +132,14 @@ class FeedbackActivity : AppCompatActivity() {
                 NetworkState.SUCCESS -> {
                     val authKey: String = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY)!!
                     var counter = 0
-                    val idFeedBackPost = GlobalHelper.getRandomString(12)
+                    Log.d("listfeedback_value", listFeedbackValue.toString())
                     for (i in 0 until listFeedbackValue.size) {
                         counter++
                         val feedbackPostUserValue = FeedbackPostUserValue(listFeedbackValue[i].componentName, listFeedbackValue[i].componentValue!!)
                         viewModel.setUpFeedbackValue()
-                        viewModel.addFeedbackValue(idPost, authKey, feedbackPostUserValue, listFeedbackValue.size, counter, idFeedBackPost)
-                        getStateAddFeedback()
+                        viewModel.addFeedbackValue(idPost, authKey, feedbackPostUserValue, listFeedbackValue.size, counter, idFeedbackPost)
                     }
+                    getStateAddFeedback()
                 }
                 NetworkState.FAILED -> {
 

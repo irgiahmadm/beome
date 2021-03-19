@@ -64,9 +64,9 @@ class FeedbackViewModel : ViewModel() {
         _feedbackRepo.postValue(feedbackRepo)
     }
 
-    fun addUsertoFeedback(idPost: String, idUser : String, user : FeedbackPostUser) = viewModelScope.launch {
+    fun addUsertoFeedback(idPost: String, idUser : String, user : FeedbackPostUser, idFeedbackPost: String) = viewModelScope.launch {
         withContext(Dispatchers.IO){
-            feedbackRepo.addUsertoFeedback(idPost, idUser, user)
+            feedbackRepo.addUsertoFeedback(idPost, idUser, user, idFeedbackPost)
         }
     }
 

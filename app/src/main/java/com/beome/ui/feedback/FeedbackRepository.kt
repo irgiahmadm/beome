@@ -28,12 +28,12 @@ class FeedbackRepository(coroutineContext: CoroutineContext) {
         return Firebase.firestore.collection("feedback_component")
     }
 
-    fun addUsertoFeedback(idPost:String, idUser: String, user : FeedbackPostUser){
-        val userFeedbackPostRef = Firebase.firestore.collection("feedback_post/$idPost/$idUser")
+    fun addUsertoFeedback(idPost:String, idUser: String, user : FeedbackPostUser, idFeedbackPost: String){
+        val userFeedbackPostRef = Firebase.firestore.collection("feedback_post/$idPost/$idUser").document(idFeedbackPost)
         scope.launch {
             try {
                 addDataUserState.postValue(NetworkState.LOADING)
-                userFeedbackPostRef.add(user).await()
+                userFeedbackPostRef.set(user).await()
                 addDataUserState.postValue(NetworkState.SUCCESS)
             }catch (e : Exception){
                 Log.d("error_add_user_to_fdbck", e.localizedMessage!!)
@@ -43,8 +43,7 @@ class FeedbackRepository(coroutineContext: CoroutineContext) {
     }
 
     fun addFeedbackValue(idPost:String, idUser: String, feedbackValue : FeedbackPostUserValue, listSize : Int, counter : Int, idFeedbackPost : String){
-        //TODO fix the path
-        val userFeedbackPostRef = Firebase.firestore.collection("feedback_post/$idPost/$idUser/$idFeedbackPost/$idFeedbackPost")
+        val userFeedbackPostRef = Firebase.firestore.collection("feedback_post/$idPost/$idUser/$idFeedbackPost/feedback_component_post")
         scope.launch {
             try {
                 addDataFeedbackValueState.postValue(NetworkState.LOADING)
