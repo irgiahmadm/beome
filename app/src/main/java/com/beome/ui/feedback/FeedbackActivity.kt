@@ -109,6 +109,7 @@ class FeedbackActivity : AppCompatActivity() {
                 }
                 NetworkState.SUCCESS -> {
                     Toast.makeText(this, "Success to add feedback", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
                 NetworkState.FAILED -> {
 

@@ -6,6 +6,7 @@ import com.beome.model.FeedbackPostUser
 import com.beome.model.FeedbackPostUserValue
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -28,8 +29,28 @@ class FeedbackRepository(coroutineContext: CoroutineContext) {
         return Firebase.firestore.collection("feedback_component")
     }
 
+    fun getFeedbackUser(idPost:String, idUser: String) : CollectionReference{
+        return Firebase.firestore.collection("feedback_post/$idPost/$idUser")
+    }
+
+    fun getFeedbackDocument(idPost : String) : DocumentReference{
+        return Firebase.firestore.collection("feedback_post").document(idPost)
+    }
+
+    fun getListFeedbackPost(idPost: String): DocumentReference {
+        return Firebase.firestore.collection("feedback_post").document(idPost)
+    }
+
+    fun getFeedbackValue(idPost:String, idUser: String, idFeedbackPost : String) : CollectionReference{
+        return Firebase.firestore.collection("feedback_post/$idPost/$idUser/$idFeedbackPost/feedback_component_post")
+    }
+
     fun addUsertoFeedback(idPost:String, idUser: String, user : FeedbackPostUser, idFeedbackPost: String){
-        val userFeedbackPostRef = Firebase.firestore.collection("feedback_post/$idPost/$idUser").document(idFeedbackPost)
+        val userFeedbackPostRef = Firebase.firestore
+            .collection("feedback_post")
+            .document(idPost)
+            .collection("feedback_post_user")
+            .document(idUser)
         scope.launch {
             try {
                 addDataUserState.postValue(NetworkState.LOADING)
@@ -43,11 +64,17 @@ class FeedbackRepository(coroutineContext: CoroutineContext) {
     }
 
     fun addFeedbackValue(idPost:String, idUser: String, feedbackValue : FeedbackPostUserValue, listSize : Int, counter : Int, idFeedbackPost : String){
-        val userFeedbackPostRef = Firebase.firestore.collection("feedback_post/$idPost/$idUser/$idFeedbackPost/feedback_component_post")
+        val userFeedbackPostRef = Firebase.firestore
+            .collection("feedback_post")
+            .document(idPost)
+            .collection("feedback_post_user")
+            .document(idUser)
+            .collection("feedback_post_value")
+            .document(idFeedbackPost)
         scope.launch {
             try {
                 addDataFeedbackValueState.postValue(NetworkState.LOADING)
-                userFeedbackPostRef.add(feedbackValue).await()
+                userFeedbackPostRef.set(feedbackValue).await()
                 if(listSize == counter){
                     addDataFeedbackValueState.postValue(NetworkState.SUCCESS)
                 }
