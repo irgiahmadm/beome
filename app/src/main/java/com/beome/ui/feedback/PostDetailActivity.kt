@@ -68,8 +68,8 @@ class PostDetailActivity : AppCompatActivity() {
     }
 
     private fun getListFeedback(){
-        viewModel.getListFeedbackPost(idPost, "", "").observe(this,{
-            Log.d("get_lst_fdbck_call", it.toString())
+        viewModel.getListFeedbackPost(idPost).observe(this,{
+            Log.d("get_lst_fdbck_call", "user "+it.user.toString() +" value "+it.feedbackValue.toString())
         })
 
     }

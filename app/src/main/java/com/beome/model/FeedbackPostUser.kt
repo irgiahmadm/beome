@@ -1,3 +1,8 @@
 package com.beome.model
 
-data class FeedbackPostUser(val authKey : String, val username: String,  val photoProfile : String, val comment : String)
+data class FeedbackPostUser(
+    var authKey: String = "",
+    var username: String = "",
+    var photoProfile: String = "",
+    var comment: String = ""
+)

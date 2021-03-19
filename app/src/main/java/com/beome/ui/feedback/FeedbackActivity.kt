@@ -95,7 +95,7 @@ class FeedbackActivity : AppCompatActivity() {
             username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME) as String
             val feedbackPostUser = FeedbackPostUser(authKey,username, image, comment)
             viewModel.setUpUsertoFeedback()
-            viewModel.addUsertoFeedback(idPost, authKey, feedbackPostUser, idFeedbackPost)
+            viewModel.addUsertoFeedback(idPost, authKey, feedbackPostUser)
         } else {
             Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
         }

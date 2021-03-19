@@ -29,23 +29,15 @@ class FeedbackRepository(coroutineContext: CoroutineContext) {
         return Firebase.firestore.collection("feedback_component")
     }
 
-    fun getFeedbackUser(idPost:String, idUser: String) : CollectionReference{
-        return Firebase.firestore.collection("feedback_post/$idPost/$idUser")
+    fun getListFeedbackUser(idPost: String): CollectionReference {
+        return Firebase.firestore.collection("feedback_post/$idPost/feedback_post_user")
     }
 
-    fun getFeedbackDocument(idPost : String) : DocumentReference{
-        return Firebase.firestore.collection("feedback_post").document(idPost)
+    fun getListFeedbackValue(idPost: String, idUser: String): CollectionReference {
+        return Firebase.firestore.collection("feedback_post/$idPost/feedback_post_user/$idUser/feedback_post_value")
     }
 
-    fun getListFeedbackPost(idPost: String): DocumentReference {
-        return Firebase.firestore.collection("feedback_post").document(idPost)
-    }
-
-    fun getFeedbackValue(idPost:String, idUser: String, idFeedbackPost : String) : CollectionReference{
-        return Firebase.firestore.collection("feedback_post/$idPost/$idUser/$idFeedbackPost/feedback_component_post")
-    }
-
-    fun addUsertoFeedback(idPost:String, idUser: String, user : FeedbackPostUser, idFeedbackPost: String){
+    fun addUsertoFeedback(idPost:String, idUser: String, user : FeedbackPostUser){
         val userFeedbackPostRef = Firebase.firestore
             .collection("feedback_post")
             .document(idPost)
