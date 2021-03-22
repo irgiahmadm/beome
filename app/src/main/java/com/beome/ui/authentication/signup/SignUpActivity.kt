@@ -12,6 +12,7 @@ import com.beome.databinding.ActivitySignUpBinding
 import com.beome.model.User
 import com.beome.ui.authentication.login.LoginActivity
 import com.beome.utilities.GlobalHelper
+import com.beome.utilities.NetworkState
 import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
@@ -81,8 +82,31 @@ class SignUpActivity : AppCompatActivity() {
             )
             viewModel.setUpRegisterUser()
             viewModel.registerUser(user)
+            getStateRegister()
         }else{
             Toast.makeText(this, "Fill all form", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun getStateRegister(){
+        viewModel.registerState.observe(this,{
+            when(it){
+                NetworkState.SUCCESS -> {
+                    finish()
+                }
+                NetworkState.LOADING -> {
+
+                }
+                NetworkState.FAILED -> {
+
+                }
+                NetworkState.NOT_FOUND -> {
+
+                }
+                else -> {
+
+                }
+            }
+        })
     }
 }

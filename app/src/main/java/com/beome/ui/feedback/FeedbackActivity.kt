@@ -25,6 +25,7 @@ import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.item_feedback_value.view.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 class FeedbackActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFeedbackBinding
@@ -76,6 +77,7 @@ class FeedbackActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun submitFeedback(){
         val username: String
         val comment = binding.editTextComment.text.toString()
@@ -93,7 +95,8 @@ class FeedbackActivity : AppCompatActivity() {
             ) != null
         ) {
             username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME) as String
-            val feedbackPostUser = FeedbackPostUser(authKey,username, image, comment)
+            val createdDate = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(Date())
+            val feedbackPostUser = FeedbackPostUser(authKey,username, image, comment, createdDate)
             viewModel.setUpUsertoFeedback()
             viewModel.addUsertoFeedback(idPost, authKey, feedbackPostUser)
         } else {
@@ -139,6 +142,7 @@ class FeedbackActivity : AppCompatActivity() {
                         val feedbackPostUserValue = FeedbackPostUserValue(listFeedbackValue[i].componentName, listFeedbackValue[i].componentValue!!)
                         viewModel.setUpFeedbackValue()
                         viewModel.addFeedbackValue(idPost, authKey, feedbackPostUserValue, listFeedbackValue.size, counter, idFeedbackPost)
+                        Log.d("feedback_send", listFeedbackValue[i].componentName)
                     }
                     getStateAddFeedback()
                 }

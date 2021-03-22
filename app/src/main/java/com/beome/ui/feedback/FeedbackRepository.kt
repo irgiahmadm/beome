@@ -67,6 +67,7 @@ class FeedbackRepository(coroutineContext: CoroutineContext) {
             try {
                 addDataFeedbackValueState.postValue(NetworkState.LOADING)
                 userFeedbackPostRef.set(feedbackValue).await()
+                Log.d("feedback_size", "$listSize $counter")
                 if(listSize == counter){
                     addDataFeedbackValueState.postValue(NetworkState.SUCCESS)
                 }

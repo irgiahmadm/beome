@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.beome.MainActivity
 import com.beome.R
 import com.beome.databinding.ActivityLoginBinding
+import com.beome.ui.authentication.signup.SignUpActivity
 import com.beome.utilities.GlobalHelper
 import com.beome.utilities.NetworkState
 
@@ -29,6 +30,9 @@ class LoginActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(LoginViewModel(this)::class.java)
         binding.buttonLogin.setOnClickListener {
             loginUser()
+        }
+        binding.textViewRegiter.setOnClickListener {
+            startActivity(Intent(this, SignUpActivity::class.java))
         }
     }
 
@@ -56,6 +60,9 @@ class LoginActivity : AppCompatActivity() {
                 }
                 NetworkState.FAILED -> {
 
+                }
+                NetworkState.NOT_FOUND ->{
+                    Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
