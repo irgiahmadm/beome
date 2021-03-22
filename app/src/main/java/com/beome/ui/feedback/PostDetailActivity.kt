@@ -56,11 +56,13 @@ class PostDetailActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
+    @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun getListFeedback(){
         viewModel.getListFeedbackPost(idPost).observe(this,{
+            binding.textViewFeedback.text = "Feedback (${it.user.size})"
+            Log.d("feedback_value_dtl", it.feedbackValue.toString())
             adapterFeedbackUser =
-                AdapterUtil(R.layout.item_list_feedback, arrayListOf(), { _, view, item ->
+                AdapterUtil(R.layout.item_list_feedback, it.user, { _, view, item ->
                     view.textViewUsernameFeedback.text = item.username
                     val dateCreated = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(item.createdAt)
                     val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
@@ -71,7 +73,7 @@ class PostDetailActivity : AppCompatActivity() {
                         Glide.with(this).load(item.photoProfile).circleCrop().into(view.imageViewUserFeedback)
                     }
                     view.textViewCommentFeedback.text = item.comment
-                    adapterFeedbackValue = AdapterUtil(R.layout.item_feedback_component, arrayListOf(),{posValue, viewValue, itemValue ->
+                    adapterFeedbackValue = AdapterUtil(R.layout.item_feedback_component,it.feedbackValue,{posValue, viewValue, itemValue ->
                         viewValue.textViewComponentReview.text = itemValue.componentName
                         viewValue.textViewValueFeedback.text = itemValue.componentValue.toString()
                     },{ _, item ->
@@ -79,7 +81,6 @@ class PostDetailActivity : AppCompatActivity() {
                     })
                     view.rvComponentFeedback.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
                     view.rvComponentFeedback.adapter = adapterFeedbackValue
-                    adapterFeedbackValue.data = it.feedbackValue
 
                 }, { _, _ ->
 
@@ -87,7 +88,6 @@ class PostDetailActivity : AppCompatActivity() {
 
             binding.recyclerViewReview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             binding.recyclerViewReview.adapter = adapterFeedbackUser
-            adapterFeedbackUser.data = it.user
 
         })
 

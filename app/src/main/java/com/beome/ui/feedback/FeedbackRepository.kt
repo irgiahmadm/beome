@@ -55,14 +55,14 @@ class FeedbackRepository(coroutineContext: CoroutineContext) {
         }
     }
 
-    fun addFeedbackValue(idPost:String, idUser: String, feedbackValue : FeedbackPostUserValue, listSize : Int, counter : Int, idFeedbackPost : String){
+    fun addFeedbackValue(idPost:String, idUser: String, feedbackValue : FeedbackPostUserValue, listSize : Int, counter : Int){
         val userFeedbackPostRef = Firebase.firestore
             .collection("feedback_post")
             .document(idPost)
             .collection("feedback_post_user")
             .document(idUser)
             .collection("feedback_post_value")
-            .document(idFeedbackPost)
+            .document()
         scope.launch {
             try {
                 addDataFeedbackValueState.postValue(NetworkState.LOADING)

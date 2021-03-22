@@ -116,7 +116,6 @@ class FeedbackViewModel : ViewModel() {
         feedbackValue: FeedbackPostUserValue,
         listSize: Int,
         counter: Int,
-        idFeedbackPost: String
     ) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             feedbackRepo.addFeedbackValue(
@@ -124,8 +123,7 @@ class FeedbackViewModel : ViewModel() {
                 idUser,
                 feedbackValue,
                 listSize,
-                counter,
-                idFeedbackPost
+                counter
             )
         }
     }

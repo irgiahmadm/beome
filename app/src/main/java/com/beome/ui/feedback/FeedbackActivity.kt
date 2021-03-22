@@ -39,7 +39,6 @@ class FeedbackActivity : AppCompatActivity() {
             ViewModelProvider.NewInstanceFactory()
         ).get(FeedbackViewModel::class.java)
     }
-    private val idFeedbackPost = GlobalHelper.getRandomString(20)
     private lateinit var idPost: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +56,17 @@ class FeedbackActivity : AppCompatActivity() {
                 if(isFeedbackValueValid){
                     submitFeedback()
                     getStateUsertoFeedback()
+                    val authKey: String = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY)!!
+                    var counter = 0
+                    Log.d("listfeedback_value", listFeedbackValue.toString())
+                    for (i in listFeedbackValue.indices) {
+                        counter++
+                        val feedbackPostUserValue = FeedbackPostUserValue(listFeedbackValue[i].componentName, listFeedbackValue[i].componentValue!!)
+                        viewModel.setUpFeedbackValue()
+                        viewModel.addFeedbackValue(idPost, authKey, feedbackPostUserValue, listFeedbackValue.size, counter)
+                        Log.d("feedback_send", listFeedbackValue[i].componentName)
+                    }
+                    getStateAddFeedback()
                 }
             }
         } else {
@@ -134,17 +144,6 @@ class FeedbackActivity : AppCompatActivity() {
 
                 }
                 NetworkState.SUCCESS -> {
-                    val authKey: String = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY)!!
-                    var counter = 0
-                    Log.d("listfeedback_value", listFeedbackValue.toString())
-                    for (i in 0 until listFeedbackValue.size) {
-                        counter++
-                        val feedbackPostUserValue = FeedbackPostUserValue(listFeedbackValue[i].componentName, listFeedbackValue[i].componentValue!!)
-                        viewModel.setUpFeedbackValue()
-                        viewModel.addFeedbackValue(idPost, authKey, feedbackPostUserValue, listFeedbackValue.size, counter, idFeedbackPost)
-                        Log.d("feedback_send", listFeedbackValue[i].componentName)
-                    }
-                    getStateAddFeedback()
                 }
                 NetworkState.FAILED -> {
 
