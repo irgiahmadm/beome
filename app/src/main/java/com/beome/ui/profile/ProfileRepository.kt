@@ -7,7 +7,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class ProfileRepository(coroutineContext: CoroutineContext) {
@@ -17,5 +16,8 @@ class ProfileRepository(coroutineContext: CoroutineContext) {
 
     fun getUserProfile() : CollectionReference{
         return Firebase.firestore.collection("user")
+    }
+    fun getPostByUser(): CollectionReference {
+        return Firebase.firestore.collection("post")
     }
 }

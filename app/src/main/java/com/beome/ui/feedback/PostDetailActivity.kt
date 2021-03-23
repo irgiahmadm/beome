@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -47,6 +48,13 @@ class PostDetailActivity : AppCompatActivity() {
                         FeedbackActivity::class.java
                     ).putExtra(ConstantPost.CONSTANT_ID_POST, idPost)
                 )
+            }
+            if(intent.getStringExtra(ConstantPost.CONSTANT_INTENT_FROM) != null){
+                if(intent.getStringExtra(ConstantPost.CONSTANT_INTENT_FROM) == ConstantPost.CONSTANT_INTENT_PROFILE_FRAGMENT){
+                    binding.giveFeedbackSection.visibility = View.GONE
+                }else{
+                    binding.giveFeedbackSection.visibility = View.VISIBLE
+                }
             }
             getDetailPost()
             getListFeedback()

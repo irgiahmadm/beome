@@ -2,20 +2,25 @@ package com.beome.ui.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.MainActivity
 import com.beome.R
 import com.beome.constant.ConstantAuth
+import com.beome.constant.ConstantPost
 import com.beome.databinding.FragmentProfileBinding
+import com.beome.model.Post
 import com.beome.ui.authentication.login.LoginActivity
+import com.beome.ui.feedback.PostDetailActivity
+import com.beome.utilities.AdapterUtil
 import com.beome.utilities.NetworkState
 import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.item_post.view.*
 
 class ProfileFragment : Fragment() {
     private lateinit var binding : FragmentProfileBinding
@@ -27,6 +32,7 @@ class ProfileFragment : Fragment() {
     }
     private lateinit var authKey : String
     private lateinit var sharedPrefUtil: SharedPrefUtil
+    private lateinit var adapterListPost : AdapterUtil<Post>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,12 +55,13 @@ class ProfileFragment : Fragment() {
             binding.groupSignedIn.visibility = View.VISIBLE
             binding.groupNotSignedIn.visibility = View.GONE
             authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY) as String
-            getProfileUser(authKey)
+            getProfileUser()
+            getListPost()
         }
         return binding.root
     }
 
-    private fun getProfileUser(authKey : String){
+    private fun getProfileUser(){
         viewModel.getProfileUser(authKey).observe(viewLifecycleOwner,{
             binding.textViewFullname.text = it.fullName
             if(it.photoProfile.isEmpty() || it.photoProfile == "null"){
@@ -67,17 +74,22 @@ class ProfileFragment : Fragment() {
             binding.toolbar.title = it.username
         })
 
-        viewModel._userState.observe(viewLifecycleOwner, {
+        viewModel.userState.observe(viewLifecycleOwner, {
             when(it){
                 NetworkState.LOADING -> {
-
+                    binding.progressBarProfileUser.visibility = View.VISIBLE
                 }
                 NetworkState.SUCCESS -> {
-
+                    binding.progressBarProfileUser.visibility = View.GONE
                 }
-                NetworkState.FAILED -> { }
-                NetworkState.NOT_FOUND -> { }
+                NetworkState.FAILED -> {
+                    binding.progressBarProfileUser.visibility = View.GONE
+                }
+                NetworkState.NOT_FOUND -> {
+                    binding.progressBarProfileUser.visibility = View.GONE
+                }
                 else -> {
+                    binding.progressBarProfileUser.visibility = View.GONE
                     Toast.makeText(
                         requireContext(),
                         "Something went wrong",
@@ -86,6 +98,34 @@ class ProfileFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun getListPost(){
+        adapterListPost = AdapterUtil(R.layout.item_post, arrayListOf(),
+            {_: Int, view: View, post: Post ->
+                Glide.with(requireContext())
+                    .load(post.imagePost)
+                    .placeholder(R.drawable.ic_placeholder_image)
+                    .into(view.imageViewPost)
+                if(post.imgUser.isNullOrEmpty() || post.imgUser == "null"){
+                    Glide.with(requireContext()).load(R.drawable.ic_profile).into(view.imageViewUser)
+                }else{
+                    Glide.with(requireContext()).load(post.imgUser).circleCrop().into(view.imageViewUser)
+                }
+                view.textViewUsername.text = post.username
+                view.textViewCountFeedback.text = post.feedbackCount.toString()
+                view.textViewCountLike.text = post.likeCount.toString()
+            },{ _, post ->
+                val intent = Intent(requireContext(), PostDetailActivity::class.java)
+                intent.putExtra(ConstantPost.CONSTANT_ID_POST, post.idPost)
+                intent.putExtra(ConstantPost.CONSTANT_INTENT_FROM, ConstantPost.CONSTANT_INTENT_PROFILE_FRAGMENT)
+                startActivity(intent)
+            })
+        viewModel.getListPostUser(authKey).observe(viewLifecycleOwner,{
+            adapterListPost.data = it!!
+        })
+        binding.recyclerProfilePost.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerProfilePost.adapter = adapterListPost
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

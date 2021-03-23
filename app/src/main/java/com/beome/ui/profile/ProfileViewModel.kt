@@ -4,27 +4,33 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.beome.model.Post
 import com.beome.model.User
 import com.beome.utilities.NetworkState
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.Dispatchers
 
 class ProfileViewModel : ViewModel() {
     private val profileUser = MutableLiveData<User>()
     private val profileRepo = ProfileRepository(Dispatchers.IO)
-    private val userState  = MutableLiveData<NetworkState>()
-    val _userState : LiveData<NetworkState>
-        get() = userState
+    private val listPostUser = MutableLiveData<List<Post>>()
+    private val _userState  = MutableLiveData<NetworkState>()
+    val userState : LiveData<NetworkState>
+        get() = _userState
+    private val _listPostState  = MutableLiveData<NetworkState>()
+    val listPostState : LiveData<NetworkState>
+        get() = _listPostState
 
     fun getProfileUser(authKey : String) : LiveData<User>{
-        userState.postValue(NetworkState.LOADING)
+        _userState.postValue(NetworkState.LOADING)
         profileRepo.getUserProfile()
             .whereEqualTo("authKey", authKey)
             .whereEqualTo("userStatus", 1)
             .addSnapshotListener { value, error ->
                 error?.let {
                     Log.e("err_get_recet_post", error.localizedMessage!!)
-                    userState.postValue(NetworkState.FAILED)
+                    _userState.postValue(NetworkState.FAILED)
                     return@addSnapshotListener
                 }
                 var tempUser: User
@@ -33,12 +39,34 @@ class ProfileViewModel : ViewModel() {
                         val user = value.documents[0].toObject<User>()
                         tempUser = user!!
                         profileUser.value = tempUser
-                        userState.postValue(NetworkState.SUCCESS)
+                        _userState.postValue(NetworkState.SUCCESS)
                     }else{
-                        userState.postValue(NetworkState.NOT_FOUND)
+                        _userState.postValue(NetworkState.NOT_FOUND)
                     }
                 }
             }
         return profileUser
+    }
+
+    fun getListPostUser(authKey: String) : LiveData<List<Post>>{
+        profileRepo.getPostByUser()
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .whereEqualTo("status", 1)
+            .whereEqualTo("authKey", authKey)
+            .addSnapshotListener { querySnapshot, error ->
+                error?.let{
+                    Log.e("err_get_recet_post", error.localizedMessage!!)
+                    return@addSnapshotListener
+                }
+                val tempListPostUser = mutableListOf<Post>()
+                querySnapshot?.let {
+                    for (document in it){
+                        val post = document.toObject<Post>()
+                        tempListPostUser.add(post)
+                    }
+                    listPostUser.value = tempListPostUser
+                }
+            }
+        return listPostUser
     }
 }

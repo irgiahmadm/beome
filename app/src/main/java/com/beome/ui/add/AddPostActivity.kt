@@ -67,9 +67,16 @@ class AddPostActivity : AppCompatActivity() {
         //check auth is not empty
         if (sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY).isNullOrEmpty()) {
             startActivity(Intent(this, LoginActivity::class.java))
+            hideShowViewNotLogedIn(View.GONE)
+            binding.groupNotSignedIn.visibility = View.VISIBLE
+            binding.buttonSignin.setOnClickListener {
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
         } else {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowHomeEnabled(true)
+            hideShowViewNotLogedIn(View.VISIBLE)
+            binding.groupNotSignedIn.visibility = View.GONE
             authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY)!!
             if (image == null) {
                 binding.imageViewAddImage.visibility = View.VISIBLE
@@ -92,6 +99,20 @@ class AddPostActivity : AppCompatActivity() {
                 GlobalHelper.startImagePickerFromActvitty(this)
             }
         }
+    }
+
+    private fun hideShowViewNotLogedIn(visibility: Int) {
+        binding.textViewChangeImage.visibility = visibility
+        binding.imageViewAddImage.visibility = visibility
+        binding.imagePost.visibility = visibility
+        binding.textViewLabelTitle.visibility = visibility
+        binding.textViewLabelDescription.visibility = visibility
+        binding.textViewLabelFeedback.visibility = visibility
+        binding.textViewNoteFeedback.visibility = visibility
+        binding.editTextPostDesc.visibility = visibility
+        binding.editTextPostTitle.visibility = visibility
+        binding.constraintLayoutPublish.visibility = visibility
+        binding.buttonAddFeedback.visibility = visibility
     }
 
     @SuppressLint("SimpleDateFormat")
