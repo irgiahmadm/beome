@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -18,8 +17,6 @@ import com.beome.utilities.AdapterUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.android.synthetic.main.activity_feedback.view.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_feedback_component.view.*
 import kotlinx.android.synthetic.main.item_list_feedback.view.*
 import java.text.SimpleDateFormat
@@ -76,7 +73,7 @@ class PostDetailActivity : AppCompatActivity() {
                     adapterFeedbackValue = AdapterUtil(R.layout.item_feedback_component,it.feedbackValue,{posValue, viewValue, itemValue ->
                         viewValue.textViewComponentReview.text = itemValue.componentName
                         viewValue.textViewValueFeedback.text = itemValue.componentValue.toString()
-                    },{ _, item ->
+                    },{ _, _ ->
 
                     })
                     view.rvComponentFeedback.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -99,6 +96,7 @@ class PostDetailActivity : AppCompatActivity() {
         viewModel.getPostDetail(idPost).observe(this,{
             Glide.with(this)
                 .load(it.imagePost)
+                .placeholder(R.drawable.ic_placeholder_image)
                 .thumbnail(Glide.with(this).load(it.imagePost).apply(
                     RequestOptions.bitmapTransform(BlurTransformation(25,3))))
                 .into(binding.imageViewPost)

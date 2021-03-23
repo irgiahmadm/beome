@@ -67,4 +67,6 @@
     <string name="five">5</string>
     <string name="anything_that_can_be_improve">Anything that can be improve?</string>
     <string name="add_comment">Add comment...</string>
+    <string name="belum_login">Anda belum login\nsilahkan login terlebih dahulu</string>
+    <string name="Logout">logout</string>
 </resources>

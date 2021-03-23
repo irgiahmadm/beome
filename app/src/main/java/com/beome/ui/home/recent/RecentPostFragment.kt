@@ -35,6 +35,7 @@ class RecentPostFragment : Fragment() {
             {_: Int, view: View, post: Post ->
                 Glide.with(requireContext())
                     .load(post.imagePost)
+                    .placeholder(R.drawable.ic_placeholder_image)
                     .thumbnail(Glide.with(requireContext()).load(post.imagePost).apply(RequestOptions.bitmapTransform(BlurTransformation(25,3))))
                     .into(view.imageViewPost)
                 if(post.imgUser.isNullOrEmpty() || post.imgUser == "null"){

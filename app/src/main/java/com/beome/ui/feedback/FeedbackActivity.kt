@@ -164,6 +164,7 @@ class FeedbackActivity : AppCompatActivity() {
             Log.d("TEST_VALUE_DATA", it.toString())
             Glide.with(this)
                 .load(it.imagePost)
+                .placeholder(R.drawable.ic_placeholder_image)
                 .thumbnail(
                     Glide.with(this).load(it.imagePost).apply(
                         RequestOptions.bitmapTransform(BlurTransformation(25, 3))

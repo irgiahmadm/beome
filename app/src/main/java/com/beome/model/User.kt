@@ -1,16 +1,16 @@
 package com.beome.model
 
 data class User(
-    val photoProfile : String,
-    val fullName: String,
-    val username: String,
-    val email: String,
-    val password: String,
-    val birthDate: String,
-    val follower : Int,
-    val post : Int,
-    val authKey: String,
-    val userStatus : Int,
-    val createdAt: String,
-    val updatedAt: String
+    var photoProfile : String = "",
+    var fullName: String = "",
+    var username: String = "",
+    var email: String = "",
+    var password: String = "",
+    var birthDate: String = "",
+    var follower : Int = 0,
+    var post : Int = 0,
+    var authKey: String = "",
+    var userStatus : Int = 0,
+    var createdAt: String = "",
+    var updatedAt: String = ""
 )

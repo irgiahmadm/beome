@@ -73,11 +73,9 @@ class AddPostActivity : AppCompatActivity() {
             authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY)!!
             if (image == null) {
                 binding.imageViewAddImage.visibility = View.VISIBLE
-                binding.textViewAddImage.visibility = View.VISIBLE
                 binding.textViewChangeImage.visibility = View.GONE
             } else {
                 binding.imageViewAddImage.visibility = View.GONE
-                binding.textViewAddImage.visibility = View.GONE
                 binding.textViewChangeImage.visibility = View.VISIBLE
             }
             //init feedback field
@@ -218,6 +216,9 @@ class AddPostActivity : AppCompatActivity() {
                 NetworkState.FAILED -> {
                     Toast.makeText(this, "Add post failed", Toast.LENGTH_SHORT).show()
                 }
+                NetworkState.NOT_FOUND -> {
+
+                }
                 else -> {
                     Toast.makeText(
                         this,
@@ -268,11 +269,9 @@ class AddPostActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data == null) {
             binding.imageViewAddImage.visibility = View.VISIBLE
-            binding.textViewAddImage.visibility = View.VISIBLE
             binding.textViewChangeImage.visibility = View.GONE
         } else {
             binding.imageViewAddImage.visibility = View.GONE
-            binding.textViewAddImage.visibility = View.GONE
             binding.textViewChangeImage.visibility = View.VISIBLE
             if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
                 image = ImagePicker.getFirstImageOrNull(data)
