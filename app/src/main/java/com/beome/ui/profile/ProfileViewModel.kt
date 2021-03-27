@@ -48,6 +48,7 @@ class ProfileViewModel : ViewModel() {
         return profileUser
     }
 
+
     fun getListPostUser(authKey: String) : LiveData<List<Post>>{
         profileRepo.getPostByUser()
             .orderBy("createdAt", Query.Direction.DESCENDING)

@@ -13,8 +13,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
+import com.beome.constant.ConstantAuth
 import com.beome.databinding.FragmentSearchPeopleBinding
 import com.beome.model.User
+import com.beome.ui.profile.ProfileUserPreviewActivity
 import com.beome.utilities.AdapterUtil
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_list_user.view.*
@@ -70,9 +72,9 @@ class SearchPeopleFragment : Fragment() {
                 }
                 view.textViewUsernameSearch.text = user.username
             },{ _, post ->
-                /*val intent = Intent(requireContext(), PostDetailActivity::class.java)
-                intent.putExtra(ConstantPost.CONSTANT_ID_POST, post.idPost)
-                startActivity(intent)*/
+                val intent = Intent(requireContext(), ProfileUserPreviewActivity::class.java)
+                intent.putExtra(ConstantAuth.CONSTANT_AUTH_KEY, post.authKey)
+                startActivity(intent)
             })
         viewModel.getListUser(searchQuery).observe(viewLifecycleOwner,{
             Log.d("data_search_user", it.toString())
@@ -81,8 +83,6 @@ class SearchPeopleFragment : Fragment() {
 
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerSearchUser.layoutManager = layoutManager
-        val divider = DividerItemDecoration(binding.recyclerSearchUser.context, layoutManager.orientation)
-        binding.recyclerSearchUser.addItemDecoration(divider)
         binding.recyclerSearchUser.adapter = adapterSearchUser
     }
 

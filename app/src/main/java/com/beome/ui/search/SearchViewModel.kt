@@ -24,13 +24,16 @@ class SearchViewModel : ViewModel() {
     fun getListPost(searchQuery : String) : LiveData<List<Post>>{
         Log.d("Search_query", searchQuery)
         _listPostState.postValue(NetworkState.LOADING)
+        var addedRecentPostList = mutableListOf<Post>()
         if (TextUtils.isEmpty(searchQuery)){
             Log.d("not_found_search_post", "not_found")
             _listPostState.postValue(NetworkState.NOT_FOUND)
+            addedRecentPostList = arrayListOf()
+            listPost.value = addedRecentPostList
         }else{
             searchRepository.getListPost()
-                .whereGreaterThan("title", searchQuery)
-                .whereLessThan("title", searchQuery+ "\uf8ff")
+                .whereGreaterThanOrEqualTo("title", searchQuery)
+                .whereLessThanOrEqualTo("title", searchQuery+ "\uf8ff")
                 .whereEqualTo("status", 1)
                 .addSnapshotListener { querySnapshot, error ->
                     error?.let{
@@ -38,7 +41,7 @@ class SearchViewModel : ViewModel() {
                         _listPostState.postValue(NetworkState.FAILED)
                         return@addSnapshotListener
                     }
-                    val addedRecentPostList = mutableListOf<Post>()
+
                     querySnapshot?.let {
                         for (document in it){
                             val post = document.toObject<Post>()
@@ -57,13 +60,16 @@ class SearchViewModel : ViewModel() {
     fun getListUser(searchQuery : String) : LiveData<List<User>>{
         Log.d("Search_query", searchQuery)
         _listUserState.postValue(NetworkState.LOADING)
+        var tempListUser = mutableListOf<User>()
         if (TextUtils.isEmpty(searchQuery)){
             Log.d("not_found_search_user", "not_found")
             _listUserState.postValue(NetworkState.NOT_FOUND)
+            tempListUser = arrayListOf()
+            listUser.value = tempListUser
         }else{
             searchRepository.getListUser()
-                .whereGreaterThan("username", searchQuery)
-                .whereLessThan("username", searchQuery+ "\uf8ff")
+                .whereGreaterThanOrEqualTo("username", searchQuery)
+                .whereLessThanOrEqualTo("username", searchQuery+ "\uf8ff")
                 .whereEqualTo("userStatus", 1)
                 .addSnapshotListener { querySnapshot, error ->
                     error?.let{
@@ -71,7 +77,6 @@ class SearchViewModel : ViewModel() {
                         _listUserState.postValue(NetworkState.FAILED)
                         return@addSnapshotListener
                     }
-                    val tempListUser = mutableListOf<User>()
                     querySnapshot?.let {
                         for (document in it){
                             val post = document.toObject<User>()

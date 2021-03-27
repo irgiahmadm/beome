@@ -13,7 +13,7 @@ class SectionsPagerAdapterHome(private val context: Context, fragmentManager: Fr
     FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     @StringRes
-    private val tabTitles = intArrayOf(R.string.recent, R.string.follower)
+    private val tabTitles = intArrayOf(R.string.recent, R.string.following)
 
     override fun getItem(position: Int): Fragment {
         var fragment : Fragment? = null
