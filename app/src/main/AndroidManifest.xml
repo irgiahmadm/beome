@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Beome">
-        <activity android:name=".ui.feedback.FeedbackPostActivity"></activity>
+        <activity android:name=".UserPreviewActivity"></activity>
         <activity android:name=".ui.feedback.FeedbackActivity" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
@@ -23,16 +23,18 @@
         <activity android:name=".ui.report.ReportActivity" />
         <activity android:name=".ui.add.AddPostActivity" />
         <activity android:name=".ui.profile.ProfilePreviewActivity" />
-        <activity android:name=".ui.authentication.signup.SignUpActivity"></activity>
+        <activity android:name=".ui.authentication.signup.SignUpActivity" />
+        <activity android:name=".ui.feedback.FeedbackActivity" />
         <activity
             android:name=".ui.authentication.login.LoginActivity"
             android:label="@string/signin"
-            android:theme="@style/Theme.Beome"></activity>
+            android:theme="@style/Theme.Beome" />
         <activity android:name=".ui.authentication.AuthenticationActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/NoActionBar">
+            android:theme="@style/NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

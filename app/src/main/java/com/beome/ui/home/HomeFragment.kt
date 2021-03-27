@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.beome.databinding.FragmentHomeBinding
-import com.beome.adapter.SectionsPagerAdapter
+import com.beome.adapter.SectionsPagerAdapterHome
 
 class HomeFragment : Fragment() {
 
@@ -22,7 +22,7 @@ class HomeFragment : Fragment() {
         homeViewModel =
                 ViewModelProvider(this).get(HomeViewModel::class.java)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val sectionPagerAdapter = SectionsPagerAdapter(requireContext(), childFragmentManager)
+        val sectionPagerAdapter = SectionsPagerAdapterHome(requireContext(), childFragmentManager)
         binding.viewPager.adapter = sectionPagerAdapter
         binding.tabLayout.setupWithViewPager(binding.viewPager)
         return binding.root

@@ -69,4 +69,6 @@
     <string name="add_comment">Add comment...</string>
     <string name="belum_login">Anda belum login\nsilahkan login terlebih dahulu</string>
     <string name="Logout">logout</string>
+    <string name="people">People</string>
+    <string name="search_hint">Search...</string>
 </resources>

@@ -4,16 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beome.R
+import com.beome.adapter.SectionsPagerAdapterSearch
+import com.beome.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
 
     private lateinit var dashboardViewModel: SearchViewModel
-
+    private lateinit var binding : FragmentSearchBinding
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -21,11 +21,10 @@ class SearchFragment : Fragment() {
     ): View? {
         dashboardViewModel =
                 ViewModelProvider(this).get(SearchViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_search, container, false)
-        val textView: TextView = root.findViewById(R.id.text_dashboard)
-        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
-        return root
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        val sectionPagerAdapter = SectionsPagerAdapterSearch(requireContext(), childFragmentManager)
+        binding.viewPager.adapter = sectionPagerAdapter
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
+        return binding.root
     }
 }
