@@ -28,6 +28,8 @@ class LoginActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         val viewModelFactory = LoginViewModelFactory(this)
         viewModel = ViewModelProvider(this, viewModelFactory).get(LoginViewModel(this)::class.java)
+        viewModel.setUpLoginUser()
+        getState()
         binding.buttonLogin.setOnClickListener {
             loginUser()
         }
@@ -40,9 +42,8 @@ class LoginActivity : AppCompatActivity() {
         val email = binding.editTextEmail.text.toString()
         val password = GlobalHelper.sha256(binding.editTextPassword.text.toString())
         if(email.isNotEmpty() || password.isNotEmpty()){
-            viewModel.setUpLoginUser()
             viewModel.loginUser(email, password)
-            getState()
+
         }else{
             Toast.makeText(this,"Fill all form", Toast.LENGTH_SHORT).show()
         }
