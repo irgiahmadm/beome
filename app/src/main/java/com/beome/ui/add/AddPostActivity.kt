@@ -46,6 +46,7 @@ class AddPostActivity : AppCompatActivity() {
     private lateinit var sharedPrefUtil: SharedPrefUtil
     private lateinit var listOfFeedback: ArrayList<String>
     private lateinit var idPost: String
+    private lateinit var messageErrComponent : String
     private var isFeedBackComponentValid = false
     private val viewModel: AddPostViewModel by lazy {
         ViewModelProvider(
@@ -133,12 +134,14 @@ class AddPostActivity : AppCompatActivity() {
         Log.d("list of feedback", listOfFeedback.toString())
         if (feedbackCounter != 1) {
             isFeedBackComponentValid = listOfFeedback.size == listOfFeedback.distinct().count()
+            messageErrComponent = "There is same feedback, please change"
         }
         if (feedbackCounter == 1 && rowFirst.editTextFeedbackComponent.text.toString().isEmpty()) {
             rowFirst.editTextFeedbackComponent.apply {
                 error = "Feedback component can not be empty"
                 requestFocus()
             }
+            messageErrComponent = "Feedback component can not be empty"
         }else{
             isFeedBackComponentValid = true
         }
@@ -206,7 +209,7 @@ class AddPostActivity : AppCompatActivity() {
         } else {
             Toast.makeText(
                 this,
-                "There is same feedback name, please change",
+                messageErrComponent,
                 Toast.LENGTH_SHORT
             ).show()
         }

@@ -18,6 +18,8 @@ class FeedbackViewModel : ViewModel() {
     lateinit var addUserFeedbackState: LiveData<NetworkState>
     lateinit var addFeedbackValueState: LiveData<NetworkState>
     private val _feedbackRepo = MutableLiveData<FeedbackRepository>()
+    private val tempListFeedbackUser = arrayListOf<FeedbackPostUser>()
+    private val tempListFeedbackValue = arrayListOf<FeedbackPostUserValue>()
 
     fun getPostDetail(idPost: String): LiveData<Post> {
         feedbackRepo.getDetailPost()
@@ -28,9 +30,11 @@ class FeedbackViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
                 querySnapshot?.let {
-                    if (it.documents[0].exists()) {
-                        val post = it.documents[0].toObject<Post>()!!
-                        detailPost.value = post
+                    if(it.documents.isNotEmpty()){
+                        if (it.documents[0].exists()) {
+                            val post = it.documents[0].toObject<Post>()!!
+                            detailPost.value = post
+                        }
                     }
                 }
             }
@@ -38,9 +42,6 @@ class FeedbackViewModel : ViewModel() {
     }
 
     fun getListFeedbackPost(idPost: String): LiveData<FeedbackPost> {
-        val tempListFeedbackUser = arrayListOf<FeedbackPostUser>()
-        val tempListFeedbackValue = arrayListOf<FeedbackPostUserValue>()
-        val feedbackPost = FeedbackPost()
         feedbackRepo.getListFeedbackUser(idPost)
             .addSnapshotListener { listFeedbackUser, errorUser ->
                 errorUser?.let {
@@ -48,6 +49,7 @@ class FeedbackViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
                 for (document in listFeedbackUser!!) {
+                    val feedbackPost = FeedbackPost()
                     Log.d("document_id", document.id)
                     val feedbackPostUser = document.toObject<FeedbackPostUser>()
                     tempListFeedbackUser.add(feedbackPostUser)

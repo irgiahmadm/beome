@@ -17,7 +17,6 @@ import com.beome.model.ComponentFeedbackSend
 import com.beome.model.FeedbackPostUser
 import com.beome.model.FeedbackPostUserValue
 import com.beome.utilities.AdapterUtil
-import com.beome.utilities.GlobalHelper
 import com.beome.utilities.NetworkState
 import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
@@ -51,24 +50,26 @@ class FeedbackActivity : AppCompatActivity() {
             idPost = intent.getStringExtra(ConstantPost.CONSTANT_ID_POST)!!
             getFeedbackComponent()
             getPostDetail()
+            viewModel.setUpFeedbackValue()
+            viewModel.setUpUsertoFeedback()
             binding.buttonSubmitFeedback.setOnClickListener {
                 checkFeedbackValue()
                 if(isFeedbackValueValid){
                     submitFeedback()
-                    getStateUsertoFeedback()
                     val authKey: String = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY)!!
                     var counter = 0
                     Log.d("listfeedback_value", listFeedbackValue.toString())
                     for (i in listFeedbackValue.indices) {
                         counter++
                         val feedbackPostUserValue = FeedbackPostUserValue(listFeedbackValue[i].componentName, listFeedbackValue[i].componentValue!!)
-                        viewModel.setUpFeedbackValue()
                         viewModel.addFeedbackValue(idPost, authKey, feedbackPostUserValue, listFeedbackValue.size, counter)
                         Log.d("feedback_send", listFeedbackValue[i].componentName)
                     }
-                    getStateAddFeedback()
+
                 }
             }
+            getStateUsertoFeedback()
+            getStateAddFeedback()
         } else {
             finish()
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
@@ -107,7 +108,6 @@ class FeedbackActivity : AppCompatActivity() {
             username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME) as String
             val createdDate = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(Date())
             val feedbackPostUser = FeedbackPostUser(authKey,username, image, comment, createdDate)
-            viewModel.setUpUsertoFeedback()
             viewModel.addUsertoFeedback(idPost, authKey, feedbackPostUser)
         } else {
             Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
