@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -48,6 +49,7 @@ class FeedbackActivity : AppCompatActivity() {
 
         if (intent.getStringExtra(ConstantPost.CONSTANT_ID_POST) != null) {
             idPost = intent.getStringExtra(ConstantPost.CONSTANT_ID_POST)!!
+            setToolbarProperties()
             getFeedbackComponent()
             getPostDetail()
             viewModel.setUpFeedbackValue()
@@ -186,5 +188,20 @@ class FeedbackActivity : AppCompatActivity() {
         binding.recyclerViewFeedbackComponent.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recyclerViewFeedbackComponent.adapter = adapter
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setToolbarProperties() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Give Feedback"
+        val upArrow = resources.getDrawable(R.drawable.ic_close_white,theme)
+        supportActionBar?.setHomeAsUpIndicator(upArrow)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == android.R.id.home){
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
