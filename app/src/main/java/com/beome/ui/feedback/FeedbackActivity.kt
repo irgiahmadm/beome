@@ -56,20 +56,9 @@ class FeedbackActivity : AppCompatActivity() {
                 checkFeedbackValue()
                 if(isFeedbackValueValid){
                     submitFeedback()
-                    val authKey: String = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY)!!
-                    var counter = 0
-                    Log.d("listfeedback_value", listFeedbackValue.toString())
-                    for (i in listFeedbackValue.indices) {
-                        counter++
-                        val feedbackPostUserValue = FeedbackPostUserValue(listFeedbackValue[i].componentName, listFeedbackValue[i].componentValue!!)
-                        viewModel.addFeedbackValue(idPost, authKey, feedbackPostUserValue, listFeedbackValue.size, counter)
-                        Log.d("feedback_send", listFeedbackValue[i].componentName)
-                    }
-
                 }
             }
             getStateUsertoFeedback()
-            getStateAddFeedback()
         } else {
             finish()
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
@@ -107,35 +96,18 @@ class FeedbackActivity : AppCompatActivity() {
         ) {
             username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME) as String
             val createdDate = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(Date())
-            val feedbackPostUser = FeedbackPostUser(authKey,username, image, comment, createdDate)
-            viewModel.addUsertoFeedback(idPost, authKey, feedbackPostUser)
+            val tempListFeedbackValue = arrayListOf<FeedbackPostUserValue>()
+            for (i in listFeedbackValue.indices) {
+                val feedbackPostUserValue = FeedbackPostUserValue(listFeedbackValue[i].componentName, listFeedbackValue[i].componentValue!!)
+                tempListFeedbackValue.add(feedbackPostUserValue)
+            }
+            val feedbackPostUser = FeedbackPostUser(authKey,username, image, comment, createdDate, tempListFeedbackValue)
+            viewModel.addUserFeedback(idPost, authKey, feedbackPostUser)
         } else {
             Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun getStateAddFeedback(){
-        viewModel.addFeedbackValueState.observe(this,{
-            when(it){
-                NetworkState.LOADING -> {
-
-                }
-                NetworkState.SUCCESS -> {
-                    Toast.makeText(this, "Success to add feedback", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-                NetworkState.FAILED -> {
-
-                }
-                NetworkState.NOT_FOUND -> {
-
-                }
-                else -> {
-
-                }
-            }
-        })
-    }
 
     private fun getStateUsertoFeedback() {
         viewModel.addUserFeedbackState.observe(this, {
@@ -144,6 +116,8 @@ class FeedbackActivity : AppCompatActivity() {
 
                 }
                 NetworkState.SUCCESS -> {
+                    Toast.makeText(this, "Success to add feedback", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
                 NetworkState.FAILED -> {
 

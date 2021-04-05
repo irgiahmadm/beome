@@ -5,5 +5,6 @@ data class FeedbackPostUser(
     var username: String = "",
     var photoProfile: String? = "",
     var comment: String = "",
-    var createdAt : String = ""
+    var createdAt : String = "",
+    var feedbackValue : List<FeedbackPostUserValue> = arrayListOf()
 )

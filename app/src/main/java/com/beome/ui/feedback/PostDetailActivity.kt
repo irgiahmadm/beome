@@ -63,35 +63,44 @@ class PostDetailActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun getListFeedback(){
-        viewModel.getListFeedbackPost(idPost).observe(this,{
-            binding.textViewFeedback.text = "Feedback (${it.user.size})"
-            Log.d("feedback_value_dtl", it.feedbackValue.toString())
+        viewModel.getListFeedbackPost(idPost).observe(this, {
+            binding.textViewFeedback.text = "Feedback (${it.size})"
             adapterFeedbackUser =
-                AdapterUtil(R.layout.item_list_feedback, it.user, { _, view, item ->
+                AdapterUtil(R.layout.item_list_feedback, it, {pos, view, item ->
                     view.textViewUsernameFeedback.text = item.username
-                    val dateCreated = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(item.createdAt)
+                    val dateCreated =
+                        SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(item.createdAt)
                     val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
                     view.textViewDateFeedback.text = dateFormatted
-                    if(item.photoProfile.isNullOrEmpty() || item.photoProfile == "null"){
-                        Glide.with(this).load(R.drawable.ic_profile).into(view.imageViewUserFeedback)
-                    }else{
-                        Glide.with(this).load(item.photoProfile).circleCrop().into(view.imageViewUserFeedback)
+                    if (item.photoProfile.isNullOrEmpty() || item.photoProfile == "null") {
+                        Glide.with(this).load(R.drawable.ic_profile)
+                            .into(view.imageViewUserFeedback)
+                    } else {
+                        Glide.with(this).load(item.photoProfile).circleCrop()
+                            .into(view.imageViewUserFeedback)
                     }
                     view.textViewCommentFeedback.text = item.comment
-                    adapterFeedbackValue = AdapterUtil(R.layout.item_feedback_component,it.feedbackValue,{posValue, viewValue, itemValue ->
-                        viewValue.textViewComponentReview.text = itemValue.componentName
-                        viewValue.textViewValueFeedback.text = itemValue.componentValue.toString()
-                    },{ _, _ ->
+                        adapterFeedbackValue = AdapterUtil(
+                            R.layout.item_feedback_component,
+                            it[pos].feedbackValue,
+                            { _, viewValue, itemValue ->
+                                viewValue.textViewComponentReview.text = itemValue.componentName
+                                viewValue.textViewValueFeedback.text =
+                                    itemValue.componentValue.toString()
+                            },
+                            { _, _ ->
 
-                    })
-                    view.rvComponentFeedback.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-                    view.rvComponentFeedback.adapter = adapterFeedbackValue
+                            })
+                        view.rvComponentFeedback.layoutManager =
+                            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+                        view.rvComponentFeedback.adapter = adapterFeedbackValue
 
                 }, { _, _ ->
 
                 })
 
-            binding.recyclerViewReview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            binding.recyclerViewReview.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             binding.recyclerViewReview.adapter = adapterFeedbackUser
 
         })
@@ -122,6 +131,7 @@ class PostDetailActivity : AppCompatActivity() {
             binding.textViewLikeCount.text = it.likeCount.toString()
         })
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == android.R.id.home){

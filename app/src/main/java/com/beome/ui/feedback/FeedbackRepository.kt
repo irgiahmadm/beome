@@ -33,11 +33,7 @@ class FeedbackRepository(coroutineContext: CoroutineContext) {
         return Firebase.firestore.collection("feedback_post/$idPost/feedback_post_user")
     }
 
-    fun getListFeedbackValue(idPost: String, idUser: String): CollectionReference {
-        return Firebase.firestore.collection("feedback_post/$idPost/feedback_post_user/$idUser/feedback_post_value")
-    }
-
-    fun addUsertoFeedback(idPost:String, idUser: String, user : FeedbackPostUser){
+    fun addUserFeedback(idPost:String, idUser: String, feedback : FeedbackPostUser){
         val userFeedbackPostRef = Firebase.firestore
             .collection("feedback_post")
             .document(idPost)
@@ -46,8 +42,9 @@ class FeedbackRepository(coroutineContext: CoroutineContext) {
         scope.launch {
             try {
                 addDataUserState.postValue(NetworkState.LOADING)
-                userFeedbackPostRef.set(user).await()
+                userFeedbackPostRef.set(feedback).await()
                 addDataUserState.postValue(NetworkState.SUCCESS)
+
             }catch (e : Exception){
                 Log.d("error_add_user_to_fdbck", e.localizedMessage!!)
                 addDataUserState.postValue(NetworkState.FAILED)
@@ -61,7 +58,7 @@ class FeedbackRepository(coroutineContext: CoroutineContext) {
             .document(idPost)
             .collection("feedback_post_user")
             .document(idUser)
-            .collection("feedback_post_value")
+            .collection("feedback_post_value_$idUser")
             .document()
         scope.launch {
             try {
