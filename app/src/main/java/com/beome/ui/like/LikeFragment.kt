@@ -1,20 +1,98 @@
 package com.beome.ui.like
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
+import com.beome.constant.ConstantAuth
+import com.beome.constant.ConstantPost
+import com.beome.databinding.FragmentLikeBinding
+import com.beome.model.LikedPost
+import com.beome.model.Post
+import com.beome.ui.feedback.PostDetailActivity
+import com.beome.ui.post.PostViewModel
+import com.beome.utilities.AdapterUtil
+import com.beome.utilities.SharedPrefUtil
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import jp.wasabeef.glide.transformations.BlurTransformation
+import kotlinx.android.synthetic.main.item_post.view.*
 
 class LikeFragment : Fragment() {
+    private lateinit var binding : FragmentLikeBinding
+    private lateinit var adapterLikedPost : AdapterUtil<Post>
+    private val viewModel : PostViewModel by lazy {
+        ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(PostViewModel::class.java)
+    }
+    private lateinit var sharedPrefUtil: SharedPrefUtil
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_like, container, false)
+        binding = FragmentLikeBinding.inflate(layoutInflater, container, false)
+        sharedPrefUtil = SharedPrefUtil()
+        sharedPrefUtil.start(context as Activity, ConstantAuth.CONSTANT_PREFERENCE)
+        val authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY) as String
+        adapterLikedPost = AdapterUtil(R.layout.item_post, arrayListOf(),
+            { _: Int, view: View, post: Post ->
+                Glide.with(requireContext())
+                    .load(post.imagePost)
+                    .placeholder(R.drawable.ic_placeholder_image)
+                    .thumbnail(
+                        Glide.with(requireContext()).load(post.imagePost).apply(
+                            RequestOptions.bitmapTransform(BlurTransformation(25, 3))
+                        )
+                    )
+                    .into(view.imageViewPost)
+                if (post.imgUser.isNullOrEmpty() || post.imgUser == "null") {
+                    Glide.with(requireContext()).load(R.drawable.ic_profile)
+                        .into(view.imageViewUser)
+                } else {
+                    Glide.with(requireContext()).load(post.imgUser).circleCrop()
+                        .into(view.imageViewUser)
+                }
+                view.textViewUsername.text = post.username
+                view.textViewCountFeedback.text = post.feedbackCount.toString()
+                view.textViewCountLike.text = post.likeCount.toString()
+                view.imageViewLikeActive.visibility = View.INVISIBLE
+                viewModel.getLikedPost(authKey, post.idPost).observe(viewLifecycleOwner, {
+                    if (it) {
+                        view.imageViewLikeActive.visibility = View.VISIBLE
+                        view.imageViewLikeInactive.visibility = View.INVISIBLE
+                    } else {
+                        view.imageViewLikeActive.visibility = View.INVISIBLE
+                        view.imageViewLikeInactive.visibility = View.VISIBLE
+                    }
+                })
+                view.imageViewLikeInactive.setOnClickListener {
+                    viewModel.likePost(LikedPost(post.idPost, authKey))
+                    view.imageViewLikeInactive.visibility = View.INVISIBLE
+                    view.imageViewLikeActive.visibility = View.VISIBLE
+                }
+                view.imageViewLikeActive.setOnClickListener {
+                    //unlike post
+                    view.imageViewLikeInactive.visibility = View.VISIBLE
+                    view.imageViewLikeActive.visibility = View.INVISIBLE
+                }
+            }, { _, post ->
+                val intent = Intent(requireContext(), PostDetailActivity::class.java)
+                intent.putExtra(ConstantPost.CONSTANT_ID_POST, post.idPost)
+                startActivity(intent)
+            })
+        viewModel.getListLikedPost(authKey).observe(viewLifecycleOwner,{
+            adapterLikedPost.data = it
+        })
+        binding.recyclerLikedPost.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerLikedPost.adapter = adapterLikedPost
+        return binding.root
     }
 
 }

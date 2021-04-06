@@ -47,7 +47,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <ImageView
-            android:id="@+id/imageViewLike"
+            android:id="@+id/imageViewLikeInactive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -58,15 +58,27 @@
             app:layout_constraintTop_toTopOf="@+id/textViewUsername"
             app:srcCompat="@drawable/ic_inactive_like" />
 
+        <ImageView
+            android:id="@+id/imageViewLikeActive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewUsername"
+            app:layout_constraintEnd_toStartOf="@+id/textViewCountLike"
+            app:layout_constraintTop_toTopOf="@+id/textViewUsername"
+            app:srcCompat="@drawable/ic_active_like" />
+
         <TextView
             android:id="@+id/textViewCountLike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:text="@string/zero_value"
-            app:layout_constraintBottom_toBottomOf="@+id/imageViewLike"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewLikeInactive"
             app:layout_constraintEnd_toStartOf="@+id/imageViewFeedback"
-            app:layout_constraintTop_toTopOf="@+id/imageViewLike" />
+            app:layout_constraintTop_toTopOf="@+id/imageViewLikeInactive" />
 
         <ImageView
             android:id="@+id/imageViewFeedback"
