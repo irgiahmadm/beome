@@ -32,7 +32,6 @@ class PostViewModel : ViewModel() {
                     for (document in it) {
                         if (document.exists()) {
                             isExsist = true
-                            break
                         }
                     }
                     isPostLiked.value = isExsist
@@ -43,8 +42,10 @@ class PostViewModel : ViewModel() {
 
     fun getListLikedPost(idUser :String) : LiveData<List<Post>> {
         postRepo.getLikedPost().whereEqualTo("idUser", idUser).addSnapshotListener { value, error ->
+            val addedRecentPostList = mutableListOf<Post>()
             value?.let {
                 for (likedPost in it){
+                    Log.d("likedPost", likedPost.get("idPost").toString())
                     postRepo.getListLikedPost()
                         .orderBy("createdAt", Query.Direction.ASCENDING)
                         .whereEqualTo("status", 1)
@@ -53,13 +54,13 @@ class PostViewModel : ViewModel() {
                             error?.let{
                                 Log.e("err_get_liked_post1", error.localizedMessage!!)
                             }
-                            val addedRecentPostList = mutableListOf<Post>()
                             querySnapshot?.let {
-                                for (document in it){
+                                for (document in querySnapshot){
                                     val post = document.toObject<Post>()
                                     addedRecentPostList.add(post)
                                 }
                                 listLikedPost.value = addedRecentPostList
+                                Log.d("list_liked_post", addedRecentPostList.toString())
                             }
                         }
                 }

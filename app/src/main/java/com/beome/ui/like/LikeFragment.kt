@@ -3,6 +3,7 @@ package com.beome.ui.like
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -47,9 +48,8 @@ class LikeFragment : Fragment() {
                     .load(post.imagePost)
                     .placeholder(R.drawable.ic_placeholder_image)
                     .thumbnail(
-                        Glide.with(requireContext()).load(post.imagePost).apply(
-                            RequestOptions.bitmapTransform(BlurTransformation(25, 3))
-                        )
+                        Glide.with(requireContext()).load(post.imagePost)
+                            .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
                     )
                     .into(view.imageViewPost)
                 if (post.imgUser.isNullOrEmpty() || post.imgUser == "null") {
@@ -62,23 +62,28 @@ class LikeFragment : Fragment() {
                 view.textViewUsername.text = post.username
                 view.textViewCountFeedback.text = post.feedbackCount.toString()
                 view.textViewCountLike.text = post.likeCount.toString()
-                view.imageViewLikeActive.visibility = View.INVISIBLE
+                //check post is liked or not
                 viewModel.getLikedPost(authKey, post.idPost).observe(viewLifecycleOwner, {
-                    if (it) {
+                    if(it){
                         view.imageViewLikeActive.visibility = View.VISIBLE
                         view.imageViewLikeInactive.visibility = View.INVISIBLE
-                    } else {
+                    }else{
                         view.imageViewLikeActive.visibility = View.INVISIBLE
                         view.imageViewLikeInactive.visibility = View.VISIBLE
                     }
                 })
+                //toggle like button
                 view.imageViewLikeInactive.setOnClickListener {
+                    //like post
                     viewModel.likePost(LikedPost(post.idPost, authKey))
                     view.imageViewLikeInactive.visibility = View.INVISIBLE
                     view.imageViewLikeActive.visibility = View.VISIBLE
+
                 }
+                //toggle unlike button
                 view.imageViewLikeActive.setOnClickListener {
                     //unlike post
+                    //TODO ADD FUNCTION TO UNLIKE
                     view.imageViewLikeInactive.visibility = View.VISIBLE
                     view.imageViewLikeActive.visibility = View.INVISIBLE
                 }
@@ -87,10 +92,11 @@ class LikeFragment : Fragment() {
                 intent.putExtra(ConstantPost.CONSTANT_ID_POST, post.idPost)
                 startActivity(intent)
             })
-        viewModel.getListLikedPost(authKey).observe(viewLifecycleOwner,{
+        viewModel.getListLikedPost(authKey).observe(viewLifecycleOwner, {
             adapterLikedPost.data = it
         })
-        binding.recyclerLikedPost.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerLikedPost.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerLikedPost.adapter = adapterLikedPost
         return binding.root
     }
