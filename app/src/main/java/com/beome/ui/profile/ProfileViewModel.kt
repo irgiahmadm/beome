@@ -22,31 +22,27 @@ class ProfileViewModel : ViewModel() {
     val userState : LiveData<NetworkState>
         get() = _userState
     private val _followState  = MutableLiveData<NetworkState>()
-    val followState : LiveData<NetworkState>
-        get() = _followState
     private val _listPostState  = MutableLiveData<NetworkState>()
     val listPostState : LiveData<NetworkState>
         get() = _listPostState
 
     fun followUser(follow: Follow) = profileRepo.followUser(follow)
 
-    fun getFollowStatus(authKey: String, followedId: String) : LiveData<Follow>{
+    fun unFollowUser(followingId : String, followedId: String) = profileRepo.unFollowUser(followingId, followedId)
+
+    fun getFollowStatus(authKey: String, followedId: String) : LiveData<NetworkState>{
         Log.d("follow_key", "$authKey - $followedId" )
         _followState.postValue(NetworkState.LOADING)
         profileRepo.getFollowStatus()
             .whereEqualTo("followingId", authKey)
             .whereEqualTo("followedId", followedId)
             .addSnapshotListener { value, error ->
-                var tempFollow : Follow
                 value?.let {
-                    if(value.isEmpty){
+                    if(value.documents.isEmpty()){
                         _followState.postValue(NetworkState.NOT_FOUND)
                     }else{
                         if(value.documents[0].exists()){
                             _followState.postValue(NetworkState.SUCCESS)
-                            val followObj = value.documents[0].toObject<Follow>()
-                            tempFollow = followObj!!
-                            follow.value = tempFollow
                         }
                     }
                 }
@@ -56,7 +52,7 @@ class ProfileViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
         }
-        return follow
+        return _followState
     }
 
     fun getProfileUser(authKey : String) : LiveData<User>{
@@ -83,10 +79,6 @@ class ProfileViewModel : ViewModel() {
                 }
             }
         return profileUser
-    }
-
-    fun followUser(authKey: String, followedId : String){
-
     }
 
     fun getListPostUser(authKey: String) : LiveData<List<Post>>{

@@ -61,7 +61,11 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
 
             //follow action
             binding.buttonFollow.setOnClickListener {
-                viewModel.followUser(Follow(authKeyUserLogedIn, authKeyUserPreview, 1))
+                viewModel.followUser(Follow(authKeyUserLogedIn, authKeyUserPreview))
+            }
+            //unfollow action
+            binding.buttonUnfollow.setOnClickListener {
+                viewModel.unFollowUser(authKeyUserLogedIn, authKeyUserPreview)
             }
             getProfileUser()
             getListPost()
@@ -140,28 +144,8 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
     }
 
     private fun getFollowStatus(){
-        viewModel.getFollowStatus(authKeyUserLogedIn, authKeyUserPreview).observe(this,{
-            Log.d("follow", it.toString())
-            when (it.followStatus) {
-                1 -> {
-                    //follow status 1 mean user who loged in follow user that they preview
-                    binding.buttonFollow.visibility = View.GONE
-                    binding.buttonUnfollow.visibility = View.VISIBLE
-                }
-                2 -> {
-                    //follow status 2 mean user who loged in unfollow user that they preview
-                    binding.buttonFollow.visibility = View.VISIBLE
-                    binding.buttonUnfollow.visibility = View.GONE
-                }
-                else -> {
-                    binding.buttonFollow.visibility = View.VISIBLE
-                    binding.buttonUnfollow.visibility = View.GONE
-                }
-            }
-        })
-
         //following state
-        viewModel.followState.observe(this,{
+        viewModel.getFollowStatus(authKeyUserLogedIn, authKeyUserPreview).observe(this,{
             Log.d("follow_state", it.toString())
             when(it) {
                 NetworkState.LOADING -> {
@@ -169,6 +153,8 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
                 }
                 NetworkState.SUCCESS -> {
                     binding.progressBarProfileUser.visibility = View.GONE
+                    binding.buttonFollow.visibility = View.GONE
+                    binding.buttonUnfollow.visibility = View.VISIBLE
                 }
                 NetworkState.FAILED -> {
                     binding.progressBarProfileUser.visibility = View.GONE
@@ -180,6 +166,8 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
                 }
                 NetworkState.NOT_FOUND -> {
                     binding.progressBarProfileUser.visibility = View.GONE
+                    binding.buttonFollow.visibility = View.VISIBLE
+                    binding.buttonUnfollow.visibility = View.GONE
                 }
                 else -> {
                     binding.progressBarProfileUser.visibility = View.GONE

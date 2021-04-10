@@ -32,12 +32,47 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                         val user = transaction.get(userRef)
                         val newFollower = user["follower"] as Long + 1
                         transaction.update(userRef,"follower", newFollower)
+                        transaction.set(followRef.document(), follow)
                         null
-                    }.await()
-                    followRef.add(follow)
+                    }
                 }catch (e : Exception){
                     Log.d("error_follow", e.localizedMessage!!)
                 }
+            }
+        }
+    }
+
+    fun unFollowUser(followingId : String, followedId : String){
+        coroutineScope.launch {
+            withContext(Dispatchers.IO){
+                try {
+                    //get follow status between 2 users
+                    val followQuery = followRef
+                        .whereEqualTo("followingId", followingId)
+                        .whereEqualTo("followedId", followedId)
+                        .get()
+                        .await()
+                    if(followQuery.documents.isNotEmpty()){
+                        Firebase.firestore.runTransaction {transaction ->
+                            val userRef = Firebase.firestore.collection("user").document(followedId)
+                            val user = transaction.get(userRef)
+                            //delete follow
+                            for (document in followQuery){
+                                Log.d("follow_doc_id", document.id)
+                                val followerDoc = followRef.document(document.id)
+                                val follow = transaction.get(followerDoc)
+                                transaction.delete(follow.reference)
+                            }
+                            //decrement follower user
+                            val newFollower = user["follower"] as Long - 1
+                            transaction.update(userRef,"follower", newFollower)
+                            null
+                        }.await()
+                    }
+                }catch (e : Exception){
+                    Log.d("error_follow", e.localizedMessage!!)
+                }
+
             }
         }
     }
