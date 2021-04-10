@@ -108,7 +108,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <Button
-        android:id="@+id/buttonEditProfile"
+        android:id="@+id/buttonFollow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -122,6 +122,21 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewFollowersCount" />
 
 
+    <Button
+        android:id="@+id/buttonUnfollow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_rounded_button_outlined"
+        android:paddingLeft="64dp"
+        android:paddingRight="64dp"
+        android:text="@string/unfollow"
+        android:visibility="gone"
+        android:textColor="@color/color_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFollowersCount" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerProfilePost"
         android:layout_width="match_parent"
@@ -132,7 +147,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonEditProfile"
+        app:layout_constraintTop_toBottomOf="@+id/buttonFollow"
         tools:listitem="@layout/item_post" />
 
     <TextView
@@ -189,7 +204,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="imageViewUserProfile,
-        buttonEditProfile, textViewFullname, textViewFollowersCount,
+        buttonFollow, textViewFullname, textViewFollowersCount,
         textViewLabelFollower, textViewLabelPost,
         textViewPostsCount, imageView4,
         imageView3,recyclerProfilePost"/>
@@ -199,7 +214,7 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/buttonEditProfile"
+        app:layout_constraintBottom_toTopOf="@+id/buttonFollow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout"

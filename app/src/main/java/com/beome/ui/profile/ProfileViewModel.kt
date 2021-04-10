@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.beome.model.Follow
 import com.beome.model.Post
 import com.beome.model.User
 import com.beome.utilities.NetworkState
@@ -13,14 +15,49 @@ import kotlinx.coroutines.Dispatchers
 
 class ProfileViewModel : ViewModel() {
     private val profileUser = MutableLiveData<User>()
-    private val profileRepo = ProfileRepository(Dispatchers.IO)
+    private val follow = MutableLiveData<Follow>()
+    private val profileRepo = ProfileRepository(viewModelScope)
     private val listPostUser = MutableLiveData<List<Post>>()
     private val _userState  = MutableLiveData<NetworkState>()
     val userState : LiveData<NetworkState>
         get() = _userState
+    private val _followState  = MutableLiveData<NetworkState>()
+    val followState : LiveData<NetworkState>
+        get() = _followState
     private val _listPostState  = MutableLiveData<NetworkState>()
     val listPostState : LiveData<NetworkState>
         get() = _listPostState
+
+    fun followUser(follow: Follow) = profileRepo.followUser(follow)
+
+    fun getFollowStatus(authKey: String, followedId: String) : LiveData<Follow>{
+        Log.d("follow_key", "$authKey - $followedId" )
+        _followState.postValue(NetworkState.LOADING)
+        profileRepo.getFollowStatus()
+            .whereEqualTo("followingId", authKey)
+            .whereEqualTo("followedId", followedId)
+            .addSnapshotListener { value, error ->
+                var tempFollow : Follow
+                value?.let {
+                    if(value.isEmpty){
+                        _followState.postValue(NetworkState.NOT_FOUND)
+                    }else{
+                        if(value.documents[0].exists()){
+                            _followState.postValue(NetworkState.SUCCESS)
+                            val followObj = value.documents[0].toObject<Follow>()
+                            tempFollow = followObj!!
+                            follow.value = tempFollow
+                        }
+                    }
+                }
+                error?.let {
+                    Log.d("error_get_follow_state", error.localizedMessage!!)
+                    _followState.postValue(NetworkState.FAILED)
+                    return@addSnapshotListener
+                }
+        }
+        return follow
+    }
 
     fun getProfileUser(authKey : String) : LiveData<User>{
         _userState.postValue(NetworkState.LOADING)
@@ -48,6 +85,9 @@ class ProfileViewModel : ViewModel() {
         return profileUser
     }
 
+    fun followUser(authKey: String, followedId : String){
+
+    }
 
     fun getListPostUser(authKey: String) : LiveData<List<Post>>{
         profileRepo.getPostByUser()

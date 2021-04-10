@@ -10,10 +10,12 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
+import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
 import com.beome.databinding.ActivityPostDetailBinding
 import com.beome.model.FeedbackPostUser
 import com.beome.model.FeedbackPostUserValue
+import com.beome.ui.profile.ProfileUserPreviewActivity
 import com.beome.utilities.AdapterUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -68,6 +70,11 @@ class PostDetailActivity : AppCompatActivity() {
             adapterFeedbackUser =
                 AdapterUtil(R.layout.item_list_feedback, it, {pos, view, item ->
                     view.textViewUsernameFeedback.text = item.username
+                    view.textViewUsernameFeedback.setOnClickListener {
+                        val intent = Intent(this, ProfileUserPreviewActivity::class.java)
+                        intent.putExtra(ConstantAuth.CONSTANT_AUTH_KEY, item.authKey)
+                        startActivity(intent)
+                    }
                     val dateCreated =
                         SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(item.createdAt)
                     val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
@@ -110,25 +117,30 @@ class PostDetailActivity : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat")
     private fun getDetailPost(){
         //get data detail
-        viewModel.getPostDetail(idPost).observe(this,{
+        viewModel.getPostDetail(idPost).observe(this,{post ->
             Glide.with(this)
-                .load(it.imagePost)
+                .load(post.imagePost)
                 .placeholder(R.drawable.ic_placeholder_image)
-                .thumbnail(Glide.with(this).load(it.imagePost).apply(
+                .thumbnail(Glide.with(this).load(post.imagePost).apply(
                     RequestOptions.bitmapTransform(BlurTransformation(25,3))))
                 .into(binding.imageViewPost)
-            binding.textViewTitle.text = it.title
-            binding.textViewDescription.text = it.description
-            binding.textViewUsername.text = it.username
-            if(it.imgUser.isNullOrEmpty() || it.imgUser == "null"){
+            binding.textViewTitle.text = post.title
+            binding.textViewDescription.text = post.description
+            binding.textViewUsername.text = post.username
+            binding.textViewUsername.setOnClickListener {
+                val intent = Intent(this, ProfileUserPreviewActivity::class.java)
+                intent.putExtra(ConstantAuth.CONSTANT_AUTH_KEY, post.authKey)
+                startActivity(intent)
+            }
+            if(post.imgUser.isNullOrEmpty() || post.imgUser == "null"){
                 Glide.with(this).load(R.drawable.ic_profile).into(binding.imageViewUser)
             }else{
-                Glide.with(this).load(it.imgUser).circleCrop().into(binding.imageViewUser)
+                Glide.with(this).load(post.imgUser).circleCrop().into(binding.imageViewUser)
             }
-            val dateCreated = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(it.createdAt)
+            val dateCreated = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(post.createdAt)
             val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
             binding.textViewDateCreated.text = dateFormatted
-            binding.textViewLikeCount.text = it.likeCount.toString()
+            binding.textViewLikeCount.text = post.likeCount.toString()
         })
     }
 

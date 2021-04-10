@@ -35,24 +35,21 @@ class SearchViewModel : ViewModel() {
                 .whereGreaterThanOrEqualTo("title", searchQuery)
                 .whereLessThanOrEqualTo("title", searchQuery+ "\uf8ff")
                 .whereEqualTo("status", 1)
-                .addSnapshotListener { querySnapshot, error ->
-                    error?.let{
-                        Log.e("err_get_recet_post", error.localizedMessage!!)
-                        _listPostState.postValue(NetworkState.FAILED)
-                        return@addSnapshotListener
-                    }
-
-                    querySnapshot?.let {
+                .get()
+                .addOnSuccessListener {
+                    if(it != null){
                         for (document in it){
                             val post = document.toObject<Post>()
                             addedRecentPostList.add(post)
                         }
-                        Log.d("data_search_post", addedRecentPostList.toString())
                         listPost.value = addedRecentPostList
+                        _listPostState.postValue(NetworkState.SUCCESS)
                     }
                 }
-            _listPostState.postValue(NetworkState.SUCCESS)
-
+                .addOnFailureListener {
+                    Log.e("err_get_recet_post", it.localizedMessage!!)
+                    _listPostState.postValue(NetworkState.FAILED)
+                }
         }
         return listPost
     }
@@ -71,23 +68,21 @@ class SearchViewModel : ViewModel() {
                 .whereGreaterThanOrEqualTo("username", searchQuery)
                 .whereLessThanOrEqualTo("username", searchQuery+ "\uf8ff")
                 .whereEqualTo("userStatus", 1)
-                .addSnapshotListener { querySnapshot, error ->
-                    error?.let{
-                        Log.e("err_get_recet_post", error.localizedMessage!!)
-                        _listUserState.postValue(NetworkState.FAILED)
-                        return@addSnapshotListener
-                    }
-                    querySnapshot?.let {
+                .get()
+                .addOnSuccessListener {
+                    if(it != null){
                         for (document in it){
                             val post = document.toObject<User>()
                             tempListUser.add(post)
                         }
-                        Log.d("data_search_user", tempListUser.toString())
                         listUser.value = tempListUser
+                        _listUserState.postValue(NetworkState.SUCCESS)
                     }
                 }
-            _listUserState.postValue(NetworkState.SUCCESS)
-
+                .addOnFailureListener {
+                    _listUserState.postValue(NetworkState.FAILED)
+                    Log.e("err_get_recet_post", it.localizedMessage!!)
+                }
         }
         return listUser
     }

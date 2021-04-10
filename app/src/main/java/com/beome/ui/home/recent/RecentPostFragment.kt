@@ -18,6 +18,7 @@ import com.beome.model.LikedPostList
 import com.beome.model.Post
 import com.beome.ui.feedback.PostDetailActivity
 import com.beome.ui.post.PostViewModel
+import com.beome.ui.profile.ProfileUserPreviewActivity
 import com.beome.utilities.AdapterUtil
 import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
@@ -69,6 +70,11 @@ class RecentPostFragment : Fragment() {
                         .into(view.imageViewUser)
                 }
                 view.textViewUsername.text = post.username
+                view.textViewUsername.setOnClickListener {
+                    val intent = Intent(requireContext(), ProfileUserPreviewActivity::class.java)
+                    intent.putExtra(ConstantAuth.CONSTANT_AUTH_KEY, post.authKey)
+                    startActivity(intent)
+                }
                 view.textViewCountFeedback.text = post.feedbackCount.toString()
                 view.textViewCountLike.text = post.likeCount.toString()
                 //check post is liked or not

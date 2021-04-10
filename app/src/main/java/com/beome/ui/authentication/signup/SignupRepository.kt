@@ -14,16 +14,17 @@ import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 class SignupRepository(coroutineContext: CoroutineContext) {
-    private val collectionUserRef = Firebase.firestore.collection("user")
+
     val networkState = MutableLiveData<NetworkState>()
     private val job= Job()
     private val scope = CoroutineScope(coroutineContext+job)
 
     fun registerUser(user : User){
+        val collectionUserRef = Firebase.firestore.collection("user").document(user.authKey)
         scope.launch {
             try {
                 networkState.postValue(NetworkState.LOADING)
-                collectionUserRef.add(user).await()
+                collectionUserRef.set(user).await()
                 networkState.postValue(NetworkState.SUCCESS)
             }catch(e : Exception){
                 networkState.postValue(NetworkState.FAILED)
