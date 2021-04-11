@@ -14,6 +14,7 @@ import com.beome.R
 import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
 import com.beome.databinding.FragmentLikeBinding
+import com.beome.model.LikedBy
 import com.beome.model.LikedPost
 import com.beome.model.Post
 import com.beome.ui.feedback.PostDetailActivity
@@ -24,6 +25,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.item_post.view.*
+import java.util.*
 
 class LikeFragment : Fragment() {
     private lateinit var binding : FragmentLikeBinding
@@ -63,19 +65,10 @@ class LikeFragment : Fragment() {
                 view.textViewCountFeedback.text = post.feedbackCount.toString()
                 view.textViewCountLike.text = post.likeCount.toString()
                 //check post is liked or not
-                viewModel.getLikedPost(authKey, post.idPost).observe(viewLifecycleOwner, {
-                    if(it){
-                        view.imageViewLikeActive.visibility = View.VISIBLE
-                        view.imageViewLikeInactive.visibility = View.INVISIBLE
-                    }else{
-                        view.imageViewLikeActive.visibility = View.INVISIBLE
-                        view.imageViewLikeInactive.visibility = View.VISIBLE
-                    }
-                })
                 //toggle like button
                 view.imageViewLikeInactive.setOnClickListener {
                     //like post
-                    viewModel.likePost(LikedPost(post.idPost, authKey))
+                    viewModel.likePost(post.idPost, LikedBy(authKey, Date()))
                     view.imageViewLikeInactive.visibility = View.INVISIBLE
                     view.imageViewLikeActive.visibility = View.VISIBLE
 

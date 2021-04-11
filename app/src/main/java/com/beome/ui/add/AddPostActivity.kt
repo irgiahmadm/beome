@@ -23,6 +23,7 @@ import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
 import com.beome.databinding.ActivityAddPostBinding
 import com.beome.model.ComponentFeedbackPost
+import com.beome.model.LikedBy
 import com.beome.model.Post
 import com.beome.ui.authentication.login.LoginActivity
 import com.beome.utilities.GlobalHelper
@@ -175,6 +176,7 @@ class AddPostActivity : AppCompatActivity() {
                     .addOnSuccessListener {
                         reference.downloadUrl.addOnSuccessListener {
                             val downloadUri = it.toString()
+                            val likedBy = arrayListOf<String>()
                             val post = Post(
                                 idPost,
                                 authKey,
@@ -185,6 +187,7 @@ class AddPostActivity : AppCompatActivity() {
                                 desc,
                                 0,
                                 0,
+                                likedBy,
                                 1,
                                 createdDate,
                                 createdDate

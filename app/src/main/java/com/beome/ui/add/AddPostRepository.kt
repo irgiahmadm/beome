@@ -15,7 +15,6 @@ import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 class AddPostRepository(coroutineContext : CoroutineContext) {
-    private val collectionPostRef = Firebase.firestore.collection("post")
     private val collectionFeedbackComponentRef = Firebase.firestore.collection("feedback_component")
     val addPostState = MutableLiveData<NetworkState>()
     val addComponentState = MutableLiveData<NetworkState>()
@@ -24,8 +23,9 @@ class AddPostRepository(coroutineContext : CoroutineContext) {
     fun addPost(post : Post){
         scope.launch {
             try {
+                val collectionPostRef = Firebase.firestore.collection("post").document(post.idPost)
                 addPostState.postValue(NetworkState.LOADING)
-                collectionPostRef.add(post).await()
+                collectionPostRef.set(post).await()
                 addPostState.postValue(NetworkState.SUCCESS)
             }catch (e : Exception){
                 addPostState.postValue(NetworkState.FAILED)

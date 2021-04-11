@@ -65,6 +65,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textViewUsername"
             app:layout_constraintEnd_toStartOf="@+id/textViewCountLike"
             app:layout_constraintTop_toTopOf="@+id/textViewUsername"
