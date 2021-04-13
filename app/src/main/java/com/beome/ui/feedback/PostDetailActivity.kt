@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -63,9 +64,11 @@ class PostDetailActivity : AppCompatActivity() {
         }
     }
 
+
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun getListFeedback(){
         viewModel.getListFeedbackPost(idPost).observe(this, {
+
             binding.textViewFeedback.text = "Feedback (${it.size})"
             adapterFeedbackUser =
                 AdapterUtil(R.layout.item_list_feedback, it, {pos, view, item ->
@@ -86,6 +89,7 @@ class PostDetailActivity : AppCompatActivity() {
                         Glide.with(this).load(item.photoProfile).circleCrop()
                             .into(view.imageViewUserFeedback)
                     }
+
                     view.textViewCommentFeedback.text = item.comment
                         adapterFeedbackValue = AdapterUtil(
                             R.layout.item_feedback_component,
@@ -109,6 +113,17 @@ class PostDetailActivity : AppCompatActivity() {
             binding.recyclerViewReview.layoutManager =
                 LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             binding.recyclerViewReview.adapter = adapterFeedbackUser
+
+            //recap feedback
+            var listOfFeedbackValue = arrayListOf<FeedbackPostUserValue>()
+            for (i in it.indices){
+                listOfFeedbackValue.addAll(it[i].feedbackValue)
+            }
+            var huhu = listOfFeedbackValue.groupBy { feedbackPostVal ->
+                feedbackPostVal.componentName
+            }.mapValues {mapEntry ->
+                mapEntry.value.map { obj -> obj.componentValue }.average()
+            }
 
         })
 
