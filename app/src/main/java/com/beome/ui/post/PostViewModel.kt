@@ -5,9 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.beome.model.LikedBy
-import com.beome.model.LikedPost
-import com.beome.model.LikedPostList
 import com.beome.model.Post
 import com.beome.ui.home.recent.RecentPostRepository
 import com.google.firebase.firestore.Query
@@ -26,7 +23,7 @@ class PostViewModel : ViewModel() {
 
         val addedRecentPostList = mutableListOf<Post>()
 
-        postRepo.getListLikedPost()
+        postRepo.getListPost()
             .orderBy("createdAt", Query.Direction.ASCENDING)
             .whereEqualTo("status", 1)
             .whereArrayContains("likedBy", idUser)
@@ -46,9 +43,11 @@ class PostViewModel : ViewModel() {
         return listLikedPost
     }
 
-    //liked post should use write batch
-    //TODO LIKE POST SHOULD BE USING WRITE BATCH
-    fun likePost(idPost : String, likedBy: LikedBy) = viewModelScope.launch{
+    fun likePost(idPost : String, likedBy: String) = viewModelScope.launch{
         postRepo.likePost(idPost, likedBy)
+    }
+
+    fun unlikePost(idPost : String, likedBy: String) = viewModelScope.launch {
+        postRepo.unlikePost(idPost, likedBy)
     }
 }

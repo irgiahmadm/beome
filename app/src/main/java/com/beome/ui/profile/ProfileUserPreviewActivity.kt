@@ -13,13 +13,16 @@ import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
 import com.beome.databinding.ActivityProfileUserPreviewBinding
 import com.beome.model.Follow
-import com.beome.model.Post
+import com.beome.model.LikedPostList
 import com.beome.ui.authentication.login.LoginActivity
 import com.beome.ui.feedback.PostDetailActivity
+import com.beome.ui.post.PostViewModel
 import com.beome.utilities.AdapterUtil
 import com.beome.utilities.NetworkState
 import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.item_post.view.*
 
 class ProfileUserPreviewActivity : AppCompatActivity() {
@@ -27,12 +30,18 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
     private lateinit var authKeyUserPreview : String
     private lateinit var authKeyUserLogedIn : String
     private lateinit var sharedPrefUtil: SharedPrefUtil
-    private lateinit var adapterListPost : AdapterUtil<Post>
+    private lateinit var adapterListPost : AdapterUtil<LikedPostList>
     private val viewModel: ProfileViewModel by lazy {
         ViewModelProvider(
             this,
             ViewModelProvider.NewInstanceFactory()
         ).get(ProfileViewModel::class.java)
+    }
+    private val viewModelPost: PostViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ViewModelProvider.NewInstanceFactory()
+        ).get(PostViewModel::class.java)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,29 +123,61 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
     }
 
     private fun getListPost(){
-        adapterListPost = AdapterUtil(
-            R.layout.item_post, arrayListOf(),
-            { _: Int, view: View, post: Post ->
+        adapterListPost = AdapterUtil(R.layout.item_post, arrayListOf(),
+            { _, view, post ->
                 Glide.with(this)
-                    .load(post.imagePost)
+                    .load(post.post?.imagePost)
                     .placeholder(R.drawable.ic_placeholder_image)
+                    .thumbnail(
+                        Glide.with(this).load(post.post?.imagePost)
+                            .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
+                    )
                     .into(view.imageViewPost)
-                if(post.imgUser.isNullOrEmpty() || post.imgUser == "null"){
-                    Glide.with(this).load(R.drawable.ic_profile).into(view.imageViewUser)
-                }else{
-                    Glide.with(this).load(post.imgUser).circleCrop().into(view.imageViewUser)
+                if (post.post?.imgUser.isNullOrEmpty() || post.post?.imgUser == "null") {
+                    Glide.with(this).load(R.drawable.ic_profile)
+                        .into(view.imageViewUser)
+                } else {
+                    Glide.with(this).load(post.post?.imgUser).circleCrop()
+                        .into(view.imageViewUser)
                 }
-                view.textViewUsername.text = post.username
-                view.textViewCountFeedback.text = post.feedbackCount.toString()
-                view.textViewCountLike.text = post.likeCount.toString()
-            },{ _, post ->
+                view.textViewUsername.text = post.post?.username
+                view.textViewUsername.setOnClickListener {
+                    val intent = Intent(this, ProfileUserPreviewActivity::class.java)
+                    intent.putExtra(ConstantAuth.CONSTANT_AUTH_KEY, post.post?.authKey)
+                    startActivity(intent)
+                }
+                view.textViewCountFeedback.text = post.post?.feedbackCount.toString()
+                view.textViewCountLike.text = post.post?.likeCount.toString()
+                //check post is liked or not
+                if (post.isLiked) {
+                    view.imageViewLikeActive.visibility = View.VISIBLE
+                    view.imageViewLikeInactive.visibility = View.INVISIBLE
+                } else {
+                    view.imageViewLikeActive.visibility = View.INVISIBLE
+                    view.imageViewLikeInactive.visibility = View.VISIBLE
+                }
+
+                //toggle like button
+                view.imageViewLikeInactive.setOnClickListener {
+                    //like post
+                    viewModelPost.likePost(post.post?.idPost.toString(), authKeyUserLogedIn)
+                    view.imageViewLikeInactive.visibility = View.INVISIBLE
+                    view.imageViewLikeActive.visibility = View.VISIBLE
+                }
+                //toggle unlike button
+                view.imageViewLikeActive.setOnClickListener {
+                    //unlike post
+                    viewModelPost.unlikePost(post.post?.idPost.toString(), authKeyUserLogedIn)
+                    view.imageViewLikeInactive.visibility = View.VISIBLE
+                    view.imageViewLikeActive.visibility = View.INVISIBLE
+                }
+            }, { _, post ->
                 val intent = Intent(this, PostDetailActivity::class.java)
-                intent.putExtra(ConstantPost.CONSTANT_ID_POST, post.idPost)
-                intent.putExtra(ConstantPost.CONSTANT_INTENT_FROM, ConstantPost.CONSTANT_INTENT_PROFILE_FRAGMENT)
+                intent.putExtra(ConstantPost.CONSTANT_ID_POST, post.post?.idPost.toString())
                 startActivity(intent)
             })
         viewModel.getListPostUser(authKeyUserPreview).observe(this,{
-            adapterListPost.data = it!!
+            adapterListPost.data = it
             binding.textViewPostsCount.text = it.size.toString()
         })
         binding.recyclerProfilePost.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)

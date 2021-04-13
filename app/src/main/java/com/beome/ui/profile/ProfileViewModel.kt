@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.beome.model.Follow
+import com.beome.model.LikedPostList
 import com.beome.model.Post
 import com.beome.model.User
 import com.beome.utilities.NetworkState
@@ -17,7 +18,7 @@ class ProfileViewModel : ViewModel() {
     private val profileUser = MutableLiveData<User>()
     private val follow = MutableLiveData<Follow>()
     private val profileRepo = ProfileRepository(viewModelScope)
-    private val listPostUser = MutableLiveData<List<Post>>()
+    private val listPostUser = MutableLiveData<List<LikedPostList>>()
     private val _userState  = MutableLiveData<NetworkState>()
     val userState : LiveData<NetworkState>
         get() = _userState
@@ -81,7 +82,7 @@ class ProfileViewModel : ViewModel() {
         return profileUser
     }
 
-    fun getListPostUser(authKey: String) : LiveData<List<Post>>{
+    fun getListPostUser(authKey: String) : LiveData<List<LikedPostList>>{
         profileRepo.getPostByUser()
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .whereEqualTo("status", 1)
@@ -91,11 +92,16 @@ class ProfileViewModel : ViewModel() {
                     Log.e("err_get_recet_post", error.localizedMessage!!)
                     return@addSnapshotListener
                 }
-                val tempListPostUser = mutableListOf<Post>()
+                val tempListPostUser = mutableListOf<LikedPostList>()
                 querySnapshot?.let {
                     for (document in it){
+                        var isExist: Boolean
                         val post = document.toObject<Post>()
-                        tempListPostUser.add(post)
+                        isExist  = post.likedBy.any { likedBy ->
+                            likedBy == authKey
+                        }
+                        val likedPostObj = LikedPostList(post, isExist)
+                        tempListPostUser.add(likedPostObj)
                     }
                     listPostUser.value = tempListPostUser
                 }

@@ -2,7 +2,6 @@ package com.beome.ui.post
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.beome.model.LikedBy
 import com.beome.model.LikedPost
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.CollectionReference
@@ -22,7 +21,7 @@ class PostRepository(coroutineContext: CoroutineContext) {
     private val scope = CoroutineScope(coroutineContext+job)
 
 
-    fun likePost(idPost : String, likedBy: LikedBy){
+    fun likePost(idPost : String, likedBy: String){
         scope.launch {
             try {
                 Firebase.firestore.runTransaction{transaction ->
@@ -38,15 +37,33 @@ class PostRepository(coroutineContext: CoroutineContext) {
                 }.await()
             }catch (e : Exception){
                 likePostState.postValue(NetworkState.FAILED)
-                Log.d("error_add_post", e.message.toString())
+                Log.d("error_like_post", e.message.toString())
             }
+        }
+    }
+
+    fun unlikePost(idPost : String, likedBy: String){
+        try {
+            Firebase.firestore.runTransaction { transaction ->
+                likePostState.postValue(NetworkState.LOADING)
+                val docLikedPostRef = Firebase.firestore.collection("post").document(idPost)
+                val post = transaction.get(docLikedPostRef)
+                val newLiked = (post.get("likeCount") as Long?)?.minus(1)
+                Log.d("likecount", newLiked.toString())
+                transaction.update(docLikedPostRef, "likedBy", FieldValue.arrayRemove(likedBy))
+                transaction.update(docLikedPostRef, "likeCount", newLiked)
+                likePostState.postValue(NetworkState.SUCCESS)
+            }
+        }catch (e : Exception){
+            Log.d("error_unlike_post", e.message.toString())
+            likePostState.postValue(NetworkState.FAILED)
         }
     }
     fun getLikedPost() : CollectionReference{
         return Firebase.firestore.collection("liked_post")
     }
 
-    fun getListLikedPost() : CollectionReference{
+    fun getListPost() : CollectionReference{
         return Firebase.firestore.collection("post")
     }
 }

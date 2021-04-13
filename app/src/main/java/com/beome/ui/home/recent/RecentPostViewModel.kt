@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.beome.model.LikedBy
 import com.beome.model.LikedPost
 import com.beome.model.LikedPostList
 import com.beome.model.Post

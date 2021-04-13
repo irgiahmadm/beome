@@ -14,7 +14,6 @@ import com.beome.R
 import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
 import com.beome.databinding.FragmentLikeBinding
-import com.beome.model.LikedBy
 import com.beome.model.LikedPost
 import com.beome.model.Post
 import com.beome.ui.feedback.PostDetailActivity
@@ -68,7 +67,7 @@ class LikeFragment : Fragment() {
                 //toggle like button
                 view.imageViewLikeInactive.setOnClickListener {
                     //like post
-                    viewModel.likePost(post.idPost, LikedBy(authKey, Date()))
+                    viewModel.likePost(post.idPost, authKey)
                     view.imageViewLikeInactive.visibility = View.INVISIBLE
                     view.imageViewLikeActive.visibility = View.VISIBLE
 
@@ -76,7 +75,7 @@ class LikeFragment : Fragment() {
                 //toggle unlike button
                 view.imageViewLikeActive.setOnClickListener {
                     //unlike post
-                    //TODO ADD FUNCTION TO UNLIKE
+                    viewModel.unlikePost(post.idPost, authKey)
                     view.imageViewLikeInactive.visibility = View.VISIBLE
                     view.imageViewLikeActive.visibility = View.INVISIBLE
                 }

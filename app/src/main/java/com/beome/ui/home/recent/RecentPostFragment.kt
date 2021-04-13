@@ -13,10 +13,7 @@ import com.beome.R
 import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
 import com.beome.databinding.FragmentRecentPostBinding
-import com.beome.model.LikedBy
-import com.beome.model.LikedPost
 import com.beome.model.LikedPostList
-import com.beome.model.Post
 import com.beome.ui.feedback.PostDetailActivity
 import com.beome.ui.post.PostViewModel
 import com.beome.ui.profile.ProfileUserPreviewActivity
@@ -26,7 +23,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.item_post.view.*
-import java.util.*
 
 class RecentPostFragment : Fragment() {
 
@@ -91,14 +87,14 @@ class RecentPostFragment : Fragment() {
                 //toggle like button
                 view.imageViewLikeInactive.setOnClickListener {
                     //like post
-                    viewModelPost.likePost(post.post?.idPost.toString(), LikedBy(authKey, Date()))
+                    viewModelPost.likePost(post.post?.idPost.toString(), authKey)
                     view.imageViewLikeInactive.visibility = View.INVISIBLE
                     view.imageViewLikeActive.visibility = View.VISIBLE
                 }
                 //toggle unlike button
                 view.imageViewLikeActive.setOnClickListener {
                     //unlike post
-                    //TODO ADD FUNCTION TO UNLIKE
+                    viewModelPost.unlikePost(post.post?.idPost.toString(), authKey)
                     view.imageViewLikeInactive.visibility = View.VISIBLE
                     view.imageViewLikeActive.visibility = View.INVISIBLE
                 }

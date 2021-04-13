@@ -23,7 +23,6 @@ import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
 import com.beome.databinding.ActivityAddPostBinding
 import com.beome.model.ComponentFeedbackPost
-import com.beome.model.LikedBy
 import com.beome.model.Post
 import com.beome.ui.authentication.login.LoginActivity
 import com.beome.utilities.GlobalHelper
