@@ -14,7 +14,7 @@ class FeedbackViewModel : ViewModel() {
     private val detailPost = MutableLiveData<Post>()
     private val listFeedbackPost = MutableLiveData<List<FeedbackPostUser>>()
     private val listFeedbackComponent = MutableLiveData<List<ComponentFeedbackPost>>()
-    private val feedbackRepo = FeedbackRepository(Dispatchers.IO)
+    private val feedbackRepo = FeedbackRepository(viewModelScope)
     lateinit var addUserFeedbackState: LiveData<NetworkState>
     lateinit var addFeedbackValueState: LiveData<NetworkState>
     private val _feedbackRepo = MutableLiveData<FeedbackRepository>()
@@ -88,11 +88,8 @@ class FeedbackViewModel : ViewModel() {
     }
 
     fun addUserFeedback(idPost: String, idUser: String, user: FeedbackPostUser) =
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                feedbackRepo.addUserFeedback(idPost, idUser, user)
-            }
-        }
+        feedbackRepo.addUserFeedback(idPost, idUser, user)
+
 
     fun setUpFeedbackValue() {
         addFeedbackValueState =

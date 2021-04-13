@@ -194,7 +194,7 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
                 }
                 NetworkState.SUCCESS -> {
                     binding.progressBarProfileUser.visibility = View.GONE
-                    binding.buttonFollow.visibility = View.GONE
+                    binding.buttonFollow.visibility = View.INVISIBLE
                     binding.buttonUnfollow.visibility = View.VISIBLE
                 }
                 NetworkState.FAILED -> {
@@ -208,7 +208,7 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
                 NetworkState.NOT_FOUND -> {
                     binding.progressBarProfileUser.visibility = View.GONE
                     binding.buttonFollow.visibility = View.VISIBLE
-                    binding.buttonUnfollow.visibility = View.GONE
+                    binding.buttonUnfollow.visibility = View.INVISIBLE
                 }
                 else -> {
                     binding.progressBarProfileUser.visibility = View.GONE
