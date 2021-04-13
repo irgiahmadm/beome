@@ -121,7 +121,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewFollowersCount" />
 
-
     <Button
         android:id="@+id/buttonUnfollow"
         android:layout_width="wrap_content"
@@ -133,6 +132,21 @@
         android:text="@string/unfollow"
         android:visibility="gone"
         android:textColor="@color/color_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFollowersCount" />
+
+    <Button
+        android:id="@+id/buttonEditProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_rounded_button"
+        android:paddingLeft="64dp"
+        android:paddingRight="64dp"
+        android:text="@string/edit_profile"
+        android:textColor="@color/white"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewFollowersCount" />

@@ -76,9 +76,20 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
             binding.buttonUnfollow.setOnClickListener {
                 viewModel.unFollowUser(authKeyUserLogedIn, authKeyUserPreview)
             }
+            //editprofile action
+            binding.buttonEditProfile.setOnClickListener {
+                //TODO intent to edit profile
+            }
             getProfileUser()
             getListPost()
-            getFollowStatus()
+            Log.d("auth_key", "$authKeyUserLogedIn - $authKeyUserPreview")
+            if(authKeyUserLogedIn == authKeyUserPreview){
+                binding.buttonEditProfile.visibility = View.VISIBLE
+                binding.buttonFollow.visibility = View.INVISIBLE
+            }else{
+                getFollowStatus()
+            }
+
         }
         setContentView(binding.root)
     }
