@@ -82,6 +82,8 @@ class LikeFragment : Fragment() {
             }, { _, post ->
                 val intent = Intent(requireContext(), PostDetailActivity::class.java)
                 intent.putExtra(ConstantPost.CONSTANT_ID_POST, post.idPost)
+                intent.putExtra(ConstantPost.CONSTANT_POST_OWNER_KEY, post.authKey)
+                intent.putExtra(ConstantPost.CONSTANT_POST_IS_LIKED, true)
                 startActivity(intent)
             })
         viewModel.getListLikedPost(authKey).observe(viewLifecycleOwner, {

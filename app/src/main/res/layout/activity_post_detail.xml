@@ -212,5 +212,19 @@
             app:layout_constraintEnd_toStartOf="@+id/textViewLikeCount"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/imageViewLikeButton" />
+
+        <Button
+            android:id="@+id/buttonEditPost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/background_rounded_button"
+            android:text="@string/edit_post"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewLikeCount"
+            app:layout_constraintEnd_toStartOf="@+id/textViewLikeCount"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageViewLikeButton" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

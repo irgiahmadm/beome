@@ -5,13 +5,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.beome.model.LikedPostList
 import com.beome.model.Post
 import com.beome.model.User
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.ktx.toObject
 
 class SearchViewModel : ViewModel() {
-    private val listPost = MutableLiveData<List<Post>>()
+    private val listPost = MutableLiveData<List<LikedPostList>>()
     private val listUser = MutableLiveData<List<User>>()
     private val searchRepository = SearchRepository()
     private val _listPostState  = MutableLiveData<NetworkState>()
@@ -21,10 +22,10 @@ class SearchViewModel : ViewModel() {
     val listUserState : LiveData<NetworkState>
         get() = _listUserState
 
-    fun getListPost(searchQuery : String) : LiveData<List<Post>>{
+    fun getListPost(searchQuery : String, idUser : String) : LiveData<List<LikedPostList>>{
         Log.d("Search_query", searchQuery)
         _listPostState.postValue(NetworkState.LOADING)
-        var addedRecentPostList = mutableListOf<Post>()
+        var addedRecentPostList = mutableListOf<LikedPostList>()
         if (TextUtils.isEmpty(searchQuery)){
             Log.d("not_found_search_post", "not_found")
             _listPostState.postValue(NetworkState.NOT_FOUND)
@@ -39,8 +40,13 @@ class SearchViewModel : ViewModel() {
                 .addOnSuccessListener {
                     if(it != null){
                         for (document in it){
+                            var isExist: Boolean
                             val post = document.toObject<Post>()
-                            addedRecentPostList.add(post)
+                            isExist  = post.likedBy.any { likedBy ->
+                                likedBy == idUser
+                            }
+                            val likedPostObj = LikedPostList(post, isExist)
+                            addedRecentPostList.add(likedPostObj)
                         }
                         listPost.value = addedRecentPostList
                         _listPostState.postValue(NetworkState.SUCCESS)

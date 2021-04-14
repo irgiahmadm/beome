@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
@@ -17,7 +18,9 @@ import com.beome.databinding.ActivityPostDetailBinding
 import com.beome.model.FeedbackPostUser
 import com.beome.model.FeedbackPostUserValue
 import com.beome.ui.profile.ProfileUserPreviewActivity
+import com.beome.ui.report.ReportActivity
 import com.beome.utilities.AdapterUtil
+import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.BlurTransformation
@@ -28,6 +31,9 @@ import java.text.SimpleDateFormat
 class PostDetailActivity : AppCompatActivity() {
     private lateinit var binding : ActivityPostDetailBinding
     private lateinit var idPost : String
+    private lateinit var idPostOwner : String
+    private lateinit var sharedPrefUtil: SharedPrefUtil
+    private lateinit var authKey : String
     private lateinit var adapterFeedbackUser : AdapterUtil<FeedbackPostUser>
     private lateinit var adapterFeedbackValue : AdapterUtil<FeedbackPostUserValue>
     private val viewModel: FeedbackViewModel by lazy{
@@ -40,10 +46,31 @@ class PostDetailActivity : AppCompatActivity() {
         title = "Post Detail"
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        sharedPrefUtil = SharedPrefUtil()
+        sharedPrefUtil.start(this, ConstantAuth.CONSTANT_PREFERENCE)
+        authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY) as String
 
         if(intent.getStringExtra(ConstantPost.CONSTANT_ID_POST) != null){
+            //get key post owner
+            if(intent.hasExtra(ConstantPost.CONSTANT_POST_OWNER_KEY)){
+                idPostOwner = intent.getStringExtra(ConstantPost.CONSTANT_POST_OWNER_KEY) as String
+                //post is created by user who loged in
+                Log.d("authKey", "$authKey - $idPostOwner")
+                if(authKey == idPostOwner){
+                    binding.buttonGiveFeedback.visibility = View.GONE
+                    binding.buttonEditPost.visibility = View.VISIBLE
+                }else{
+                    binding.buttonGiveFeedback.visibility = View.VISIBLE
+                    binding.buttonEditPost.visibility = View.GONE
+                }
+            }
             idPost = intent.getStringExtra(ConstantPost.CONSTANT_ID_POST) as String
-            //give feedback
+
+            //edit post
+            binding.buttonEditPost.setOnClickListener {
+//                startActivity(Intent(this, EditPostActivity::class.java))
+            }
+            //intent to activity give feedback
             binding.buttonGiveFeedback.setOnClickListener {
                 startActivity(
                     Intent(
@@ -159,11 +186,21 @@ class PostDetailActivity : AppCompatActivity() {
         })
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        idPostOwner = intent.getStringExtra(ConstantPost.CONSTANT_POST_OWNER_KEY) as String
+        if(authKey != idPostOwner){
+            menuInflater.inflate(R.menu.menu_report, menu)
+        }
+        return true
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == android.R.id.home){
             finish()
             return true
+        }else if(item.itemId == R.id.menu_report){
+            startActivity(Intent(this, ReportActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }

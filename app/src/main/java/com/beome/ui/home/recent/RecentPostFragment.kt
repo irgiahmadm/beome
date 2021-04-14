@@ -101,6 +101,8 @@ class RecentPostFragment : Fragment() {
             }, { _, post ->
                 val intent = Intent(requireContext(), PostDetailActivity::class.java)
                 intent.putExtra(ConstantPost.CONSTANT_ID_POST, post.post?.idPost.toString())
+                intent.putExtra(ConstantPost.CONSTANT_POST_OWNER_KEY, post.post?.authKey)
+                intent.putExtra(ConstantPost.CONSTANT_POST_IS_LIKED, post.isLiked)
                 startActivity(intent)
             })
         viewModel.getListRecentPost(authKey).observe(viewLifecycleOwner, {
