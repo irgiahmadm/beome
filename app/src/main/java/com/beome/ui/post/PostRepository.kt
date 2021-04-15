@@ -10,9 +10,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
@@ -20,6 +18,7 @@ import kotlin.coroutines.CoroutineContext
 class PostRepository(private val scope: CoroutineScope) {
     val likePostState = MutableLiveData<NetworkState>()
     val editPostState = MutableLiveData<NetworkState>()
+    val deletePostState = MutableLiveData<NetworkState>()
 
 
     fun likePost(idPost : String, likedBy: String){
@@ -67,15 +66,33 @@ class PostRepository(private val scope: CoroutineScope) {
 
     fun updatePost(idPost : String, title : String, description : String){
         scope.launch {
-            try {
-                editPostState.postValue(NetworkState.LOADING)
-                val docPostRef = Firebase.firestore.collection("post").document(idPost)
-                val data = hashMapOf("title" to title, "description" to description)
-                docPostRef.set(data, SetOptions.merge()).await()
-                editPostState.postValue(NetworkState.SUCCESS)
-            }catch (e : Exception){
-                Log.d("err_update_post", "updatePost: ${e.message}")
-                editPostState.postValue(NetworkState.FAILED)
+            withContext(Dispatchers.IO){
+                try {
+                    editPostState.postValue(NetworkState.LOADING)
+                    val docPostRef = Firebase.firestore.collection("post").document(idPost)
+                    val data = hashMapOf("title" to title, "description" to description)
+                    docPostRef.set(data, SetOptions.merge()).await()
+                    editPostState.postValue(NetworkState.SUCCESS)
+                }catch (e : Exception){
+                    Log.d("err_update_post", "updatePost: ${e.message}")
+                    editPostState.postValue(NetworkState.FAILED)
+                }
+            }
+        }
+    }
+
+    fun deletePost(idPost: String){
+        scope.launch {
+            withContext(Dispatchers.IO){
+                try {
+                    deletePostState.postValue(NetworkState.LOADING)
+                    val docPostRef = Firebase.firestore.collection("post").document(idPost)
+                    docPostRef.update("status", 0).await()
+                    deletePostState.postValue(NetworkState.SUCCESS)
+                }catch (e : Exception){
+                    Log.d("err_delete_post", "deletePost: ${e.message}")
+                    deletePostState.postValue(NetworkState.FAILED)
+                }
             }
         }
     }

@@ -16,7 +16,8 @@ class PostViewModel : ViewModel() {
     private val isPostLiked = MutableLiveData<Boolean>()
     private val postRepo = PostRepository(viewModelScope)
     lateinit var editPostState : LiveData<NetworkState>
-    private val _editPostRepo = MutableLiveData<PostRepository>()
+    lateinit var deletePostState : LiveData<NetworkState>
+    private val _postRepo = MutableLiveData<PostRepository>()
 
     fun getListLikedPost(idUser: String): LiveData<List<Post>> {
 
@@ -51,11 +52,18 @@ class PostViewModel : ViewModel() {
 
 
     fun setUpUpdatePost(){
-        editPostState = Transformations.switchMap(_editPostRepo, PostRepository::editPostState)
-        _editPostRepo.postValue(postRepo)
+        editPostState = Transformations.switchMap(_postRepo, PostRepository::editPostState)
+        _postRepo.postValue(postRepo)
     }
 
     fun updatePost(idPost: String, title : String, description : String) =
         postRepo.updatePost(idPost, title, description)
 
+    fun setUpDeletePost(){
+        deletePostState = Transformations.switchMap(_postRepo, PostRepository::deletePostState)
+        _postRepo.postValue(postRepo)
+    }
+
+    fun deletePost(idPost: String) =
+        postRepo.deletePost(idPost)
 }

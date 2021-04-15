@@ -72,4 +72,7 @@
     <string name="people">People</string>
     <string name="search_hint">Search...</string>
     <string name="edit_post">Edit Post</string>
+    <string name="delete">Delete</string>
+    <string name="delete_confirmation">Delete Confirmation</string>
+    <string name="delete_post_message">Are your sure want to delete this post?</string>
 </resources>

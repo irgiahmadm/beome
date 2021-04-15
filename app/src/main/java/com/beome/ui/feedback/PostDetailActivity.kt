@@ -1,6 +1,7 @@
 package com.beome.ui.feedback
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +9,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,10 +20,13 @@ import com.beome.constant.ConstantPost
 import com.beome.databinding.ActivityPostDetailBinding
 import com.beome.model.FeedbackPostUser
 import com.beome.model.FeedbackPostUserValue
+import com.beome.model.Post
 import com.beome.ui.post.EditPostActivity
+import com.beome.ui.post.PostViewModel
 import com.beome.ui.profile.ProfileUserPreviewActivity
 import com.beome.ui.report.ReportActivity
 import com.beome.utilities.AdapterUtil
+import com.beome.utilities.NetworkState
 import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -39,6 +45,9 @@ class PostDetailActivity : AppCompatActivity() {
     private lateinit var adapterFeedbackValue : AdapterUtil<FeedbackPostUserValue>
     private val viewModel: FeedbackViewModel by lazy{
         ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(FeedbackViewModel::class.java)
+    }
+    private val viewModelPost: PostViewModel by lazy{
+        ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(PostViewModel::class.java)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,9 +102,56 @@ class PostDetailActivity : AppCompatActivity() {
             }
             getDetailPost()
             getListFeedback()
+            getStateDeletePost()
         }
     }
 
+    private fun getStateDeletePost(){
+        viewModelPost.setUpDeletePost()
+        viewModelPost.deletePostState.observe(this,{
+            when(it){
+                NetworkState.LOADING -> {
+
+                }
+                NetworkState.SUCCESS -> {
+                    Toast.makeText(
+                        this,
+                        "Post deleted",
+                        Toast.LENGTH_SHORT
+                    )
+                    finish()
+                }
+                NetworkState.FAILED -> {
+                    Toast.makeText(this, "Failed to update post", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(
+                        this,
+                        "Failed to update post, something went wrong",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+    }
+
+    private fun deletePostConfirmation(){
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.apply {
+            setCancelable(true)
+            setTitle(getString(R.string.delete_confirmation))
+            setMessage(getString(R.string.delete_post_message))
+            setPositiveButton(
+                getString(R.string.delete)
+            ) { _, _ ->
+                viewModelPost.deletePost(idPost)
+            }
+            setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        }
+        alertDialog.show()
+    }
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun getListFeedback(){
@@ -191,10 +247,13 @@ class PostDetailActivity : AppCompatActivity() {
         })
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         idPostOwner = intent.getStringExtra(ConstantPost.CONSTANT_POST_OWNER_KEY) as String
         if(authKey != idPostOwner){
             menuInflater.inflate(R.menu.menu_report, menu)
+        }else{
+            menuInflater.inflate(R.menu.menu_delete, menu)
         }
         return true
     }
@@ -206,6 +265,8 @@ class PostDetailActivity : AppCompatActivity() {
             return true
         }else if(item.itemId == R.id.menu_report){
             startActivity(Intent(this, ReportActivity::class.java))
+        }else if(item.itemId == R.id.menu_delete){
+            deletePostConfirmation()
         }
         return super.onOptionsItemSelected(item)
     }
