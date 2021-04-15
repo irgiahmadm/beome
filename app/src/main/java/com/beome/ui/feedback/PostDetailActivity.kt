@@ -17,6 +17,7 @@ import com.beome.constant.ConstantPost
 import com.beome.databinding.ActivityPostDetailBinding
 import com.beome.model.FeedbackPostUser
 import com.beome.model.FeedbackPostUserValue
+import com.beome.ui.post.EditPostActivity
 import com.beome.ui.profile.ProfileUserPreviewActivity
 import com.beome.ui.report.ReportActivity
 import com.beome.utilities.AdapterUtil
@@ -55,7 +56,6 @@ class PostDetailActivity : AppCompatActivity() {
             if(intent.hasExtra(ConstantPost.CONSTANT_POST_OWNER_KEY)){
                 idPostOwner = intent.getStringExtra(ConstantPost.CONSTANT_POST_OWNER_KEY) as String
                 //post is created by user who loged in
-                Log.d("authKey", "$authKey - $idPostOwner")
                 if(authKey == idPostOwner){
                     binding.buttonGiveFeedback.visibility = View.GONE
                     binding.buttonEditPost.visibility = View.VISIBLE
@@ -68,7 +68,12 @@ class PostDetailActivity : AppCompatActivity() {
 
             //edit post
             binding.buttonEditPost.setOnClickListener {
-//                startActivity(Intent(this, EditPostActivity::class.java))
+                startActivity(
+                    Intent(
+                        this,
+                        EditPostActivity::class.java
+                    ).putExtra(ConstantPost.CONSTANT_ID_POST, idPost)
+                )
             }
             //intent to activity give feedback
             binding.buttonGiveFeedback.setOnClickListener {

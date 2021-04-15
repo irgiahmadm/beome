@@ -3,9 +3,11 @@ package com.beome.ui.post
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.beome.model.LikedPost
+import com.beome.model.Post
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -15,10 +17,9 @@ import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
-class PostRepository(coroutineContext: CoroutineContext) {
-    private val likePostState = MutableLiveData<NetworkState>()
-    private val job= Job()
-    private val scope = CoroutineScope(coroutineContext+job)
+class PostRepository(private val scope: CoroutineScope) {
+    val likePostState = MutableLiveData<NetworkState>()
+    val editPostState = MutableLiveData<NetworkState>()
 
 
     fun likePost(idPost : String, likedBy: String){
@@ -59,11 +60,24 @@ class PostRepository(coroutineContext: CoroutineContext) {
             likePostState.postValue(NetworkState.FAILED)
         }
     }
-    fun getLikedPost() : CollectionReference{
-        return Firebase.firestore.collection("liked_post")
-    }
 
     fun getListPost() : CollectionReference{
         return Firebase.firestore.collection("post")
     }
+
+    fun updatePost(idPost : String, title : String, description : String){
+        scope.launch {
+            try {
+                editPostState.postValue(NetworkState.LOADING)
+                val docPostRef = Firebase.firestore.collection("post").document(idPost)
+                val data = hashMapOf("title" to title, "description" to description)
+                docPostRef.set(data, SetOptions.merge()).await()
+                editPostState.postValue(NetworkState.SUCCESS)
+            }catch (e : Exception){
+                Log.d("err_update_post", "updatePost: ${e.message}")
+                editPostState.postValue(NetworkState.FAILED)
+            }
+        }
+    }
+
 }

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.beome.model.LikedPostList
 import com.beome.model.Post
 import com.beome.ui.post.PostRepository
@@ -13,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 class FollowingPostViewModel : ViewModel(){
 
     private val listFollowingPost = MutableLiveData<List<LikedPostList>>()
-    private val postRepo = PostRepository(Dispatchers.IO)
+    private val postRepo = PostRepository(viewModelScope)
     private val followRepo = FollowingPostRepository()
 
     fun getFollowingPost(followingId : String) : LiveData<List<LikedPostList>>{

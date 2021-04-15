@@ -19,7 +19,7 @@ class RecentPostViewModel : ViewModel() {
     private val listLikedPost = MutableLiveData<List<LikedPostList>>()
     private val listRecenPost = MutableLiveData<List<LikedPostList>>()
     private val recentPostRepo = RecentPostRepository(Dispatchers.IO)
-    private val postRepo = PostRepository(Dispatchers.IO)
+    private val postRepo = PostRepository(viewModelScope)
 
     fun getListRecentPost(idUser: String) : LiveData<List<LikedPostList>>{
         recentPostRepo.getRecentPost()
