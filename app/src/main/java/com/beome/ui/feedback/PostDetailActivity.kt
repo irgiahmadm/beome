@@ -1,7 +1,6 @@
 package com.beome.ui.feedback
 
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -20,7 +18,7 @@ import com.beome.constant.ConstantPost
 import com.beome.databinding.ActivityPostDetailBinding
 import com.beome.model.FeedbackPostUser
 import com.beome.model.FeedbackPostUserValue
-import com.beome.model.Post
+import com.beome.model.FeedbackSummary
 import com.beome.ui.post.EditPostActivity
 import com.beome.ui.post.PostViewModel
 import com.beome.ui.profile.ProfileUserPreviewActivity
@@ -32,6 +30,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.item_feedback_component.view.*
+import kotlinx.android.synthetic.main.item_feedback_summary.view.*
 import kotlinx.android.synthetic.main.item_list_feedback.view.*
 import java.text.SimpleDateFormat
 
@@ -43,6 +42,7 @@ class PostDetailActivity : AppCompatActivity() {
     private lateinit var authKey : String
     private lateinit var adapterFeedbackUser : AdapterUtil<FeedbackPostUser>
     private lateinit var adapterFeedbackValue : AdapterUtil<FeedbackPostUserValue>
+    private lateinit var adapterFeedbackSummary : AdapterUtil<FeedbackSummary>
     private val viewModel: FeedbackViewModel by lazy{
         ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(FeedbackViewModel::class.java)
     }
@@ -203,18 +203,39 @@ class PostDetailActivity : AppCompatActivity() {
             binding.recyclerViewReview.adapter = adapterFeedbackUser
 
             //recap feedback
-            var listOfFeedbackValue = arrayListOf<FeedbackPostUserValue>()
+            val listOfFeedbackValue = arrayListOf<FeedbackPostUserValue>()
             for (i in it.indices){
                 listOfFeedbackValue.addAll(it[i].feedbackValue)
             }
-            var huhu = listOfFeedbackValue.groupBy { feedbackPostVal ->
-                feedbackPostVal.componentName
-            }.mapValues {mapEntry ->
-                mapEntry.value.map { obj -> obj.componentValue }.average()
-            }
-
+            setFeedbackSummary(listOfFeedbackValue)
         })
 
+    }
+
+    private fun setFeedbackSummary(listFeedback : ArrayList<FeedbackPostUserValue>){
+        Log.d("listfeedback", listFeedback.toString())
+        val mapFeedback = listFeedback.groupBy { feedbackPostVal ->
+            feedbackPostVal.componentName
+        }.mapValues {mapEntry ->
+            mapEntry.value.map { obj -> obj.componentValue }.average()
+        }
+
+        val listRecapFeedback = arrayListOf<FeedbackSummary>()
+        for((key, value) in mapFeedback){
+            val feedbackSummary = FeedbackSummary(key, value)
+            listRecapFeedback.add(feedbackSummary)
+        }
+
+        adapterFeedbackSummary =
+            AdapterUtil(R.layout.item_feedback_summary, listRecapFeedback, { _, view, feedbackSummary ->
+                view.textViewFeedbackComponentSummary.text = feedbackSummary.feedbackComponent
+                view.ratingBarFeedbackSummary.rating = feedbackSummary.feedbackValue.toFloat()
+                view.textViewValueFeedbackSummary.text = String.format("%.1f", feedbackSummary.feedbackValue)
+            }, { _, _ ->
+
+            })
+        binding.recyclerViewFeedbackSummary.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerViewFeedbackSummary.adapter = adapterFeedbackSummary
     }
 
     @SuppressLint("SimpleDateFormat")
