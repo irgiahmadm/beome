@@ -76,4 +76,5 @@
     <string name="delete_confirmation">Delete Confirmation</string>
     <string name="delete_post_message">Are your sure want to delete this post?</string>
     <string name="feedback_summary">Feedback Summary</string>
+    <string name="already_give_feedback">You give feedback to this post already</string>
 </resources>

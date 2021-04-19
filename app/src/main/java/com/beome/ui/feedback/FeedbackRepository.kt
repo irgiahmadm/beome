@@ -26,7 +26,7 @@ class FeedbackRepository(private val scope: CoroutineScope) {
         return Firebase.firestore.collection("feedback_component")
     }
 
-    fun getListFeedbackUser(idPost: String): CollectionReference {
+    fun getFeedbackUsers(idPost: String): CollectionReference {
         return Firebase.firestore.collection("feedback_post/$idPost/feedback_post_user")
     }
 

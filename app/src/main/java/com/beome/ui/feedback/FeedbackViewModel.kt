@@ -4,15 +4,12 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.beome.model.*
 import com.beome.utilities.NetworkState
-import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ktx.toObject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class FeedbackViewModel : ViewModel() {
     private val detailPost = MutableLiveData<Post>()
     private val listFeedbackPost = MutableLiveData<List<FeedbackPostUser>>()
+    private val isGiveFeedbackPost = MutableLiveData<Boolean>()
     private val listFeedbackComponent = MutableLiveData<List<ComponentFeedbackPost>>()
     private val feedbackRepo = FeedbackRepository(viewModelScope)
     lateinit var addUserFeedbackState: LiveData<NetworkState>
@@ -41,7 +38,7 @@ class FeedbackViewModel : ViewModel() {
     }
 
     fun getListFeedbackPost(idPost: String): LiveData<List<FeedbackPostUser>> {
-        feedbackRepo.getListFeedbackUser(idPost)
+        feedbackRepo.getFeedbackUsers(idPost)
             .addSnapshotListener { listFeedbackUser, errorUser ->
                 errorUser?.let {
                     Log.e("err_get_list_fdbck", errorUser.localizedMessage!!)
@@ -58,6 +55,26 @@ class FeedbackViewModel : ViewModel() {
                 listFeedbackPost.value = tempListFeedbackUser
             }
         return listFeedbackPost
+    }
+
+    fun isUserGiveFeedback(idPost: String, idUser: String) : LiveData<Boolean>{
+        feedbackRepo.getFeedbackUsers(idPost)
+            .whereEqualTo("authKey", idUser)
+            .addSnapshotListener { value, error ->
+                error?.let {
+                    Log.e("err_get_fdbck_usr", error.localizedMessage!!)
+                }
+                var tempIsUserGiveFeedback = false
+                value?.let {
+                    for (document in value) {
+                        if(document.exists()){
+                            tempIsUserGiveFeedback = true
+                        }
+                    }
+                }
+                isGiveFeedbackPost.value = tempIsUserGiveFeedback
+            }
+        return isGiveFeedbackPost
     }
 
 

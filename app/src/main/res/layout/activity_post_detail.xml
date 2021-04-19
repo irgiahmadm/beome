@@ -214,15 +214,14 @@
             android:id="@+id/textViewLikeCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:text="@string/zero_value"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imageViewLikeButton"
-            app:layout_constraintStart_toStartOf="@+id/imageViewLikeButton"
-            app:layout_constraintTop_toBottomOf="@+id/imageViewLikeButton" />
+            app:layout_constraintEnd_toEndOf="@+id/imageViewLikeInactiveButton"
+            app:layout_constraintStart_toStartOf="@+id/imageViewLikeInactiveButton"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewLikeInactiveButton" />
 
         <ImageView
-            android:id="@+id/imageViewLikeButton"
+            android:id="@+id/imageViewLikeInactiveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -230,6 +229,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_inactive_like" />
+
+        <ImageView
+            android:id="@+id/imageViewLikeActiveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_active_like" />
 
         <Button
             android:id="@+id/buttonGiveFeedback"
@@ -243,7 +252,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/textViewLikeCount"
             app:layout_constraintEnd_toStartOf="@+id/textViewLikeCount"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageViewLikeButton" />
+            app:layout_constraintTop_toTopOf="@+id/imageViewLikeInactiveButton" />
 
         <Button
             android:id="@+id/buttonEditPost"
@@ -254,9 +263,24 @@
             android:background="@drawable/background_rounded_button"
             android:text="@string/edit_post"
             android:textColor="@color/white"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textViewLikeCount"
             app:layout_constraintEnd_toStartOf="@+id/textViewLikeCount"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageViewLikeButton" />
+            app:layout_constraintTop_toTopOf="@+id/imageViewLikeInactiveButton" />
+        <TextView
+            android:id="@+id/textViewAlreadyGiveFeedback"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="32dp"
+            android:text="@string/already_give_feedback"
+            android:textColor="@color/black"
+            android:elevation="2dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewLikeCount"
+            app:layout_constraintEnd_toStartOf="@+id/textViewLikeCount"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageViewLikeInactiveButton" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

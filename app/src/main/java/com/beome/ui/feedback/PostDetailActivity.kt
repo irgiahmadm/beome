@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -40,6 +41,7 @@ class PostDetailActivity : AppCompatActivity() {
     private lateinit var idPostOwner : String
     private lateinit var sharedPrefUtil: SharedPrefUtil
     private lateinit var authKey : String
+    private var isLiked = false
     private lateinit var adapterFeedbackUser : AdapterUtil<FeedbackPostUser>
     private lateinit var adapterFeedbackValue : AdapterUtil<FeedbackPostUserValue>
     private lateinit var adapterFeedbackSummary : AdapterUtil<FeedbackSummary>
@@ -100,9 +102,35 @@ class PostDetailActivity : AppCompatActivity() {
                     binding.giveFeedbackSection.visibility = View.VISIBLE
                 }
             }
+            if(intent.hasExtra(ConstantPost.CONSTANT_POST_IS_LIKED)){
+                isLiked = intent.getBooleanExtra(ConstantPost.CONSTANT_POST_IS_LIKED, false)
+            }
+            Log.d("IS_LIKED_DETAIL", isLiked.toString())
+            likeUnlikeAction()
+            if(isLiked){
+                binding.imageViewLikeInactiveButton.visibility = View.INVISIBLE
+                binding.imageViewLikeActiveButton.visibility = View.VISIBLE
+            }else{
+                binding.imageViewLikeInactiveButton.visibility = View.VISIBLE
+                binding.imageViewLikeActiveButton.visibility = View.INVISIBLE
+            }
             getDetailPost()
             getListFeedback()
             getStateDeletePost()
+            checkUserGiveFeedbackAlready()
+        }
+    }
+
+    private fun likeUnlikeAction(){
+        binding.imageViewLikeInactiveButton.setOnClickListener {
+            viewModelPost.likePost(idPost, authKey)
+            binding.imageViewLikeInactiveButton.visibility = View.INVISIBLE
+            binding.imageViewLikeActiveButton.visibility = View.VISIBLE
+        }
+        binding.imageViewLikeActiveButton.setOnClickListener {
+            viewModelPost.unlikePost(idPost, authKey)
+            binding.imageViewLikeInactiveButton.visibility = View.VISIBLE
+            binding.imageViewLikeActiveButton.visibility = View.INVISIBLE
         }
     }
 
@@ -151,6 +179,19 @@ class PostDetailActivity : AppCompatActivity() {
             }
         }
         alertDialog.show()
+    }
+
+    private fun checkUserGiveFeedbackAlready(){
+        viewModel.isUserGiveFeedback(idPost, authKey).observe(this, {
+            if(it){
+                binding.textViewAlreadyGiveFeedback.visibility = View.VISIBLE
+                binding.buttonEditPost.visibility = View.GONE
+                binding.buttonGiveFeedback.visibility = View.GONE
+            }else{
+                binding.buttonGiveFeedback.visibility = View.VISIBLE
+                binding.buttonEditPost.visibility = View.GONE
+            }
+        })
     }
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
