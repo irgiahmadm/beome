@@ -78,7 +78,12 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
             }
             //editprofile action
             binding.buttonEditProfile.setOnClickListener {
-                //TODO intent to edit profile
+                startActivity(
+                    Intent(this, EditProfileActivity::class.java).putExtra(
+                        ConstantAuth.CONSTANT_AUTH_KEY,
+                        authKeyUserLogedIn
+                    )
+                )
             }
             getProfileUser()
             getListPost()

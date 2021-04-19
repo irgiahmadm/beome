@@ -184,10 +184,11 @@ class PostDetailActivity : AppCompatActivity() {
     private fun checkUserGiveFeedbackAlready(){
         viewModel.isUserGiveFeedback(idPost, authKey).observe(this, {
             if(it){
-                binding.textViewAlreadyGiveFeedback.visibility = View.VISIBLE
+                binding.buttonAlreadyGiveFeedback.visibility = View.VISIBLE
                 binding.buttonEditPost.visibility = View.GONE
                 binding.buttonGiveFeedback.visibility = View.GONE
             }else{
+                binding.buttonAlreadyGiveFeedback.visibility = View.INVISIBLE
                 binding.buttonGiveFeedback.visibility = View.VISIBLE
                 binding.buttonEditPost.visibility = View.GONE
             }

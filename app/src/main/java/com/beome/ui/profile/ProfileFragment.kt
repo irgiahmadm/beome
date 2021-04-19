@@ -66,6 +66,14 @@ class ProfileFragment : Fragment() {
             authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY) as String
             getProfileUser()
             getListPost()
+            binding.buttonEditProfile.setOnClickListener {
+                startActivity(
+                    Intent(requireContext(), EditProfileActivity::class.java).putExtra(
+                        ConstantAuth.CONSTANT_AUTH_KEY,
+                        authKey
+                    )
+                )
+            }
         }
         return binding.root
     }
