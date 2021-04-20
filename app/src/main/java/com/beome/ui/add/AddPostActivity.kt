@@ -1,6 +1,7 @@
 package com.beome.ui.add
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -25,9 +26,7 @@ import com.beome.databinding.ActivityAddPostBinding
 import com.beome.model.ComponentFeedbackPost
 import com.beome.model.Post
 import com.beome.ui.authentication.login.LoginActivity
-import com.beome.utilities.GlobalHelper
-import com.beome.utilities.NetworkState
-import com.beome.utilities.SharedPrefUtil
+import com.beome.utilities.*
 import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.model.Image
@@ -301,19 +300,18 @@ class AddPostActivity : AppCompatActivity() {
             binding.textViewChangeImage.visibility = View.VISIBLE
             if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
                 image = ImagePicker.getFirstImageOrNull(data)
-                val selectedBitmap: Bitmap = getBitmap(this, image!!.uri)!!
+                val selectedBitmap: Bitmap = ConverterHelper.getBitmap(this, image!!.uri)!!
                 val selectedImgFile = File(
                     getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                     GlobalHelper.getRandomString(20) + ".jpg"
                 )
-                convertBitmaptoFile(selectedImgFile, selectedBitmap)
+                ConverterHelper.convertBitmaptoFile(selectedImgFile, selectedBitmap)
                 val croppedImgFile = File(
                     getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                     GlobalHelper.getRandomString(20) + ".jpg"
                 )
                 imageCroppedResult = Uri.fromFile(croppedImgFile)
-                openCropActivity(Uri.fromFile(selectedImgFile), Uri.fromFile(croppedImgFile))
-
+                UcropHelper.openCropActivity(Uri.fromFile(selectedImgFile), Uri.fromFile(croppedImgFile), this)
             }
             if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
                 val resultUri = UCrop.getOutput(data)
@@ -326,8 +324,6 @@ class AddPostActivity : AppCompatActivity() {
                 }
             }
         }
-
-
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -357,41 +353,6 @@ class AddPostActivity : AppCompatActivity() {
 
     }
 
-    private fun getBitmap(context: Context, imageUri: Uri): Bitmap? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ImageDecoder.decodeBitmap(
-                ImageDecoder.createSource(
-                    context.contentResolver,
-                    imageUri
-                )
-            )
-        } else {
-            context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
-                BitmapFactory.decodeStream(inputStream)
-            }
-        }
-    }
-
-    private fun convertBitmaptoFile(destinationFile: File, bitmap: Bitmap) {
-        //create a file to write bitmap data
-        destinationFile.createNewFile()   //Convert bitmap to byte array
-        val bos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bos)
-        val bitmapData = bos.toByteArray()   //write the bytes in file
-        val fos = FileOutputStream(destinationFile)
-        fos.write(bitmapData)
-        fos.flush()
-        fos.close()
-    }
-
-    private fun openCropActivity(sourceUri: Uri, destinationUri: Uri) {
-        val options = UCrop.Options()
-        options.setHideBottomControls(true)
-        UCrop.of(sourceUri, destinationUri)
-            .withAspectRatio(1f, 1f)
-            .withOptions(options)
-            .start(this)
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == android.R.id.home){

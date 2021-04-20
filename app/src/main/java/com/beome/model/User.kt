@@ -1,5 +1,7 @@
 package com.beome.model
 
+import java.util.*
+
 data class User(
     var photoProfile : String = "",
     var fullName: String = "",
@@ -11,6 +13,6 @@ data class User(
     var post : Int = 0,
     var authKey: String = "",
     var userStatus : Int = 0,
-    var createdAt: String = "",
-    var updatedAt: String = ""
+    var createdAt: Date = Date(),
+    var updatedAt: Date = Date()
 )

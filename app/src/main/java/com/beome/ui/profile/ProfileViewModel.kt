@@ -1,10 +1,8 @@
 package com.beome.ui.profile
 
+import android.app.Activity
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.beome.model.Follow
 import com.beome.model.LikedPostList
 import com.beome.model.Post
@@ -18,6 +16,7 @@ class ProfileViewModel : ViewModel() {
     private val profileUser = MutableLiveData<User>()
     private val follow = MutableLiveData<Follow>()
     private val profileRepo = ProfileRepository(viewModelScope)
+    private val _profileRepo = MutableLiveData<ProfileRepository>()
     private val listPostUser = MutableLiveData<List<LikedPostList>>()
     private val _userState  = MutableLiveData<NetworkState>()
     val userState : LiveData<NetworkState>
@@ -26,10 +25,20 @@ class ProfileViewModel : ViewModel() {
     private val _listPostState  = MutableLiveData<NetworkState>()
     val listPostState : LiveData<NetworkState>
         get() = _listPostState
+    lateinit var editProfileState : LiveData<NetworkState>
 
     fun followUser(follow: Follow) = profileRepo.followUser(follow)
 
-    fun unFollowUser(followingId : String, followedId: String) = profileRepo.unFollowUser(followingId, followedId)
+    fun unFollowUser(followingId: String, followedId: String) =
+        profileRepo.unFollowUser(followingId, followedId)
+
+    fun setUpEditProfile(){
+        editProfileState = Transformations.switchMap(_profileRepo, ProfileRepository::editProfileState)
+        _profileRepo.postValue(profileRepo)
+    }
+
+    fun editProfile(authKey: String, user: User, actvity : Activity) =
+        profileRepo.updateProfile(authKey, user, actvity)
 
     fun getFollowStatus(authKey: String, followedId: String) : LiveData<NetworkState>{
         Log.d("follow_key", "$authKey - $followedId" )
@@ -69,7 +78,7 @@ class ProfileViewModel : ViewModel() {
                 }
                 var tempUser: User
                 value?.let {
-                    if(value.documents[0].exists()){
+                    if(value.documents.isNotEmpty()){
                         val user = value.documents[0].toObject<User>()
                         tempUser = user!!
                         profileUser.value = tempUser

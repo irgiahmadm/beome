@@ -1,12 +1,18 @@
 package com.beome.ui.profile
 
+import android.app.Activity
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.beome.constant.ConstantAuth
 import com.beome.model.Follow
+import com.beome.model.User
 import com.beome.utilities.NetworkState
+import com.beome.utilities.SharedPrefUtil
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
@@ -14,7 +20,7 @@ import java.lang.Exception
 class ProfileRepository(private val coroutineScope: CoroutineScope) {
     val profileState = MutableLiveData<NetworkState>()
     private val followRef = Firebase.firestore.collection("follow")
-
+    val editProfileState = MutableLiveData<NetworkState>()
 
     fun getUserProfile() : CollectionReference{
         return Firebase.firestore.collection("user")
@@ -79,5 +85,44 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
 
     fun getFollowStatus() : CollectionReference{
         return followRef
+    }
+
+    fun updateProfile(authKey : String, user : User, activity : Activity){
+        coroutineScope.launch {
+            withContext(Dispatchers.IO){
+                try {
+                    val sharedPrefUtil = SharedPrefUtil()
+                    sharedPrefUtil.start(activity,ConstantAuth.CONSTANT_PREFERENCE)
+                    sharedPrefUtil.set(ConstantAuth.CONSTANT_AUTH_USERNAME, user.username)
+                    sharedPrefUtil.set(ConstantAuth.CONSTANT_AUTH_IMAGE, user.photoProfile)
+                    Firebase.firestore.runTransaction {transaction ->
+                        editProfileState.postValue(NetworkState.LOADING)
+                        val docUserRef = Firebase.firestore.collection("user").document(authKey)
+                        val data = hashMapOf(
+                            "photoProfile" to user.photoProfile,
+                            "username" to user.username,
+                            "fullName" to user.fullName,
+                            "email" to user.email,
+                            "birthDate" to user.birthDate,
+                            "updatedAt" to user.updatedAt
+                        )
+                        transaction.set(docUserRef,data, SetOptions.merge())
+                    }.await()
+                    val collectionPostRef = Firebase.firestore.collection("post")
+                    collectionPostRef.whereEqualTo("authKey", sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY))
+                        .get().addOnSuccessListener {
+                            for (document in it){
+                                val docRef = collectionPostRef.document(document.id)
+                                docRef.update("username", user.username)
+                                docRef.update( "imgUser", user.photoProfile)
+                            }
+                        }.await()
+                    editProfileState.postValue(NetworkState.SUCCESS)
+                }catch (e : Exception){
+                    Log.d("err_update_profile", e.message.toString())
+                    editProfileState.postValue(NetworkState.FAILED)
+                }
+            }
+        }
     }
 }

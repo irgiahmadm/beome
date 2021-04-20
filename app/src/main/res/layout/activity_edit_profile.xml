@@ -116,6 +116,13 @@
         android:background="@drawable/background_edit_text"
         android:hint="@string/select_date"
         android:paddingStart="8dp"
-        android:paddingEnd="8dp" />
-
+        android:paddingEnd="8dp"
+        android:focusableInTouchMode="false"/>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"/>
 </LinearLayout>

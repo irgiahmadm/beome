@@ -63,8 +63,8 @@ class SignUpActivity : AppCompatActivity() {
         val birthDate = binding.editTextBirthDate.text.toString()
         val fullname = binding.editTextName.text.toString()
         val authKey = "${GlobalHelper.getRandomString(12)}${System.currentTimeMillis()}"
-        val createdAt = Date().toString()
-        val updatedAt = Date().toString()
+        val createdAt = Date()
+        val updatedAt = Date()
         if(username.isNotEmpty() || email.isNotEmpty() || password.isNotEmpty() || birthDate.isNotEmpty() || fullname.isNotEmpty()){
             val user = User(
                 "",
