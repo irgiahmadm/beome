@@ -184,6 +184,7 @@ class EditProfileActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.VISIBLE
                 }
                 NetworkState.SUCCESS -> {
+                    finish()
                     binding.progressBar.visibility = View.GONE
                 }
                 NetworkState.FAILED -> {

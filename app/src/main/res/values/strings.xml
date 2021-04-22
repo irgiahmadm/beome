@@ -78,4 +78,6 @@
     <string name="feedback_summary">Feedback Summary</string>
     <string name="already_give_feedback">You give feedback to this post already</string>
     <string name="profile_information">Profile information</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
 </resources>
