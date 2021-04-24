@@ -2,6 +2,7 @@ package com.beome.ui.profile
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +27,9 @@ class ChangePasswordActivity : AppCompatActivity() {
         if(intent.hasExtra(ConstantAuth.CONSTANT_AUTH_KEY)){
             authKey = intent.getStringExtra(ConstantAuth.CONSTANT_AUTH_KEY) as String
         }
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        title = "Change Password"
         initUI()
         GlobalHelper.hideShowPassword(binding.editTextNewPassword, binding.imageViewToggleNewPassword)
         GlobalHelper.hideShowPassword(binding.editTextOldPassword, binding.imageViewToggleOldPassword)
@@ -102,5 +106,12 @@ class ChangePasswordActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> finish()
+        }
+        return true
     }
 }
