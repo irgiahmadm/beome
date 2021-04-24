@@ -2,10 +2,12 @@ package com.beome.ui.profile
 
 import android.app.Activity
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.beome.constant.ConstantAuth
 import com.beome.model.Follow
 import com.beome.model.User
+import com.beome.utilities.GlobalHelper
 import com.beome.utilities.NetworkState
 import com.beome.utilities.SharedPrefUtil
 import com.google.firebase.firestore.CollectionReference
@@ -21,6 +23,9 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
     val profileState = MutableLiveData<NetworkState>()
     private val followRef = Firebase.firestore.collection("follow")
     val editProfileState = MutableLiveData<NetworkState>()
+    val oldPasswordState = MutableLiveData<NetworkState>()
+    val changePasswordState = MutableLiveData<NetworkState>()
+    private val userRef = Firebase.firestore.collection("user")
 
     fun getUserProfile() : CollectionReference{
         return Firebase.firestore.collection("user")
@@ -125,4 +130,43 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
             }
         }
     }
+
+    fun getOldPassword(password : String, authKey: String){
+        coroutineScope.launch {
+            withContext(Dispatchers.IO){
+                try {
+                    oldPasswordState.postValue(NetworkState.LOADING)
+                    userRef
+                        .whereEqualTo("password", GlobalHelper.sha256(password))
+                        .whereEqualTo("authKey", authKey).get().addOnSuccessListener {
+                        if(it.documents.isNotEmpty()){
+                            oldPasswordState.postValue(NetworkState.SUCCESS)
+                        }else{
+                            oldPasswordState.postValue(NetworkState.NOT_FOUND)
+                        }
+                    }.addOnFailureListener {
+                        oldPasswordState.postValue(NetworkState.FAILED)
+                    }.await()
+                }catch (e : Exception){
+                    oldPasswordState.postValue(NetworkState.FAILED)
+                    Log.d("err_get_old_pass", e.message.toString())
+                }
+            }
+        }
+    }
+
+    fun changePassword(password : String, authKey: String){
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    changePasswordState.postValue(NetworkState.LOADING)
+                    userRef.document(authKey).update("password", GlobalHelper.sha256(password)).await()
+                    changePasswordState.postValue(NetworkState.SUCCESS)
+                } catch (e: Exception) {
+                    changePasswordState.postValue(NetworkState.FAILED)
+                }
+            }
+        }
+    }
+
 }

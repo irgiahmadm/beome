@@ -146,7 +146,7 @@ class AddPostActivity : AppCompatActivity() {
         }
         if (isFeedBackComponentValid) {
             idPost = GlobalHelper.getRandomString(20)
-            val title = binding.editTextPostTitle.text.toString()
+            val title = binding.editTextPostTitle.text.toString().toLowerCase(Locale.getDefault())
             val desc = binding.editTextPostDesc.text.toString()
             val username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME)!!
             val imageUser = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_IMAGE)!!

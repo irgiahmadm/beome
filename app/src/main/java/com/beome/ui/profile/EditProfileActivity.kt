@@ -79,6 +79,14 @@ class EditProfileActivity : AppCompatActivity() {
             }, year, month, day)
             dpd.show()
         }
+        binding.buttonChangePassword.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    ChangePasswordActivity::class.java
+                ).putExtra(ConstantAuth.CONSTANT_AUTH_KEY, authKey)
+            )
+        }
         getUserData()
         viewModel.setUpEditProfile()
         getStateEditProfile()
@@ -108,7 +116,7 @@ class EditProfileActivity : AppCompatActivity() {
         val fullname = binding.editTextFullname.text.toString()
         val email = binding.editTextEmail.text.toString()
         val dateOfBirth = binding.editTextBirthDate.text.toString()
-        var sendImage = ""
+        var sendImage: String
         when {
             username.isEmpty() -> {
                 binding.editTextUsername.apply {

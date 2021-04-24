@@ -10,6 +10,7 @@ import com.beome.model.Post
 import com.beome.model.User
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.ktx.toObject
+import java.util.*
 
 class SearchViewModel : ViewModel() {
     private val listPost = MutableLiveData<List<LikedPostList>>()
@@ -32,9 +33,10 @@ class SearchViewModel : ViewModel() {
             addedRecentPostList = arrayListOf()
             listPost.value = addedRecentPostList
         }else{
+
             searchRepository.getListPost()
-                .whereGreaterThanOrEqualTo("title", searchQuery)
-                .whereLessThanOrEqualTo("title", searchQuery+ "\uf8ff")
+                .whereGreaterThanOrEqualTo("title", searchQuery.toLowerCase(Locale.getDefault()))
+                .whereLessThanOrEqualTo("title", searchQuery.toLowerCase(Locale.getDefault())+ "\uf8ff")
                 .whereEqualTo("status", 1)
                 .get()
                 .addOnSuccessListener {
@@ -71,8 +73,8 @@ class SearchViewModel : ViewModel() {
             listUser.value = tempListUser
         }else{
             searchRepository.getListUser()
-                .whereGreaterThanOrEqualTo("username", searchQuery)
-                .whereLessThanOrEqualTo("username", searchQuery+ "\uf8ff")
+                .whereGreaterThanOrEqualTo("username", searchQuery.toLowerCase(Locale.getDefault()))
+                .whereLessThanOrEqualTo("username", searchQuery.toLowerCase(Locale.getDefault()) + "\uf8ff")
                 .whereEqualTo("userStatus", 1)
                 .get()
                 .addOnSuccessListener {

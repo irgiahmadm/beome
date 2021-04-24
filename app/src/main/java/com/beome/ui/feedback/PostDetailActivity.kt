@@ -34,6 +34,8 @@ import kotlinx.android.synthetic.main.item_feedback_component.view.*
 import kotlinx.android.synthetic.main.item_feedback_summary.view.*
 import kotlinx.android.synthetic.main.item_list_feedback.view.*
 import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PostDetailActivity : AppCompatActivity() {
     private lateinit var binding : ActivityPostDetailBinding
@@ -290,7 +292,7 @@ class PostDetailActivity : AppCompatActivity() {
                 .thumbnail(Glide.with(this).load(post.imagePost).apply(
                     RequestOptions.bitmapTransform(BlurTransformation(25,3))))
                 .into(binding.imageViewPost)
-            binding.textViewTitle.text = post.title
+            binding.textViewTitle.text = post.title.capitalize(Locale.getDefault())
             binding.textViewDescription.text = post.description
             binding.textViewUsername.text = post.username
             binding.textViewUsername.setOnClickListener {

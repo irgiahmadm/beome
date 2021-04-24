@@ -26,6 +26,8 @@ class ProfileViewModel : ViewModel() {
     val listPostState : LiveData<NetworkState>
         get() = _listPostState
     lateinit var editProfileState : LiveData<NetworkState>
+    lateinit var getOldPasswordState : LiveData<NetworkState>
+    lateinit var changePasswordState : LiveData<NetworkState>
 
     fun followUser(follow: Follow) = profileRepo.followUser(follow)
 
@@ -39,6 +41,18 @@ class ProfileViewModel : ViewModel() {
 
     fun editProfile(authKey: String, user: User, actvity : Activity) =
         profileRepo.updateProfile(authKey, user, actvity)
+
+    fun setUpChangePassword(){
+        getOldPasswordState = Transformations.switchMap(_profileRepo, ProfileRepository::oldPasswordState)
+        changePasswordState = Transformations.switchMap(_profileRepo, ProfileRepository::changePasswordState)
+        _profileRepo.postValue(profileRepo)
+    }
+
+    fun getOldPassword(password : String, authKey : String) =
+        profileRepo.getOldPassword(password, authKey)
+
+    fun changePassword(password: String, authKey: String) = profileRepo.changePassword(password, authKey)
+
 
     fun getFollowStatus(authKey: String, followedId: String) : LiveData<NetworkState>{
         Log.d("follow_key", "$authKey - $followedId" )
