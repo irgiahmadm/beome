@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.beome.constant.ConstantAuth
 import com.beome.databinding.ActivityChangePasswordBinding
+import com.beome.utilities.GlobalHelper
 import com.beome.utilities.NetworkState
 
 class ChangePasswordActivity : AppCompatActivity() {
@@ -26,6 +27,8 @@ class ChangePasswordActivity : AppCompatActivity() {
             authKey = intent.getStringExtra(ConstantAuth.CONSTANT_AUTH_KEY) as String
         }
         initUI()
+        GlobalHelper.hideShowPassword(binding.editTextNewPassword, binding.imageViewToggleNewPassword)
+        GlobalHelper.hideShowPassword(binding.editTextOldPassword, binding.imageViewToggleOldPassword)
     }
 
     private fun initUI(){

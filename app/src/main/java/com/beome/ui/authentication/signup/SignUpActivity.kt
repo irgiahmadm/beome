@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
 import android.util.Patterns
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.beome.databinding.ActivitySignUpBinding
@@ -32,6 +33,8 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         viewModel.setUpRegisterUser()
         getStateRegister()
         binding.buttonSignup.setOnClickListener {
@@ -57,6 +60,7 @@ class SignUpActivity : AppCompatActivity() {
             }, year, month, day)
             dpd.show()
         }
+        GlobalHelper.hideShowPassword(binding.editTextPassword, binding.imageViewTogglePassword)
     }
 
     private fun registerUser(){
@@ -159,5 +163,13 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == android.R.id.home){
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

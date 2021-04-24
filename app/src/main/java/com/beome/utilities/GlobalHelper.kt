@@ -1,7 +1,14 @@
 package com.beome.utilities
 
 import android.app.Activity
+import android.content.Context
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
+import android.view.View
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.legacy.coreutils.R
 import com.esafirm.imagepicker.features.ImagePicker
 import java.security.MessageDigest
 
@@ -41,5 +48,21 @@ object GlobalHelper {
             .single()
             .showCamera(false)
             .start()
+    }
+
+    fun hideShowPassword(editTextPassword : EditText, togglePassword : ImageView){
+        var isPasswordVisible = false
+        togglePassword.setOnClickListener {
+            if(!isPasswordVisible){
+                editTextPassword.transformationMethod = HideReturnsTransformationMethod()
+                togglePassword.setImageResource(com.beome.R.drawable.ic_password_hide)
+                isPasswordVisible = true
+            }else{
+                editTextPassword.transformationMethod = PasswordTransformationMethod()
+                togglePassword.setImageResource(com.beome.R.drawable.ic_password_visible)
+                isPasswordVisible = false
+            }
+
+        }
     }
 }

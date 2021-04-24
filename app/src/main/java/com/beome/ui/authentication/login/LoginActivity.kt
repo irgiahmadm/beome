@@ -21,8 +21,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
         val viewModelFactory = LoginViewModelFactory(this)
         viewModel = ViewModelProvider(this, viewModelFactory).get(LoginViewModel(this)::class.java)
         viewModel.setUpLoginUser()
@@ -33,6 +31,7 @@ class LoginActivity : AppCompatActivity() {
         binding.textViewRegiter.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
+        GlobalHelper.hideShowPassword(binding.editTextPassword, binding.imageViewTogglePassword)
     }
 
     private fun loginUser(){
@@ -71,11 +70,4 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == android.R.id.home){
-            finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
 }
