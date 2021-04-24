@@ -15,6 +15,7 @@ import com.beome.ui.feedback.FeedbackViewModel
 import com.beome.utilities.NetworkState
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import java.util.*
 
 class EditPostActivity : AppCompatActivity() {
     private lateinit var binding : ActivityEditPostBinding
@@ -66,7 +67,8 @@ class EditPostActivity : AppCompatActivity() {
                 }
                 else -> {
                     //edit post
-                    viewModelPost.updatePost(idPost, title.text.toString(), desc.text.toString())
+                    viewModelPost.updatePost(idPost, title.text.toString()
+                        .toLowerCase(Locale.getDefault()), desc.text.toString())
                 }
             }
         }

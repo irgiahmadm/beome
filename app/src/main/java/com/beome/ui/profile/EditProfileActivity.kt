@@ -148,6 +148,12 @@ class EditProfileActivity : AppCompatActivity() {
                     requestFocus()
                 }
             }
+            username != username.toLowerCase(Locale.ROOT) -> {
+                binding.editTextEmail.apply {
+                    error = "Username can not contain capital letters"
+                    requestFocus()
+                }
+            }
             dateOfBirth.isEmpty() -> {
                 binding.editTextBirthDate.apply {
                     error = "Date of birth can not be mpty"

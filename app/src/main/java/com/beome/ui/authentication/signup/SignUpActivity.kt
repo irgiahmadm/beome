@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
+import android.util.Patterns
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.beome.databinding.ActivitySignUpBinding
@@ -31,6 +32,8 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        viewModel.setUpRegisterUser()
+        getStateRegister()
         binding.buttonSignup.setOnClickListener {
             registerUser()
         }
@@ -65,26 +68,74 @@ class SignUpActivity : AppCompatActivity() {
         val authKey = "${GlobalHelper.getRandomString(12)}${System.currentTimeMillis()}"
         val createdAt = Date()
         val updatedAt = Date()
-        if(username.isNotEmpty() || email.isNotEmpty() || password.isNotEmpty() || birthDate.isNotEmpty() || fullname.isNotEmpty()){
-            val user = User(
-                "",
-                fullname,
-                username,
-                email,
-                GlobalHelper.sha256(password),
-                birthDate,
-                0,
-                0,
-                authKey,
-                1,
-                createdAt,
-                updatedAt
-            )
-            viewModel.setUpRegisterUser()
-            viewModel.registerUser(user)
-            getStateRegister()
-        }else{
-            Toast.makeText(this, "Fill all form", Toast.LENGTH_SHORT).show()
+
+        when {
+            username.isNotEmpty() -> {
+                binding.editTextUsername.apply {
+                    error = "Username can not be empty"
+                    requestFocus()
+                }
+            }
+            email.isEmpty() -> {
+                binding.editTextEmail.apply {
+                    error = "Email can not be empty"
+                    requestFocus()
+                }
+            }
+            password.isEmpty() -> {
+                binding.editTextPassword.apply {
+                    error = "Password can not be empty"
+                    requestFocus()
+                }
+            }
+            birthDate.isEmpty() -> {
+                binding.editTextBirthDate.apply {
+                    error = "Pick your birthdate"
+                    requestFocus()
+                }
+            }
+            fullname.isEmpty() -> {
+                binding.editTextName.apply {
+                    error = "Fullname can not be empty"
+                    requestFocus()
+                }
+            }
+            !Patterns.EMAIL_ADDRESS.matcher(binding.editTextEmail.text.toString()).matches() -> {
+                binding.editTextEmail.apply {
+                    error = "Invalid Email Address"
+                    requestFocus()
+                }
+            }
+            username != username.toLowerCase(Locale.ROOT) -> {
+                binding.editTextEmail.apply {
+                    error = "Username can not contain capital letters"
+                    requestFocus()
+                }
+            }
+            username.contains(" ") -> {
+                binding.editTextUsername.apply {
+                    error = "Username can not contain whitespace"
+                    requestFocus()
+                }
+            }
+            else -> {
+                val user = User(
+                    "",
+                    fullname,
+                    username,
+                    email,
+                    GlobalHelper.sha256(password),
+                    birthDate,
+                    0,
+                    0,
+                    authKey,
+                    1,
+                    createdAt,
+                    updatedAt
+                )
+                viewModel.registerUser(user)
+                Toast.makeText(this, "Fill all form", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
