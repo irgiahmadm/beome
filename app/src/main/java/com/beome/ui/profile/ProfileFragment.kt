@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.MainActivity
@@ -188,10 +189,28 @@ class ProfileFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.menu_logout){
-            sharedPrefUtil.clear()
-            startActivity(Intent(requireContext(), MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            showConfirmLogoutDialog()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showConfirmLogoutDialog(){
+        val alertDialog = AlertDialog.Builder(requireContext())
+        alertDialog.apply {
+            setCancelable(true)
+            setTitle(getString(R.string.logout_confirmation))
+            setMessage(getString(R.string.logout_message))
+            setPositiveButton(
+                getString(R.string.logout)
+            ) { _, _ ->
+                sharedPrefUtil.clear()
+                startActivity(Intent(requireContext(), MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            }
+            setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        }
+        alertDialog.show()
     }
 
 }

@@ -68,7 +68,7 @@
     <string name="anything_that_can_be_improve">Anything that can be improve?</string>
     <string name="add_comment">Add comment...</string>
     <string name="belum_login">Anda belum login\nsilahkan login terlebih dahulu</string>
-    <string name="Logout">logout</string>
+    <string name="logout">Logout</string>
     <string name="people">People</string>
     <string name="search_hint">Search...</string>
     <string name="edit_post">Edit Post</string>
@@ -82,4 +82,6 @@
     <string name="new_password">New Password</string>
     <string name="change_password">Change Password</string>
     <string name="signup_desc">Make profile, follow people, and post\nyour best design!</string>
+    <string name="logout_message">Are you sure want to logout from this application?</string>
+    <string name="logout_confirmation">Logout Confirmation</string>
 </resources>

@@ -2,15 +2,16 @@ package com.beome.ui.feedback
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -25,6 +26,7 @@ import com.beome.ui.post.PostViewModel
 import com.beome.ui.profile.ProfileUserPreviewActivity
 import com.beome.ui.report.ReportActivity
 import com.beome.utilities.AdapterUtil
+import com.beome.utilities.GlobalHelper
 import com.beome.utilities.NetworkState
 import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
@@ -35,7 +37,7 @@ import kotlinx.android.synthetic.main.item_feedback_summary.view.*
 import kotlinx.android.synthetic.main.item_list_feedback.view.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class PostDetailActivity : AppCompatActivity() {
     private lateinit var binding : ActivityPostDetailBinding
@@ -66,17 +68,6 @@ class PostDetailActivity : AppCompatActivity() {
 
         if(intent.getStringExtra(ConstantPost.CONSTANT_ID_POST) != null){
             //get key post owner
-            if(intent.hasExtra(ConstantPost.CONSTANT_POST_OWNER_KEY)){
-                idPostOwner = intent.getStringExtra(ConstantPost.CONSTANT_POST_OWNER_KEY) as String
-                //post is created by user who loged in
-                if(authKey == idPostOwner){
-                    binding.buttonGiveFeedback.visibility = View.GONE
-                    binding.buttonEditPost.visibility = View.VISIBLE
-                }else{
-                    binding.buttonGiveFeedback.visibility = View.VISIBLE
-                    binding.buttonEditPost.visibility = View.GONE
-                }
-            }
             idPost = intent.getStringExtra(ConstantPost.CONSTANT_ID_POST) as String
 
             //edit post
@@ -120,6 +111,37 @@ class PostDetailActivity : AppCompatActivity() {
             getListFeedback()
             getStateDeletePost()
             checkUserGiveFeedbackAlready()
+            if(intent.hasExtra(ConstantPost.CONSTANT_POST_OWNER_KEY)){
+                idPostOwner = intent.getStringExtra(ConstantPost.CONSTANT_POST_OWNER_KEY) as String
+                //post is created by user who loged in
+                Log.d("authKey", "$authKey - $idPostOwner")
+                if(authKey == idPostOwner){
+                    binding.buttonGiveFeedback.visibility = View.GONE
+                    binding.buttonEditPost.visibility = View.VISIBLE
+                }else{
+                    binding.buttonGiveFeedback.visibility = View.VISIBLE
+                    binding.buttonEditPost.visibility = View.GONE
+                }
+            }
+            binding.constraintFeedbackSummary.setOnClickListener {
+                if(binding.recyclerViewFeedbackSummary.isGone){
+                    GlobalHelper.slideHideAndShowAnimation(
+                        true,
+                        binding.imageViewExpand,
+                        binding.recyclerViewFeedbackSummary,
+                        binding.recyclerViewFeedbackSummary
+                    )
+                }else{
+                    GlobalHelper.slideHideAndShowAnimation(
+                        false,
+                        binding.imageViewExpand,
+                        binding.recyclerViewFeedbackSummary,
+                        binding.recyclerViewFeedbackSummary
+                    )
+                }
+            }
+
+
         }
     }
 
@@ -138,8 +160,8 @@ class PostDetailActivity : AppCompatActivity() {
 
     private fun getStateDeletePost(){
         viewModelPost.setUpDeletePost()
-        viewModelPost.deletePostState.observe(this,{
-            when(it){
+        viewModelPost.deletePostState.observe(this, {
+            when (it) {
                 NetworkState.LOADING -> {
 
                 }
@@ -185,14 +207,12 @@ class PostDetailActivity : AppCompatActivity() {
 
     private fun checkUserGiveFeedbackAlready(){
         viewModel.isUserGiveFeedback(idPost, authKey).observe(this, {
-            if(it){
+            if (it) {
                 binding.buttonAlreadyGiveFeedback.visibility = View.VISIBLE
-                binding.buttonEditPost.visibility = View.GONE
                 binding.buttonGiveFeedback.visibility = View.GONE
-            }else{
+            } else {
                 binding.buttonAlreadyGiveFeedback.visibility = View.INVISIBLE
                 binding.buttonGiveFeedback.visibility = View.VISIBLE
-                binding.buttonEditPost.visibility = View.GONE
             }
         })
     }
@@ -203,7 +223,7 @@ class PostDetailActivity : AppCompatActivity() {
 
             binding.textViewFeedback.text = "Feedback (${it.size})"
             adapterFeedbackUser =
-                AdapterUtil(R.layout.item_list_feedback, it, {pos, view, item ->
+                AdapterUtil(R.layout.item_list_feedback, it, { pos, view, item ->
                     view.textViewUsernameFeedback.text = item.username
                     view.textViewUsernameFeedback.setOnClickListener {
                         val intent = Intent(this, ProfileUserPreviewActivity::class.java)
@@ -214,6 +234,22 @@ class PostDetailActivity : AppCompatActivity() {
                         SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(item.createdAt)
                     val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
                     view.textViewDateFeedback.text = dateFormatted
+                    view.textViewOptions.setOnClickListener {
+                        val popupMenu = PopupMenu(this, view.textViewOptions)
+                        popupMenu.menuInflater.inflate(R.menu.menu_report, popupMenu.menu)
+                        popupMenu.setOnMenuItemClickListener { item ->
+                            if (item.itemId == R.id.menu_report) {
+                                startActivity(
+                                    Intent(this, ReportActivity::class.java).putExtra(
+                                        ConstantPost.CONSTANT_REPORT,
+                                        ConstantPost.CONSTANT_REPORT_FEEDBACK
+                                    )
+                                )
+                            }
+                            true
+                        }
+                        popupMenu.show()
+                    }
                     if (item.photoProfile.isNullOrEmpty() || item.photoProfile == "null") {
                         Glide.with(this).load(R.drawable.ic_profile)
                             .into(view.imageViewUserFeedback)
@@ -223,20 +259,20 @@ class PostDetailActivity : AppCompatActivity() {
                     }
 
                     view.textViewCommentFeedback.text = item.comment
-                        adapterFeedbackValue = AdapterUtil(
-                            R.layout.item_feedback_component,
-                            it[pos].feedbackValue,
-                            { _, viewValue, itemValue ->
-                                viewValue.textViewComponentReview.text = itemValue.componentName
-                                viewValue.textViewValueFeedback.text =
-                                    itemValue.componentValue.toString()
-                            },
-                            { _, _ ->
+                    adapterFeedbackValue = AdapterUtil(
+                        R.layout.item_feedback_component,
+                        it[pos].feedbackValue,
+                        { _, viewValue, itemValue ->
+                            viewValue.textViewComponentReview.text = itemValue.componentName
+                            viewValue.textViewValueFeedback.text =
+                                itemValue.componentValue.toString()
+                        },
+                        { _, _ ->
 
-                            })
-                        view.rvComponentFeedback.layoutManager =
-                            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-                        view.rvComponentFeedback.adapter = adapterFeedbackValue
+                        })
+                    view.rvComponentFeedback.layoutManager =
+                        LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+                    view.rvComponentFeedback.adapter = adapterFeedbackValue
 
                 }, { _, _ ->
 
@@ -248,7 +284,7 @@ class PostDetailActivity : AppCompatActivity() {
 
             //recap feedback
             val listOfFeedbackValue = arrayListOf<FeedbackPostUserValue>()
-            for (i in it.indices){
+            for (i in it.indices) {
                 listOfFeedbackValue.addAll(it[i].feedbackValue)
             }
             setFeedbackSummary(listOfFeedbackValue)
@@ -256,11 +292,11 @@ class PostDetailActivity : AppCompatActivity() {
 
     }
 
-    private fun setFeedbackSummary(listFeedback : ArrayList<FeedbackPostUserValue>){
+    private fun setFeedbackSummary(listFeedback: ArrayList<FeedbackPostUserValue>){
         Log.d("listfeedback", listFeedback.toString())
         val mapFeedback = listFeedback.groupBy { feedbackPostVal ->
             feedbackPostVal.componentName
-        }.mapValues {mapEntry ->
+        }.mapValues { mapEntry ->
             mapEntry.value.map { obj -> obj.componentValue }.average()
         }
 
@@ -271,26 +307,40 @@ class PostDetailActivity : AppCompatActivity() {
         }
 
         adapterFeedbackSummary =
-            AdapterUtil(R.layout.item_feedback_summary, listRecapFeedback, { _, view, feedbackSummary ->
-                view.textViewFeedbackComponentSummary.text = feedbackSummary.feedbackComponent
-                view.ratingBarFeedbackSummary.rating = feedbackSummary.feedbackValue.toFloat()
-                view.textViewValueFeedbackSummary.text = String.format("%.1f", feedbackSummary.feedbackValue)
-            }, { _, _ ->
+            AdapterUtil(
+                R.layout.item_feedback_summary,
+                listRecapFeedback,
+                { _, view, feedbackSummary ->
+                    view.textViewFeedbackComponentSummary.text = feedbackSummary.feedbackComponent
+                    view.ratingBarFeedbackSummary.rating = feedbackSummary.feedbackValue.toFloat()
+                    view.textViewValueFeedbackSummary.text = String.format(
+                        "%.1f",
+                        feedbackSummary.feedbackValue
+                    )
+                },
+                { _, _ ->
 
-            })
-        binding.recyclerViewFeedbackSummary.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                })
+        binding.recyclerViewFeedbackSummary.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
         binding.recyclerViewFeedbackSummary.adapter = adapterFeedbackSummary
     }
 
     @SuppressLint("SimpleDateFormat")
     private fun getDetailPost(){
         //get data detail
-        viewModel.getPostDetail(idPost).observe(this,{post ->
+        viewModel.getPostDetail(idPost).observe(this, { post ->
             Glide.with(this)
                 .load(post.imagePost)
                 .placeholder(R.drawable.ic_placeholder_image)
-                .thumbnail(Glide.with(this).load(post.imagePost).apply(
-                    RequestOptions.bitmapTransform(BlurTransformation(25,3))))
+                .thumbnail(
+                    Glide.with(this).load(post.imagePost).apply(
+                        RequestOptions.bitmapTransform(BlurTransformation(25, 3))
+                    )
+                )
                 .into(binding.imageViewPost)
             binding.textViewTitle.text = post.title.capitalize(Locale.getDefault())
             binding.textViewDescription.text = post.description
@@ -300,12 +350,14 @@ class PostDetailActivity : AppCompatActivity() {
                 intent.putExtra(ConstantAuth.CONSTANT_AUTH_KEY, post.authKey)
                 startActivity(intent)
             }
-            if(post.imgUser.isNullOrEmpty() || post.imgUser == "null"){
+            if (post.imgUser.isNullOrEmpty() || post.imgUser == "null") {
                 Glide.with(this).load(R.drawable.ic_profile).into(binding.imageViewUser)
-            }else{
+            } else {
                 Glide.with(this).load(post.imgUser).circleCrop().into(binding.imageViewUser)
             }
-            val dateCreated = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(post.createdAt)
+            val dateCreated = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(
+                post.createdAt
+            )
             val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
             binding.textViewDateCreated.text = dateFormatted
             binding.textViewLikeCount.text = post.likeCount.toString()

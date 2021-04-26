@@ -1,14 +1,18 @@
 package com.beome.utilities
 
 import android.app.Activity
-import android.content.Context
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.legacy.coreutils.R
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import com.esafirm.imagepicker.features.ImagePicker
 import java.security.MessageDigest
 
@@ -65,4 +69,41 @@ object GlobalHelper {
 
         }
     }
+
+    fun slideHideAndShowAnimation(visible : Boolean, imageView : View, view : View, viewGroup : ViewGroup){
+        val transition = Fade(Fade.IN)
+        transition.duration = 250
+        transition.addTarget(view)
+        TransitionManager.beginDelayedTransition(viewGroup, transition)
+        if(visible){
+            view.visibility = View.VISIBLE
+            val rotate = RotateAnimation(
+                0f,
+                180f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f
+            )
+            rotate.duration = 300
+            rotate.interpolator = LinearInterpolator()
+            rotate.fillAfter = true
+            imageView.startAnimation(rotate)
+        }else{
+            view.visibility = View.GONE
+            val rotate = RotateAnimation(
+                180f,
+                0f,
+                Animation.RELATIVE_TO_PARENT,
+                0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f
+            )
+            transition.duration = 300
+            rotate.interpolator = LinearInterpolator()
+            rotate.fillAfter = true
+            imageView.startAnimation(rotate)
+        }
+    }
+
 }
