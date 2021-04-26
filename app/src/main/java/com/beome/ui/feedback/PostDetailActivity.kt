@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
 import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
+import com.beome.constant.ConstantReport
 import com.beome.databinding.ActivityPostDetailBinding
 import com.beome.model.FeedbackPostUser
 import com.beome.model.FeedbackPostUserValue
@@ -223,15 +224,15 @@ class PostDetailActivity : AppCompatActivity() {
 
             binding.textViewFeedback.text = "Feedback (${it.size})"
             adapterFeedbackUser =
-                AdapterUtil(R.layout.item_list_feedback, it, { pos, view, item ->
-                    view.textViewUsernameFeedback.text = item.username
+                AdapterUtil(R.layout.item_list_feedback, it, { pos, view, feedback ->
+                    view.textViewUsernameFeedback.text = feedback.username
                     view.textViewUsernameFeedback.setOnClickListener {
                         val intent = Intent(this, ProfileUserPreviewActivity::class.java)
-                        intent.putExtra(ConstantAuth.CONSTANT_AUTH_KEY, item.authKey)
+                        intent.putExtra(ConstantAuth.CONSTANT_AUTH_KEY, feedback.authKey)
                         startActivity(intent)
                     }
                     val dateCreated =
-                        SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(item.createdAt)
+                        SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(feedback.createdAt)
                     val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
                     view.textViewDateFeedback.text = dateFormatted
                     view.textViewOptions.setOnClickListener {
@@ -241,24 +242,24 @@ class PostDetailActivity : AppCompatActivity() {
                             if (item.itemId == R.id.menu_report) {
                                 startActivity(
                                     Intent(this, ReportActivity::class.java).putExtra(
-                                        ConstantPost.CONSTANT_REPORT,
-                                        ConstantPost.CONSTANT_REPORT_FEEDBACK
-                                    )
+                                        ConstantReport.CONSTANT_REPORT,
+                                        ConstantReport.CONSTANT_REPORT_FEEDBACK
+                                    ).putExtra(ConstantReport.CONSTANT_REPORT_KEY,feedback.authKey)
                                 )
                             }
                             true
                         }
                         popupMenu.show()
                     }
-                    if (item.photoProfile.isNullOrEmpty() || item.photoProfile == "null") {
+                    if (feedback.photoProfile.isNullOrEmpty() || feedback.photoProfile == "null") {
                         Glide.with(this).load(R.drawable.ic_profile)
                             .into(view.imageViewUserFeedback)
                     } else {
-                        Glide.with(this).load(item.photoProfile).circleCrop()
+                        Glide.with(this).load(feedback.photoProfile).circleCrop()
                             .into(view.imageViewUserFeedback)
                     }
 
-                    view.textViewCommentFeedback.text = item.comment
+                    view.textViewCommentFeedback.text = feedback.comment
                     adapterFeedbackValue = AdapterUtil(
                         R.layout.item_feedback_component,
                         it[pos].feedbackValue,
