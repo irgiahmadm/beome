@@ -16,6 +16,7 @@ import com.beome.databinding.ComponentDialogReportAccountBinding
 import com.beome.databinding.ComponentDialogReportFeedbackBinding
 import com.beome.databinding.ComponentDialogReportPostBinding
 import com.beome.model.*
+import com.beome.utilities.GlobalHelper
 import com.beome.utilities.NetworkState
 import com.beome.utilities.SharedPrefUtil
 import java.util.*
@@ -78,7 +79,7 @@ class ReportActivity : AppCompatActivity() {
                 val reportDesc = binding.editTextTextReportDetail.text.toString()
                 val createdAt = Date()
                 val updatedAt = Date()
-                val report = ReportDetail(idReport, reportCategory, reason!!, reportDesc, username, imageUser, createdAt, updatedAt)
+                val report = ReportDetail(GlobalHelper.getRandomString(16),idReport, reportCategory, reason!!, reportDesc, username, imageUser, createdAt, updatedAt)
                 when(reportCategory){
                     ConstantReport.CONSTANT_REPORT_FEEDBACK -> {
                         feedbackObject.counter = 1

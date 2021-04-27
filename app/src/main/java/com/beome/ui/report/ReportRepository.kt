@@ -23,12 +23,31 @@ class ReportRepository(private val coroutineScope : CoroutineScope) {
             withContext(Dispatchers.IO){
                 try {
                     stateReportFeedback.postValue(NetworkState.LOADING)
+                    val reportDetail = Firebase.firestore.collection("reported_feedback_detail")
+                    reportDetail.whereEqualTo("username", report.username).get().addOnSuccessListener {
+                        if(it.documents.isEmpty()){
+                            reportDetail.add(report)
+                        }else{
+                            for (document in it){
+                                if(document["reportReason"] != report.reportReason){
+                                    reportDetail.add(report)
+                                    break
+                                }
+                            }
+                        }
+                    }.addOnFailureListener {
+                        Log.d("err_get_report_detail", it.message.toString())
+                        stateReportFeedback.postValue(NetworkState.FAILED)
+                    }.await()
                     Firebase.firestore.runTransaction { transaction ->
                         val reportedFeedbackRef = Firebase.firestore.collection("reported_feedback").document(reportedFeedback.feedback.idFeedback)
-                        val reportDetail = Firebase.firestore.collection("reported_feedback_detail").document()
-                        transaction.set(reportedFeedbackRef, reportedFeedback)
-                        transaction.set(reportDetail, report)
-
+                        if(transaction.get(reportedFeedbackRef).exists()){
+                            val feedback = transaction.get(reportedFeedbackRef)
+                            val updateCounter = feedback["counter"] as Long + 1
+                            transaction.update(reportedFeedbackRef,"counter", updateCounter)
+                        }else{
+                            transaction.set(reportedFeedbackRef, reportedFeedback)
+                        }
                     }.await()
                     stateReportFeedback.postValue(NetworkState.SUCCESS)
                 }catch (e : Exception){

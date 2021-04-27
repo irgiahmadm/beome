@@ -3,6 +3,7 @@ package com.beome.model
 import java.util.*
 
 data class ReportDetail(
+    var reportKey : String = "",
     var idReport: String = "",
     var reportCategory : String = "",
     var reportReason: String = "",

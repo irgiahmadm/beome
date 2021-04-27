@@ -245,7 +245,7 @@ class PostDetailActivity : AppCompatActivity() {
                                     Intent(this, ReportActivity::class.java).putExtra(
                                         ConstantReport.CONSTANT_REPORT,
                                         ConstantReport.CONSTANT_REPORT_FEEDBACK
-                                    ).putExtra(ConstantReport.CONSTANT_REPORT_KEY, feedback.authKey)
+                                    ).putExtra(ConstantReport.CONSTANT_REPORT_KEY, feedback.idFeedback)
                                         .putExtra(
                                             ConstantReport.CONSTANT_REPORT_OBJECT_FEEDBACK,
                                             feedback
