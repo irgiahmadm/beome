@@ -1,7 +1,10 @@
 package com.beome.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+@Parcelize
 data class User(
     var photoProfile : String = "",
     var fullName: String = "",
@@ -15,4 +18,4 @@ data class User(
     var userStatus : Int = 0,
     var createdAt: Date = Date(),
     var updatedAt: Date = Date()
-)
+) : Parcelable

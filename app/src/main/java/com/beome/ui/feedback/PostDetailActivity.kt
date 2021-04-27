@@ -22,6 +22,7 @@ import com.beome.databinding.ActivityPostDetailBinding
 import com.beome.model.FeedbackPostUser
 import com.beome.model.FeedbackPostUserValue
 import com.beome.model.FeedbackSummary
+import com.beome.model.Post
 import com.beome.ui.post.EditPostActivity
 import com.beome.ui.post.PostViewModel
 import com.beome.ui.profile.ProfileUserPreviewActivity
@@ -50,6 +51,7 @@ class PostDetailActivity : AppCompatActivity() {
     private lateinit var adapterFeedbackUser : AdapterUtil<FeedbackPostUser>
     private lateinit var adapterFeedbackValue : AdapterUtil<FeedbackPostUserValue>
     private lateinit var adapterFeedbackSummary : AdapterUtil<FeedbackSummary>
+    private lateinit var postSend : Post
     private val viewModel: FeedbackViewModel by lazy{
         ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(FeedbackViewModel::class.java)
     }
@@ -232,9 +234,8 @@ class PostDetailActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                     val dateCreated =
-                        SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(feedback.createdAt)
-                    val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
-                    view.textViewDateFeedback.text = dateFormatted
+                        SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(feedback.createdAt)
+                    view.textViewDateFeedback.text = dateCreated
                     view.textViewOptions.setOnClickListener {
                         val popupMenu = PopupMenu(this, view.textViewOptions)
                         popupMenu.menuInflater.inflate(R.menu.menu_report, popupMenu.menu)
@@ -244,7 +245,11 @@ class PostDetailActivity : AppCompatActivity() {
                                     Intent(this, ReportActivity::class.java).putExtra(
                                         ConstantReport.CONSTANT_REPORT,
                                         ConstantReport.CONSTANT_REPORT_FEEDBACK
-                                    ).putExtra(ConstantReport.CONSTANT_REPORT_KEY,feedback.authKey)
+                                    ).putExtra(ConstantReport.CONSTANT_REPORT_KEY, feedback.authKey)
+                                        .putExtra(
+                                            ConstantReport.CONSTANT_REPORT_OBJECT_FEEDBACK,
+                                            feedback
+                                        )
                                 )
                             }
                             true
@@ -334,6 +339,7 @@ class PostDetailActivity : AppCompatActivity() {
     private fun getDetailPost(){
         //get data detail
         viewModel.getPostDetail(idPost).observe(this, { post ->
+            postSend = post
             Glide.with(this)
                 .load(post.imagePost)
                 .placeholder(R.drawable.ic_placeholder_image)
@@ -378,13 +384,26 @@ class PostDetailActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == android.R.id.home){
-            finish()
-            return true
-        }else if(item.itemId == R.id.menu_report){
-            startActivity(Intent(this, ReportActivity::class.java))
-        }else if(item.itemId == R.id.menu_delete){
-            deletePostConfirmation()
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+            R.id.menu_report -> {
+                startActivity(
+                    Intent(this, ReportActivity::class.java).putExtra(
+                        ConstantReport.CONSTANT_REPORT,
+                        ConstantReport.CONSTANT_REPORT_POST
+                    ).putExtra(ConstantReport.CONSTANT_REPORT_KEY, postSend.idPost)
+                        .putExtra(
+                            ConstantReport.CONSTANT_REPORT_OBJECT_POST,
+                            postSend
+                        )
+                )
+            }
+            R.id.menu_delete -> {
+                deletePostConfirmation()
+            }
         }
         return super.onOptionsItemSelected(item)
     }

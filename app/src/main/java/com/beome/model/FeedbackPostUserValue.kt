@@ -1,3 +1,7 @@
 package com.beome.model
 
-data class FeedbackPostUserValue(var componentName : String = "", var componentValue : Int = 0)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class FeedbackPostUserValue(var componentName : String = "", var componentValue : Int = 0) : Parcelable

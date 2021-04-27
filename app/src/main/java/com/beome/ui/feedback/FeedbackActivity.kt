@@ -18,6 +18,7 @@ import com.beome.model.ComponentFeedbackSend
 import com.beome.model.FeedbackPostUser
 import com.beome.model.FeedbackPostUserValue
 import com.beome.utilities.AdapterUtil
+import com.beome.utilities.GlobalHelper
 import com.beome.utilities.NetworkState
 import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
@@ -97,13 +98,13 @@ class FeedbackActivity : AppCompatActivity() {
             ) != null
         ) {
             username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME) as String
-            val createdDate = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(Date())
+            val createdDate = Date()
             val tempListFeedbackValue = arrayListOf<FeedbackPostUserValue>()
             for (i in listFeedbackValue.indices) {
                 val feedbackPostUserValue = FeedbackPostUserValue(listFeedbackValue[i].componentName, listFeedbackValue[i].componentValue!!)
                 tempListFeedbackValue.add(feedbackPostUserValue)
             }
-            val feedbackPostUser = FeedbackPostUser(authKey,idPost,username, image, comment, createdDate, 1, tempListFeedbackValue)
+            val feedbackPostUser = FeedbackPostUser(authKey, idPost, GlobalHelper.getRandomString(12), username, image, comment, createdDate, 1, tempListFeedbackValue)
             viewModel.addUserFeedback(idPost, authKey, feedbackPostUser)
         } else {
             Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()

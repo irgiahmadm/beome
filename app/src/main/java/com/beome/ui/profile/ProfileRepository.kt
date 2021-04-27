@@ -122,6 +122,23 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                                 docRef.update( "imgUser", user.photoProfile)
                             }
                         }.await()
+                    val collectionFeedbackRef = Firebase.firestore.collection("reported_feedback")
+                    collectionPostRef.whereEqualTo("authKey", user.authKey).get().addOnSuccessListener {
+                        for (document in it){
+                            val docRef = collectionFeedbackRef.document(document.id)
+                            docRef.update("username", user.username)
+                            docRef.update("imgUser", user.photoProfile)
+                        }
+                    }.await()
+                    //TODO update reported_feedback_detail
+
+                    //TODO update reported_post
+
+                    //TODO update reported_post_detail
+
+                    //TODO update reported_account_detail
+
+                    //TODO update reported account
                     editProfileState.postValue(NetworkState.SUCCESS)
                 }catch (e : Exception){
                     Log.d("err_update_profile", e.message.toString())
