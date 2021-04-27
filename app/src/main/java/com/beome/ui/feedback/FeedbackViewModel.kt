@@ -39,6 +39,7 @@ class FeedbackViewModel : ViewModel() {
 
     fun getListFeedbackPost(idPost: String): LiveData<List<FeedbackPostUser>> {
         feedbackRepo.getFeedbackUsers(idPost)
+            .whereEqualTo("status", 1)
             .addSnapshotListener { listFeedbackUser, errorUser ->
                 errorUser?.let {
                     Log.e("err_get_list_fdbck", errorUser.localizedMessage!!)

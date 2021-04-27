@@ -236,6 +236,11 @@ class PostDetailActivity : AppCompatActivity() {
                     val dateCreated =
                         SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(feedback.createdAt)
                     view.textViewDateFeedback.text = dateCreated
+                    if(authKey == feedback.authKey){
+                        view.textViewOptions.visibility = View.GONE
+                    }else{
+                        view.textViewOptions.visibility = View.VISIBLE
+                    }
                     view.textViewOptions.setOnClickListener {
                         val popupMenu = PopupMenu(this, view.textViewOptions)
                         popupMenu.menuInflater.inflate(R.menu.menu_report, popupMenu.menu)
