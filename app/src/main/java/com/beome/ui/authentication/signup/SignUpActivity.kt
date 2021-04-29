@@ -141,8 +141,22 @@ class SignUpActivity : AppCompatActivity() {
             } else {
                 val email = binding.editTextEmail.text.toString()
                 viewModel.isEmailExist(email)
+
+            }
+        })
+    }
+
+    private fun getStateEmailExist(){
+        viewModel.isEmailExist.observe(this,{
+            if(it){
+                binding.editTextEmail.apply {
+                    error = "Email is used"
+                    requestFocus()
+                }
+            }else{
                 val username = binding.editTextUsername.text.toString()
                 val password = binding.editTextPassword.text.toString()
+                val email = binding.editTextEmail.text.toString()
                 val birthDate = binding.editTextBirthDate.text.toString()
                 val fullname = binding.editTextName.text.toString()
                 val authKey = "${GlobalHelper.getRandomString(12)}${System.currentTimeMillis()}"
@@ -162,18 +176,6 @@ class SignUpActivity : AppCompatActivity() {
                     createdAt,
                     updatedAt
                 )
-            }
-        })
-    }
-
-    private fun getStateEmailExist(){
-        viewModel.isEmailExist.observe(this,{
-            if(it){
-                binding.editTextEmail.apply {
-                    error = "Email is used"
-                    requestFocus()
-                }
-            }else{
                 viewModel.registerUser(user)
             }
         })

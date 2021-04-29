@@ -39,7 +39,6 @@ class LoginActivity : AppCompatActivity() {
         val password = GlobalHelper.sha256(binding.editTextPassword.text.toString())
         if(email.isNotEmpty() || password.isNotEmpty()){
             viewModel.loginUser(email, password)
-
         }else{
             Toast.makeText(this,"Fill all form", Toast.LENGTH_SHORT).show()
         }

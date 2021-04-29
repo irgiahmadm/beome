@@ -45,7 +45,7 @@ class SignupRepository(private val scope : CoroutineScope) {
                     }
                     .addOnFailureListener {
                         Log.d("err_get_email", it.message.toString())
-                    }
+                    }.await()
             }
         }
     }
@@ -60,7 +60,7 @@ class SignupRepository(private val scope : CoroutineScope) {
                     }
                     .addOnFailureListener {
                         Log.d("err_get_email", it.message.toString())
-                    }
+                    }.await()
             }
         }
     }
