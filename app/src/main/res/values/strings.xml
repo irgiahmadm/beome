@@ -84,4 +84,5 @@
     <string name="signup_desc">Make profile, follow people, and post\nyour best design!</string>
     <string name="logout_message">Are you sure want to logout from this application?</string>
     <string name="logout_confirmation">Logout Confirmation</string>
+    <string name="account">Account</string>
 </resources>
