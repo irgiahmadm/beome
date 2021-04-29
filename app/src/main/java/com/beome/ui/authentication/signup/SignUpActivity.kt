@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.InputType
 import android.util.Patterns
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.beome.databinding.ActivitySignUpBinding
 import com.beome.model.User
@@ -22,7 +21,7 @@ class SignUpActivity : AppCompatActivity() {
     private val viewModel: SignupViewModel by lazy {
         ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(SignupViewModel::class.java)
     }
-
+    private lateinit var user : User
     private val c = Calendar.getInstance()
     private val year = c.get(Calendar.YEAR)
     private val month = c.get(Calendar.MONTH)
@@ -35,8 +34,14 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        viewModel.setUpRepoRegister()
         viewModel.setUpRegisterUser()
+        viewModel.setupIsUsernameExist()
+        viewModel.setupIsEmailExist()
+
         getStateRegister()
+        getStateEmailExist()
+        getStateUsernameExist()
         binding.buttonSignup.setOnClickListener {
             registerUser()
         }
@@ -69,12 +74,10 @@ class SignUpActivity : AppCompatActivity() {
         val password = binding.editTextPassword.text.toString()
         val birthDate = binding.editTextBirthDate.text.toString()
         val fullname = binding.editTextName.text.toString()
-        val authKey = "${GlobalHelper.getRandomString(12)}${System.currentTimeMillis()}"
-        val createdAt = Date()
-        val updatedAt = Date()
 
+        viewModel.isUsernameExist(username.toLowerCase(Locale.getDefault()))
         when {
-            username.isNotEmpty() -> {
+            username.isEmpty() -> {
                 binding.editTextUsername.apply {
                     error = "Username can not be empty"
                     requestFocus()
@@ -123,7 +126,29 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
             else -> {
-                val user = User(
+
+            }
+        }
+    }
+
+    private fun getStateUsernameExist(){
+        viewModel.isUsernameExist.observe(this, {
+            if (it) {
+                binding.editTextUsername.apply {
+                    error = "Username is used"
+                    requestFocus()
+                }
+            } else {
+                val email = binding.editTextEmail.text.toString()
+                viewModel.isEmailExist(email)
+                val username = binding.editTextUsername.text.toString()
+                val password = binding.editTextPassword.text.toString()
+                val birthDate = binding.editTextBirthDate.text.toString()
+                val fullname = binding.editTextName.text.toString()
+                val authKey = "${GlobalHelper.getRandomString(12)}${System.currentTimeMillis()}"
+                val createdAt = Date()
+                val updatedAt = Date()
+                user = User(
                     "",
                     fullname,
                     username,
@@ -137,10 +162,21 @@ class SignUpActivity : AppCompatActivity() {
                     createdAt,
                     updatedAt
                 )
-                viewModel.registerUser(user)
-                Toast.makeText(this, "Fill all form", Toast.LENGTH_SHORT).show()
             }
-        }
+        })
+    }
+
+    private fun getStateEmailExist(){
+        viewModel.isEmailExist.observe(this,{
+            if(it){
+                binding.editTextEmail.apply {
+                    error = "Email is used"
+                    requestFocus()
+                }
+            }else{
+                viewModel.registerUser(user)
+            }
+        })
     }
 
     private fun getStateRegister(){
