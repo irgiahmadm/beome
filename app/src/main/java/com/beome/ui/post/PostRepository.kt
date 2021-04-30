@@ -20,7 +20,6 @@ class PostRepository(private val scope: CoroutineScope) {
     val editPostState = MutableLiveData<NetworkState>()
     val deletePostState = MutableLiveData<NetworkState>()
 
-
     fun likePost(idPost : String, likedBy: String){
         scope.launch {
             try {
@@ -28,11 +27,15 @@ class PostRepository(private val scope: CoroutineScope) {
                     likePostState.postValue(NetworkState.LOADING)
                     Log.d("idPost", idPost)
                     val docLikedPostRef = Firebase.firestore.collection("post").document(idPost)
+                    val reportedPostRef = Firebase.firestore.collection("reported_post").document(idPost)
                     val post = transaction.get(docLikedPostRef)
-                    val newLiked = (post.get("likeCount") as Long?)?.plus(1)
-                    Log.d("likecount", newLiked.toString())
+                    val reportedPost = transaction.get(reportedPostRef)
+                    val likeCount = (post.get("likeCount") as Long?)?.plus(1)
+                    val likeCountReport = (reportedPost.get("likeCount") as Long?)?.plus(1)
                     transaction.update(docLikedPostRef, "likedBy", FieldValue.arrayUnion(likedBy))
-                    transaction.update(docLikedPostRef, "likeCount", newLiked)
+                    transaction.update(docLikedPostRef, "likeCount", likeCount)
+                    transaction.update(reportedPostRef, "likedBy", FieldValue.arrayUnion(likedBy))
+                    transaction.update(reportedPostRef, "likeCount", likeCountReport)
                     likePostState.postValue(NetworkState.SUCCESS)
                 }.await()
             }catch (e : Exception){
@@ -47,11 +50,15 @@ class PostRepository(private val scope: CoroutineScope) {
             Firebase.firestore.runTransaction { transaction ->
                 likePostState.postValue(NetworkState.LOADING)
                 val docLikedPostRef = Firebase.firestore.collection("post").document(idPost)
+                val reportedPostRef = Firebase.firestore.collection("reported_post").document(idPost)
                 val post = transaction.get(docLikedPostRef)
-                val newLiked = (post.get("likeCount") as Long?)?.minus(1)
-                Log.d("likecount", newLiked.toString())
+                val reportedPost = transaction.get(reportedPostRef)
+                val likeCount = (post.get("likeCount") as Long?)?.minus(1)
+                val likeCountReported = (reportedPost.get("likeCount") as Long?)?.minus(1)
                 transaction.update(docLikedPostRef, "likedBy", FieldValue.arrayRemove(likedBy))
-                transaction.update(docLikedPostRef, "likeCount", newLiked)
+                transaction.update(docLikedPostRef, "likeCount", likeCount)
+                transaction.update(reportedPostRef, "likedBy", FieldValue.arrayRemove(likedBy))
+                transaction.update(reportedPostRef, "likeCount", likeCountReported)
                 likePostState.postValue(NetworkState.SUCCESS)
             }
         }catch (e : Exception){

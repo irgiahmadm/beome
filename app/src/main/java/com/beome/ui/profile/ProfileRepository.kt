@@ -2,7 +2,6 @@ package com.beome.ui.profile
 
 import android.app.Activity
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.beome.constant.ConstantAuth
 import com.beome.model.Follow
@@ -14,7 +13,6 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
@@ -40,9 +38,13 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                 try {
                     Firebase.firestore.runTransaction {transaction ->
                         val userRef = Firebase.firestore.collection("user").document(follow.followedId)
+                        val reportedUserRef = Firebase.firestore.collection("reported_account").document(follow.followedId)
                         val user = transaction.get(userRef)
+                        val reportedUser = transaction.get(reportedUserRef)
                         val newFollower = user["follower"] as Long + 1
+                        val newFolloweronReport = reportedUser["follower"] as Long + 1
                         transaction.update(userRef,"follower", newFollower)
+                        transaction.update(userRef,"follower", newFolloweronReport)
                         transaction.set(followRef.document(), follow)
                         null
                     }
@@ -66,7 +68,9 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                     if(followQuery.documents.isNotEmpty()){
                         Firebase.firestore.runTransaction {transaction ->
                             val userRef = Firebase.firestore.collection("user").document(followedId)
+                            val reportedUserRef = Firebase.firestore.collection("reported_account").document(followedId)
                             val user = transaction.get(userRef)
+                            val reportedUser = transaction.get(reportedUserRef)
                             //delete follow
                             for (document in followQuery){
                                 Log.d("follow_doc_id", document.id)
@@ -75,15 +79,16 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                                 transaction.delete(follow.reference)
                             }
                             //decrement follower user
-                            val newFollower = user["follower"] as Long - 1
-                            transaction.update(userRef,"follower", newFollower)
+                            val followCounteronReport = reportedUser["follower"] as Long - 1
+                            val followCounter = user["follower"] as Long - 1
+                            transaction.update(userRef,"follower", followCounter)
+                            transaction.update(reportedUserRef,"follower", followCounteronReport)
                             null
                         }.await()
                     }
                 }catch (e : Exception){
                     Log.d("error_follow", e.localizedMessage!!)
                 }
-
             }
         }
     }
