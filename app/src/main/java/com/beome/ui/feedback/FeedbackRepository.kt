@@ -36,16 +36,20 @@ class FeedbackRepository(private val scope: CoroutineScope) {
             .document(idPost)
             .collection("feedback_post_user")
             .document(idUser)
+        userFeedbackPostRef.set(feedback)
         scope.launch {
             withContext(Dispatchers.IO) {
                 try {
                     Firebase.firestore.runTransaction { transaction ->
                         addDataUserState.postValue(NetworkState.LOADING)
                         val docPostRef = Firebase.firestore.collection("post").document(idPost)
+                        val reportedPostRef = Firebase.firestore.collection("reported_post").document(idPost)
+                        val reportedPost = transaction.get(reportedPostRef)
                         val post = transaction.get(docPostRef)
-                        val newFeedback = (post.get("feedbackCount") as Long?)?.plus(1)
-                        userFeedbackPostRef.set(feedback)
-                        transaction.update(docPostRef, "feedbackCount", newFeedback)
+                        val counterFeedback = (post.get("feedbackCount") as Long?)?.plus(1)
+                        val counterFeedbackReported = (reportedPost.get("feedbackCount") as Long?)?.plus(1)
+                        transaction.update(reportedPostRef, "feedbackCount", counterFeedback)
+                        transaction.update(docPostRef, "feedbackCount", counterFeedbackReported)
                         addDataUserState.postValue(NetworkState.SUCCESS)
                     }
                 } catch (e: Exception) {
