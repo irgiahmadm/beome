@@ -4,19 +4,27 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.beome.MainActivity
 import com.beome.R
 import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
+import com.beome.constant.ConstantReport
 import com.beome.databinding.ActivityProfileUserPreviewBinding
 import com.beome.model.Follow
 import com.beome.model.LikedPostList
+import com.beome.model.ReportedAccount
+import com.beome.model.User
 import com.beome.ui.authentication.login.LoginActivity
 import com.beome.ui.feedback.PostDetailActivity
 import com.beome.ui.post.PostViewModel
+import com.beome.ui.report.ReportActivity
+import com.beome.ui.report.ReportViewModel
 import com.beome.utilities.AdapterUtil
 import com.beome.utilities.NetworkState
 import com.beome.utilities.SharedPrefUtil
@@ -30,6 +38,7 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
     private lateinit var authKeyUserPreview : String
     private lateinit var authKeyUserLogedIn : String
     private lateinit var sharedPrefUtil: SharedPrefUtil
+    private lateinit var user : User
     private lateinit var adapterListPost : AdapterUtil<LikedPostList>
     private val viewModel: ProfileViewModel by lazy {
         ViewModelProvider(
@@ -42,6 +51,12 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
             this,
             ViewModelProvider.NewInstanceFactory()
         ).get(PostViewModel::class.java)
+    }
+    private val viewModelReport: ReportViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ViewModelProvider.NewInstanceFactory()
+        ).get(ReportViewModel::class.java)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,16 +73,23 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
             }
         }else{
             authKeyUserLogedIn = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY) as String
-            binding.toolbar.inflateMenu(R.menu.logout_menu)
-            binding.toolbar.setOnMenuItemClickListener {
-                onOptionsItemSelected(it)
-            }
+
             binding.groupSignedIn.visibility = View.VISIBLE
             binding.groupNotSignedIn.visibility = View.GONE
             if(intent.hasExtra(ConstantAuth.CONSTANT_AUTH_KEY)){
                 authKeyUserPreview = intent.getStringExtra(ConstantAuth.CONSTANT_AUTH_KEY) as String
             }
-
+            if(authKeyUserLogedIn == authKeyUserPreview){
+                binding.toolbar.inflateMenu(R.menu.logout_menu)
+                binding.toolbar.setOnMenuItemClickListener {
+                    onOptionsItemSelected(it)
+                }
+            }else{
+                binding.toolbar.inflateMenu(R.menu.menu_report)
+                binding.toolbar.setOnMenuItemClickListener {
+                    onOptionsItemSelected(it)
+                }
+            }
             //follow action
             binding.buttonFollow.setOnClickListener {
                 viewModel.followUser(Follow(authKeyUserLogedIn, authKeyUserPreview))
@@ -102,6 +124,7 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
     private fun getProfileUser(){
         viewModel.getProfileUser(authKeyUserPreview).observe(this,{
             binding.textViewFullname.text = it.fullName
+            user = it
             if(it.photoProfile.isEmpty() || it.photoProfile == "null"){
                 Glide.with(this).load(R.drawable.ic_profile).into(binding.imageViewUserProfile)
             }else{
@@ -240,4 +263,43 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
         })
     }
 
+    private fun showConfirmLogoutDialog(){
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.apply {
+            setCancelable(true)
+            setTitle(getString(R.string.logout_confirmation))
+            setMessage(getString(R.string.logout_message))
+            setPositiveButton(
+                getString(R.string.logout)
+            ) { _, _ ->
+                sharedPrefUtil.clear()
+                startActivity(Intent(this@ProfileUserPreviewActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            }
+            setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        }
+        alertDialog.show()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_logout -> {
+                showConfirmLogoutDialog()
+            }
+            R.id.menu_report -> {
+                startActivity(
+                    Intent(
+                        this,
+                        ReportActivity::class.java
+                    ).putExtra(
+                        ConstantReport.CONSTANT_REPORT,
+                        ConstantReport.CONSTANT_REPORT_ACCOUNT
+                    ).putExtra(ConstantReport.CONSTANT_REPORT_OBJECT_ACCOUNT, user)
+                        .putExtra(ConstantReport.CONSTANT_REPORT_KEY, authKeyUserPreview)
+                )
+            }
+        }
+        return true
+    }
 }

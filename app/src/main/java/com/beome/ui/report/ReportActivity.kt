@@ -63,7 +63,7 @@ class ReportActivity : AppCompatActivity() {
                     showDialogReportPost()
                 }
                 ConstantReport.CONSTANT_REPORT_ACCOUNT -> {
-                    showDialogReportPost()
+                    showDialogReportAccount()
                 }
             }
         }
