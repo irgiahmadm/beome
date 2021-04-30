@@ -72,7 +72,8 @@ class PostRepository(private val scope: CoroutineScope) {
                     val docPostRef = Firebase.firestore.collection("post").document(idPost)
                     val data = hashMapOf("title" to title, "description" to description)
                     docPostRef.set(data, SetOptions.merge()).await()
-                    //TODO update reported post
+                    val reportDetail = Firebase.firestore.collection("reported_post_detail").document(idPost)
+                    reportDetail.set(data, SetOptions.merge()).await()
                     editPostState.postValue(NetworkState.SUCCESS)
                 }catch (e : Exception){
                     Log.d("err_update_post", "updatePost: ${e.message}")
