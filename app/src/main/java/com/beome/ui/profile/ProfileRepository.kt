@@ -122,23 +122,62 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                                 docRef.update( "imgUser", user.photoProfile)
                             }
                         }.await()
+
+                    //update reported feedback
                     val collectionFeedbackRef = Firebase.firestore.collection("reported_feedback")
                     collectionPostRef.whereEqualTo("authKey", user.authKey).get().addOnSuccessListener {
                         for (document in it){
                             val docRef = collectionFeedbackRef.document(document.id)
                             docRef.update("username", user.username)
-                            docRef.update("imgUser", user.photoProfile)
+                            docRef.update("photoProfile", user.photoProfile)
                         }
                     }.await()
-                    //TODO update reported_feedback_detail
+                    //update reported feedback detail
+                    val collectionReportFeedbackDetail = Firebase.firestore.collection("reported_feedback_detail")
+                    collectionReportFeedbackDetail.whereEqualTo("username", user.username).get().addOnSuccessListener {
+                        for (document in it){
+                            val docRef = collectionFeedbackRef.document(document.id)
+                            docRef.update("username", user.username)
+                            docRef.update("imageUser", user.photoProfile)
+                        }
+                    }
+                    //update reported post
+                    val collectionReportPost = Firebase.firestore.collection("reported_post")
+                    collectionReportPost.whereEqualTo("username", user.username).get().addOnSuccessListener {
+                        for (document in it){
+                            val docRef = collectionReportPost.document(document.id)
+                            docRef.update("username", user.username)
+                            docRef.update("imgUser", user.photoProfile)
+                        }
+                    }
+                    //update reported post detail
+                    val collectionReportPostDetail = Firebase.firestore.collection("reported_post_detail")
+                    collectionReportPostDetail.whereEqualTo("username", user.username).get().addOnSuccessListener {
+                        for (document in it){
+                            val docRef = collectionReportPostDetail.document(document.id)
+                            docRef.update("username", user.username)
+                            docRef.update("imageUser", user.photoProfile)
+                        }
+                    }
+                    //update reported account
+                    val collectionReportAccount = Firebase.firestore.collection("reported_account")
+                    collectionReportAccount.whereEqualTo("username", user.username).get().addOnSuccessListener {
+                        for (document in it){
+                            val docRef = collectionReportAccount.document(document.id)
+                            docRef.update("username", user.username)
+                            docRef.update("photoProfile", user.photoProfile)
+                        }
+                    }
 
-                    //TODO update reported_post
-
-                    //TODO update reported_post_detail
-
-                    //TODO update reported_account_detail
-
-                    //TODO update reported account
+                    //update reported account detail
+                    val collectionReportAccountDetail = Firebase.firestore.collection("reported_account_detail")
+                    collectionReportAccountDetail.whereEqualTo("username", user.username).get().addOnSuccessListener {
+                        for (document in it){
+                            val docRef = collectionReportAccountDetail.document(document.id)
+                            docRef.update("username", user.username)
+                            docRef.update("imageUser", user.photoProfile)
+                        }
+                    }
                     editProfileState.postValue(NetworkState.SUCCESS)
                 }catch (e : Exception){
                     Log.d("err_update_profile", e.message.toString())
