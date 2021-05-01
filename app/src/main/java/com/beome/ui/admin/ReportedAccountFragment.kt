@@ -45,7 +45,6 @@ class ReportedAccountFragment : Fragment() {
             setUpRepo()
             setUpReportedAccount()
             viewModel.getListReportedAccount().observe(viewLifecycleOwner,{
-                Log.d("data_report", it.toString())
                 adapter.data = it
             })
         }
@@ -63,7 +62,7 @@ class ReportedAccountFragment : Fragment() {
             })
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
-        viewModel.stateReportedPost.observe(viewLifecycleOwner,{
+        viewModel.stateReportedAccount.observe(viewLifecycleOwner,{
             when(it){
                 NetworkState.LOADING -> {
 
