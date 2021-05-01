@@ -1,4 +1,4 @@
-package com.beome.admin
+package com.beome.ui.admin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

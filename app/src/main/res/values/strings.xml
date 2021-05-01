@@ -85,4 +85,5 @@
     <string name="logout_message">Are you sure want to logout from this application?</string>
     <string name="logout_confirmation">Logout Confirmation</string>
     <string name="account">Account</string>
+    <string name="report_count">report_count</string>
 </resources>
