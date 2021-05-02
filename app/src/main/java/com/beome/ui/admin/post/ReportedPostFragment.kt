@@ -1,4 +1,4 @@
-package com.beome.ui.admin
+package com.beome.ui.admin.post
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -7,11 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
+import com.beome.constant.ConstantReport
 import com.beome.databinding.FragmentReportedPostBinding
 import com.beome.model.ReportedPost
 import com.beome.utilities.AdapterUtil
@@ -55,7 +55,7 @@ class ReportedPostFragment : Fragment() {
                 view.textViewReportCountPost.text = "${reportedPost.counter} Reported"
                 Glide.with(requireContext()).load(reportedPost.post.imagePost).into(view.imageViewReportedPost)
             }, { pos, reportedPost ->
-//                startActivity(Intent(this, DetailReportedPost::class.java))
+                startActivity(Intent(requireContext(), ReportedPostDetailActivity::class.java).putExtra(ConstantReport.CONSTANT_REPORT_KEY, reportedPost.post.idPost))
             })
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter

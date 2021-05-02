@@ -6,9 +6,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.beome.R
-import com.beome.ui.admin.ReportedAccountFragment
-import com.beome.ui.admin.ReportedFeedbackFragment
-import com.beome.ui.admin.ReportedPostFragment
+import com.beome.ui.admin.account.ReportedAccountFragment
+import com.beome.ui.admin.feedback.ReportedFeedbackFragment
+import com.beome.ui.admin.post.ReportedPostFragment
 
 class SectionsPagerAdapterAdmin(private val context: Context, fragmentManager: FragmentManager) :
     FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {

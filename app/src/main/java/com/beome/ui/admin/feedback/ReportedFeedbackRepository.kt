@@ -1,4 +1,4 @@
-package com.beome.ui.admin
+package com.beome.ui.admin.feedback
 
 import android.util.Log
 import androidx.lifecycle.LiveData

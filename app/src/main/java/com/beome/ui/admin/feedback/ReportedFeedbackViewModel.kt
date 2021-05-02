@@ -1,4 +1,4 @@
-package com.beome.ui.admin
+package com.beome.ui.admin.feedback
 
 import androidx.lifecycle.*
 import com.beome.utilities.NetworkState
