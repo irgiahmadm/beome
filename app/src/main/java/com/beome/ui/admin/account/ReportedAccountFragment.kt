@@ -1,6 +1,7 @@
 package com.beome.ui.admin.account
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
+import com.beome.constant.ConstantReport
 import com.beome.databinding.FragmentReportedAccountBinding
 import com.beome.model.ReportedAccount
 import com.beome.utilities.AdapterUtil
@@ -19,8 +21,8 @@ import kotlinx.android.synthetic.main.item_reported_account.view.*
 
 
 class ReportedAccountFragment : Fragment() {
-    private lateinit var binding : FragmentReportedAccountBinding
-    private lateinit var adapter : AdapterUtil<ReportedAccount>
+    private lateinit var binding: FragmentReportedAccountBinding
+    private lateinit var adapter: AdapterUtil<ReportedAccount>
 
     private val viewModel: ReportedAccountViewModel by lazy {
         ViewModelProvider(
@@ -28,6 +30,7 @@ class ReportedAccountFragment : Fragment() {
             ViewModelProvider.NewInstanceFactory()
         ).get(ReportedAccountViewModel::class.java)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,30 +42,38 @@ class ReportedAccountFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getLisReportedAccount(){
+    private fun getLisReportedAccount() {
         viewModel.apply {
             setUpRepo()
             setUpReportedAccount()
-            viewModel.getListReportedAccount().observe(viewLifecycleOwner,{
+            viewModel.getListReportedAccount().observe(viewLifecycleOwner, {
                 adapter.data = it
             })
         }
         adapter =
-            AdapterUtil(R.layout.item_reported_account, arrayListOf(), { pos, view, reportedData ->
+            AdapterUtil(R.layout.item_reported_account, arrayListOf(), { _, view, reportedData ->
                 view.textViewUsernameReportAccount.text = reportedData.user.username
                 view.textViewReportCountAccount.text = "${reportedData.counter} Reported"
-                if(reportedData.user.photoProfile.isEmpty() || reportedData.user.photoProfile == "null"){
-                    Glide.with(requireContext()).load(R.drawable.ic_profile).into(view.imageViewUserReportAccount)
-                }else{
-                    Glide.with(requireContext()).load(reportedData.user.photoProfile).circleCrop().into(view.imageViewUserReportAccount)
+                if (reportedData.user.photoProfile.isEmpty() || reportedData.user.photoProfile == "null") {
+                    Glide.with(requireContext()).load(R.drawable.ic_profile)
+                        .into(view.imageViewUserReportAccount)
+                } else {
+                    Glide.with(requireContext()).load(reportedData.user.photoProfile).circleCrop()
+                        .into(view.imageViewUserReportAccount)
                 }
-            }, { pos, reportedPost ->
-//                startActivity(Intent(this, DetailReportedPost::class.java))
+            }, { _, reportedData ->
+                startActivity(
+                    Intent(
+                        requireContext(),
+                        ReportedAccountDetailActivity::class.java
+                    ).putExtra(ConstantReport.CONSTANT_REPORT_KEY, reportedData.user.authKey)
+                )
             })
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
-        viewModel.stateReportedAccount.observe(viewLifecycleOwner,{
-            when(it){
+        viewModel.stateReportedAccount.observe(viewLifecycleOwner, {
+            when (it) {
                 NetworkState.LOADING -> {
 
                 }
@@ -76,7 +87,8 @@ class ReportedAccountFragment : Fragment() {
 
                 }
                 else -> {
-                    Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         })

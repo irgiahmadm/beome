@@ -31,6 +31,7 @@ class ReportedPostDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReportPostDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        title = "Report Detail"
         var idPost = ""
         if (intent.hasExtra(ConstantReport.CONSTANT_REPORT_KEY)){
             idPost = intent.getStringExtra(ConstantReport.CONSTANT_REPORT_KEY) as String

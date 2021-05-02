@@ -26,6 +26,12 @@ class AddPostRepository(coroutineContext : CoroutineContext) {
                 val collectionPostRef = Firebase.firestore.collection("post").document(post.idPost)
                 addPostState.postValue(NetworkState.LOADING)
                 collectionPostRef.set(post).await()
+                Firebase.firestore.runTransaction { transaction ->
+                    val docRef = Firebase.firestore.collection("user").document(post.authKey)
+                    val user = transaction.get(docRef)
+                    val counter = user["post"] as Long + 1
+                    transaction.update(docRef, "post", counter)
+                }.await()
                 addPostState.postValue(NetworkState.SUCCESS)
             }catch (e : Exception){
                 addPostState.postValue(NetworkState.FAILED)

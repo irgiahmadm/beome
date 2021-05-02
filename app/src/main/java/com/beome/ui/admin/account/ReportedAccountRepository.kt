@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.beome.model.ReportedAccount
+import com.beome.model.ReportedPost
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -16,6 +17,7 @@ import kotlinx.coroutines.withContext
 class ReportedAccountRepository(private val scope : CoroutineScope) {
     val stateReportedAccount = MutableLiveData<NetworkState>()
     private val listReportedAccount = MutableLiveData<List<ReportedAccount>>()
+    private val reportedAccount = MutableLiveData<ReportedAccount>()
 
     fun getListReportedAccount() : LiveData<List<ReportedAccount>> {
         scope.launch {
@@ -44,5 +46,30 @@ class ReportedAccountRepository(private val scope : CoroutineScope) {
             }
         }
         return listReportedAccount
+    }
+
+    fun getReportedAccount(authKey : String) : LiveData<ReportedAccount>{
+        scope.launch {
+            withContext(Dispatchers.IO){
+                val refReportedAccount = Firebase.firestore.collection("reported_account").document(authKey)
+                refReportedAccount.addSnapshotListener { value, error ->
+                    stateReportedAccount.postValue(NetworkState.LOADING)
+                    value?.let {
+                        if(it.exists()){
+                            val account = it.toObject<ReportedAccount>()
+                            reportedAccount.value = account!!
+                            stateReportedAccount.postValue(NetworkState.SUCCESS)
+                        }else{
+                            stateReportedAccount.postValue(NetworkState.NOT_FOUND)
+                        }
+                    }
+                    error?.let {
+                        Log.d("err_get_rprtd_account", it.message.toString())
+                        stateReportedAccount.postValue(NetworkState.FAILED)
+                    }
+                }
+            }
+        }
+        return reportedAccount
     }
 }
