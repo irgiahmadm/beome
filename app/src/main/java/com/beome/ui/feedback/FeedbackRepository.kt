@@ -30,12 +30,12 @@ class FeedbackRepository(private val scope: CoroutineScope) {
         return Firebase.firestore.collection("feedback_post/$idPost/feedback_post_user")
     }
 
-    fun addUserFeedback(idPost: String, idUser: String, feedback: FeedbackPostUser) {
+    fun addUserFeedback(idPost: String, feedback: FeedbackPostUser) {
         val userFeedbackPostRef = Firebase.firestore
             .collection("feedback_post")
             .document(idPost)
             .collection("feedback_post_user")
-            .document(idUser)
+            .document(feedback.idFeedback)
         userFeedbackPostRef.set(feedback)
         scope.launch {
             withContext(Dispatchers.IO) {

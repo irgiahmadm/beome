@@ -93,6 +93,7 @@ class ReportedFeedbackFragment : Fragment() {
                         requireContext(),
                         ReportedFeedbackdetailActivity::class.java
                     ).putExtra(ConstantReport.CONSTANT_REPORT_KEY, reportedData.feedback.idFeedback)
+                        .putExtra(ConstantPost.CONSTANT_ID_POST, reportedData.feedback.idPost)
                 )
             })
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

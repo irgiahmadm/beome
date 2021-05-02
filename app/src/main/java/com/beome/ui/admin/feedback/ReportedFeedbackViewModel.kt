@@ -13,6 +13,7 @@ class ReportedFeedbackViewModel : ViewModel() {
     private val _reportedDetailRepo = MutableLiveData<ReportDetailRepository>()
     lateinit var stateReportedFeedback : LiveData<NetworkState>
     lateinit var stateReportDetailList : LiveData<NetworkState>
+    lateinit var stateTakedownFeedback : LiveData<NetworkState>
 
     fun setUpRepo(){
         _reportedtedFeedbackRepo.postValue(reportedtedFeedbackRepo)
@@ -26,9 +27,14 @@ class ReportedFeedbackViewModel : ViewModel() {
         stateReportedFeedback = Transformations.switchMap(_reportedtedFeedbackRepo, ReportedFeedbackRepository::stateReportedFeedback)
     }
 
+    fun setUpTakedownFeedback(){
+        stateTakedownFeedback = Transformations.switchMap(_reportedtedFeedbackRepo, ReportedFeedbackRepository::networkStateTakedownPost)
+    }
+
     fun setUpReportedDetailList(){
         stateReportDetailList = Transformations.switchMap(_reportedDetailRepo, ReportDetailRepository::stateReportedDetail)
     }
+
 
     fun getListReportedFeedback() = reportedtedFeedbackRepo.getListReportedFeedback()
 
@@ -38,4 +44,5 @@ class ReportedFeedbackViewModel : ViewModel() {
         Firebase.firestore.collection("reported_feedback_detail"),
         idFeedback
     )
+    fun takedownFeedback(idFeedback: String, idPost : String) = reportedtedFeedbackRepo.takedownFeedback(idFeedback, idPost)
 }

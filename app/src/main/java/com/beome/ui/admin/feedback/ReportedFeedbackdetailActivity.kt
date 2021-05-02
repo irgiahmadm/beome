@@ -4,16 +4,17 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
 import com.beome.constant.ConstantPost
 import com.beome.constant.ConstantReport
 import com.beome.databinding.ActivityReportedFeedbackDetailBinding
-
 import com.beome.model.FeedbackPostUserValue
 import com.beome.model.ReportDetail
 import com.beome.utilities.AdapterUtil
+import com.beome.utilities.NetworkState
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_feedback_component.view.*
 import kotlinx.android.synthetic.main.item_list_detail_report.view.*
@@ -37,13 +38,18 @@ class ReportedFeedbackdetailActivity : AppCompatActivity() {
         if(intent.hasExtra(ConstantReport.CONSTANT_REPORT_KEY)){
             idFeedback = intent.getStringExtra(ConstantReport.CONSTANT_REPORT_KEY) as String
         }
+        var idPost = ""
+        if(intent.hasExtra(ConstantPost.CONSTANT_ID_POST)){
+            idPost = intent.getStringExtra(ConstantPost.CONSTANT_ID_POST) as String
+        }
+        viewModel.setUpRepo()
         getReportedFeedback(idFeedback)
         getListReportDetail(idFeedback)
+        takeDownFeedback(idFeedback, idPost)
     }
 
     @SuppressLint("SimpleDateFormat")
     private fun getReportedFeedback(idFeedback : String){
-        viewModel.setUpRepo()
         viewModel.setUpReportedFeedback()
         viewModel.getReportedFeedback(idFeedback).observe(this,{
             if (it.feedback.photoProfile.isNullOrEmpty() || it.feedback.photoProfile == "null") {
@@ -103,6 +109,29 @@ class ReportedFeedbackdetailActivity : AppCompatActivity() {
         binding.recyclerView.adapter = adapter
     }
 
+    private fun takeDownFeedback(idFeedback: String, idPost: String){
+        viewModel.setUpTakedownFeedback()
+        binding.buttonDelete.setOnClickListener {
+            viewModel.takedownFeedback(idFeedback, idPost)
+        }
+        viewModel.stateTakedownFeedback.observe(this, {
+            when(it){
+                NetworkState.LOADING -> {
+
+                }
+                NetworkState.SUCCESS -> {
+                    Toast.makeText(this, "Success to delete feedback", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                NetworkState.FAILED -> {
+                    Toast.makeText(this, "Failed to delete feedback", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home){
             finish()

@@ -105,9 +105,8 @@ class FeedbackViewModel : ViewModel() {
         _feedbackRepo.postValue(feedbackRepo)
     }
 
-    fun addUserFeedback(idPost: String, idUser: String, user: FeedbackPostUser) =
-        feedbackRepo.addUserFeedback(idPost, idUser, user)
-
+    fun addUserFeedback(idPost: String, user: FeedbackPostUser) =
+        feedbackRepo.addUserFeedback(idPost, user)
 
     fun setUpFeedbackValue() {
         addFeedbackValueState =

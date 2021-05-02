@@ -3,7 +3,6 @@ package com.beome.ui.admin.feedback
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.beome.model.ReportedAccount
 import com.beome.model.ReportedFeedback
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.ktx.firestore
@@ -12,12 +11,14 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class ReportedFeedbackRepository(private val scope : CoroutineScope) {
     val stateReportedFeedback = MutableLiveData<NetworkState>()
     private val listReportedFeedback = MutableLiveData<List<ReportedFeedback>>()
     private val reportedFeedback = MutableLiveData<ReportedFeedback>()
+    val networkStateTakedownPost = MutableLiveData<NetworkState>()
 
     fun getListReportedFeedback() : LiveData<List<ReportedFeedback>> {
         scope.launch {
@@ -51,8 +52,8 @@ class ReportedFeedbackRepository(private val scope : CoroutineScope) {
     fun getReportedFeedback(idFeedback : String) : LiveData<ReportedFeedback>{
         scope.launch {
             withContext(Dispatchers.IO){
-                val refReportedAccount = Firebase.firestore.collection("reported_feedback").document(idFeedback)
-                refReportedAccount.addSnapshotListener { value, error ->
+                val refReportedPost = Firebase.firestore.collection("reported_feedback").document(idFeedback)
+                refReportedPost.addSnapshotListener { value, error ->
                     stateReportedFeedback.postValue(NetworkState.LOADING)
                     value?.let {
                         if(it.exists()){
@@ -71,5 +72,24 @@ class ReportedFeedbackRepository(private val scope : CoroutineScope) {
             }
         }
         return reportedFeedback
+    }
+
+    fun takedownFeedback(idFeedback: String, idPost : String){
+        scope.launch {
+            withContext(Dispatchers.IO){
+                val refFeedback = Firebase.firestore.collection("feedback_post/$idPost/feedback_post_user").document(idFeedback)
+                val refReportedFeedback = Firebase.firestore.collection("reported_feedback").document(idFeedback)
+                networkStateTakedownPost.postValue(NetworkState.LOADING)
+                Firebase.firestore.runTransaction { transaction ->
+                    transaction.update(refFeedback, "status", 2)
+                    transaction.update(refReportedFeedback, "feedback.status", 2)
+                }.addOnFailureListener {
+                    Log.d("err_takedown_fdbck", it.toString())
+                    networkStateTakedownPost.postValue(NetworkState.FAILED)
+                }.addOnSuccessListener {
+                    networkStateTakedownPost.postValue(NetworkState.SUCCESS)
+                }.await()
+            }
+        }
     }
 }
