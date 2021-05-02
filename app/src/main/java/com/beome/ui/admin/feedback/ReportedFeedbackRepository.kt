@@ -79,8 +79,17 @@ class ReportedFeedbackRepository(private val scope : CoroutineScope) {
             withContext(Dispatchers.IO){
                 val refFeedback = Firebase.firestore.collection("feedback_post/$idPost/feedback_post_user").document(idFeedback)
                 val refReportedFeedback = Firebase.firestore.collection("reported_feedback").document(idFeedback)
+                val refPost = Firebase.firestore.collection("post").document(idPost)
+                val refReportedPost = Firebase.firestore.collection("reported_post").document(idPost)
                 networkStateTakedownPost.postValue(NetworkState.LOADING)
                 Firebase.firestore.runTransaction { transaction ->
+                    val post = transaction.get(refPost)
+                    val reportedPost = transaction.get(refReportedPost)
+                    val feedbackCounter = post["feedbackCount"] as Long - 1
+                    val reportedFeedbackCounter = reportedPost["post.feedbackCount"] as Long - 1
+
+                    transaction.update(refPost, "feedbackCount", feedbackCounter)
+                    transaction.update(refReportedPost, "post.feedbackCount", reportedFeedbackCounter)
                     transaction.update(refFeedback, "status", 2)
                     transaction.update(refReportedFeedback, "feedback.status", 2)
                 }.addOnFailureListener {

@@ -47,10 +47,10 @@ class FeedbackRepository(private val scope: CoroutineScope) {
                         val reportedPost = transaction.get(reportedPostRef)
                         val post = transaction.get(docPostRef)
                         val counterFeedback = post["feedbackCount"] as Long + 1
-                        val counterFeedbackReported = reportedPost["feedbackCount"] as Long + 1
-                        transaction.update(docPostRef, "feedbackCount", counterFeedback)
-                        transaction.update(reportedPostRef, "feedbackCount", counterFeedbackReported)
+                        val counterFeedbackReported = reportedPost["post.feedbackCount"] as Long + 1
 
+                        transaction.update(docPostRef, "feedbackCount", counterFeedback)
+                        transaction.update(reportedPostRef, "post.feedbackCount", counterFeedbackReported)
                         addDataUserState.postValue(NetworkState.SUCCESS)
                     }
                 } catch (e: Exception) {
