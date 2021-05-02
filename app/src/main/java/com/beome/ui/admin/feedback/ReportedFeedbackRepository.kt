@@ -24,7 +24,7 @@ class ReportedFeedbackRepository(private val scope : CoroutineScope) {
         scope.launch {
             withContext(Dispatchers.IO){
                 val refReportedFeedback = Firebase.firestore.collection("reported_feedback")
-                refReportedFeedback.addSnapshotListener { value, error ->
+                refReportedFeedback.whereEqualTo("feedback.status", 1).addSnapshotListener { value, error ->
                     stateReportedFeedback.postValue(NetworkState.LOADING)
                     val tempReportedPost = mutableListOf<ReportedFeedback>()
                     value?.let {
