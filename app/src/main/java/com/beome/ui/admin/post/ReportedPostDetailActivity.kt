@@ -3,6 +3,7 @@ package com.beome.ui.admin.post
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -31,6 +32,8 @@ class ReportedPostDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReportPostDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = "Report Detail"
         var idPost = ""
         if (intent.hasExtra(ConstantReport.CONSTANT_REPORT_KEY)){
@@ -95,5 +98,12 @@ class ReportedPostDetailActivity : AppCompatActivity() {
         })
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home){
+            finish()
+        }
+        return true
     }
 }

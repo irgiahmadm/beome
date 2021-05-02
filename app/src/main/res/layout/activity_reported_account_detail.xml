@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.admin.account.ReportedAccountDetailActivity"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".ui.admin.account.ReportedAccountDetailActivity">
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
+
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
@@ -114,15 +116,17 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view7" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="72dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginEnd="16dp"
         app:layout_constraintStart_toStartOf="@id/textViewReport"
         app:layout_constraintTop_toBottomOf="@+id/textViewReport"
         app:layout_constraintVertical_bias="0.0"

@@ -3,8 +3,7 @@ package com.beome.ui.admin.account
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import androidx.lifecycle.ViewModel
+import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -27,6 +26,9 @@ class ReportedAccountDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReportedAccountDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        title = "Report Detail"
         var authKey = ""
         if(intent.hasExtra(ConstantReport.CONSTANT_REPORT_KEY)){
             authKey = intent.getStringExtra(ConstantReport.CONSTANT_REPORT_KEY) as String
@@ -58,7 +60,7 @@ class ReportedAccountDetailActivity : AppCompatActivity() {
             binding.textViewReport.text = "Report (${it.size})"
             adapter.data = it
         })
-        adapter = AdapterUtil(R.layout.item_list_detail_report, arrayListOf(), { pos, view, item ->
+        adapter = AdapterUtil(R.layout.item_list_detail_report, arrayListOf(), { _, view, item ->
             if (item.imageUser.isEmpty() || item.imageUser == "null") {
                 Glide.with(this).load(R.drawable.ic_profile).into(view.imageViewUserListReportDetail)
             } else {
@@ -71,11 +73,17 @@ class ReportedAccountDetailActivity : AppCompatActivity() {
                 item.createdAt
             )
             view.textViewDateListReportDetail.text = dateCreated
-        }, { pos, item ->
+        }, { _, _ ->
 
         })
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home){
+            finish()
+        }
+        return true
+    }
 }

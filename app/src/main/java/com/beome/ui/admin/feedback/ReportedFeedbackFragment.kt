@@ -1,6 +1,7 @@
 package com.beome.ui.admin.feedback
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
 import com.beome.constant.ConstantPost
+import com.beome.constant.ConstantReport
 import com.beome.databinding.FragmentReportedFeedbackBinding
 import com.beome.model.FeedbackPostUserValue
 import com.beome.model.ReportedFeedback
@@ -52,11 +54,13 @@ class ReportedFeedbackFragment : Fragment() {
             })
         }
         adapter =
-            AdapterUtil(R.layout.item_reported_feedback, arrayListOf(), { pos, view, reportedData ->
+            AdapterUtil(R.layout.item_reported_feedback, arrayListOf(), { _, view, reportedData ->
                 view.textViewReportCountFeedback.text = "${reportedData.counter} Reported"
                 view.textViewUsernameReportedFeedback.text = reportedData.feedback.username
                 val dateCreated =
-                    SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(reportedData.feedback.createdAt)
+                    SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(
+                        reportedData.feedback.createdAt
+                    )
                 view.textViewDateReportedFeedback.text = dateCreated
 
                 if (reportedData.feedback.photoProfile.isNullOrEmpty() || reportedData.feedback.photoProfile == "null") {
@@ -82,9 +86,14 @@ class ReportedFeedbackFragment : Fragment() {
                 view.rvComponentReportedFeedback.layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                 view.rvComponentReportedFeedback.adapter = adapterFeedbackValue
-                
-            }, { pos, reportedPost ->
-//                startActivity(Intent(this, DetailReportedPost::class.java))
+
+            }, { _, reportedData ->
+                startActivity(
+                    Intent(
+                        requireContext(),
+                        ReportedFeedbackdetailActivity::class.java
+                    ).putExtra(ConstantReport.CONSTANT_REPORT_KEY, reportedData.feedback.idFeedback)
+                )
             })
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter

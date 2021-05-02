@@ -46,10 +46,11 @@ class FeedbackRepository(private val scope: CoroutineScope) {
                         val reportedPostRef = Firebase.firestore.collection("reported_post").document(idPost)
                         val reportedPost = transaction.get(reportedPostRef)
                         val post = transaction.get(docPostRef)
-                        val counterFeedback = (post.get("feedbackCount") as Long?)?.plus(1)
-                        val counterFeedbackReported = (reportedPost.get("feedbackCount") as Long?)?.plus(1)
-                        transaction.update(reportedPostRef, "feedbackCount", counterFeedback)
-                        transaction.update(docPostRef, "feedbackCount", counterFeedbackReported)
+                        val counterFeedback = post["feedbackCount"] as Long + 1
+                        val counterFeedbackReported = reportedPost["feedbackCount"] as Long + 1
+                        transaction.update(docPostRef, "feedbackCount", counterFeedback)
+                        transaction.update(reportedPostRef, "feedbackCount", counterFeedbackReported)
+
                         addDataUserState.postValue(NetworkState.SUCCESS)
                     }
                 } catch (e: Exception) {

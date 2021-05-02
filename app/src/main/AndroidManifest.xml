@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Beome">
-        <activity android:name=".ui.admin.account.ReportedAccountDetailActivity"></activity>
+        <activity android:name=".ui.admin.feedback.ReportedFeedbackdetailActivity"></activity>
+        <activity android:name=".ui.admin.account.ReportedAccountDetailActivity" />
         <activity android:name=".ui.admin.post.ReportedPostDetailActivity" />
         <activity
             android:name=".ui.admin.MainActivityAdmin"

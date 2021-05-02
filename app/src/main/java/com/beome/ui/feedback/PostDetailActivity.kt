@@ -223,7 +223,6 @@ class PostDetailActivity : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun getListFeedback(){
         viewModel.getListFeedbackPost(idPost).observe(this, {
-
             binding.textViewFeedback.text = "Feedback (${it.size})"
             adapterFeedbackUser =
                 AdapterUtil(R.layout.item_list_feedback, it, { pos, view, feedback ->
