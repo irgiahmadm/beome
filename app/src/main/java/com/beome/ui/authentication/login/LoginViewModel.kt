@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LoginViewModel(activity : Activity) : ViewModel() {
-    private val loginRepo = LoginRepository(activity, Dispatchers.IO)
+    private val loginRepo = LoginRepository(activity, viewModelScope)
     lateinit var loginState : LiveData<NetworkState>
     private val _loginRepository = MutableLiveData<LoginRepository>()
 
@@ -19,9 +19,7 @@ class LoginViewModel(activity : Activity) : ViewModel() {
         _loginRepository.postValue(loginRepo)
     }
 
-    fun loginUser(email: String, password : String) = viewModelScope.launch {
-        withContext(Dispatchers.IO){
-            loginRepo.loginUser(email, password)
-        }
-    }
+    fun loginUser(email: String, password : String) =
+        loginRepo.loginUser(email, password)
+
 }

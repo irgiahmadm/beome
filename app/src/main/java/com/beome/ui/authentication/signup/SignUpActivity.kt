@@ -173,6 +173,7 @@ class SignUpActivity : AppCompatActivity() {
                     0,
                     authKey,
                     1,
+                    1,
                     createdAt,
                     updatedAt
                 )

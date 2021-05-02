@@ -273,7 +273,7 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
                 getString(R.string.logout)
             ) { _, _ ->
                 sharedPrefUtil.clear()
-                startActivity(Intent(this@ProfileUserPreviewActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                startActivity(Intent(this@ProfileUserPreviewActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             }
             setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
