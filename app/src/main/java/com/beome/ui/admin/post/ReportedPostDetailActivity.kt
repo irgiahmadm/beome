@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -12,6 +14,7 @@ import com.beome.constant.ConstantReport
 import com.beome.databinding.ActivityReportPostDetailBinding
 import com.beome.model.ReportDetail
 import com.beome.utilities.AdapterUtil
+import com.beome.utilities.NetworkState
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.BlurTransformation
@@ -39,13 +42,14 @@ class ReportedPostDetailActivity : AppCompatActivity() {
         if (intent.hasExtra(ConstantReport.CONSTANT_REPORT_KEY)){
             idPost = intent.getStringExtra(ConstantReport.CONSTANT_REPORT_KEY) as String
         }
+        viewModel.setUpRepo()
         getReportedPostDetail(idPost)
         getListReportDetail(idPost)
+        takedownPost(idPost)
     }
 
     @SuppressLint("SimpleDateFormat")
     private fun getReportedPostDetail(idPost : String){
-        viewModel.setUpRepo()
         viewModel.getReportedPost(idPost).observe(this,{
             Glide.with(this)
                 .load(it.post.imagePost)
@@ -80,7 +84,7 @@ class ReportedPostDetailActivity : AppCompatActivity() {
             binding.textViewReport.text = "Report (${it.size})"
             adapter.data = it
         })
-        adapter = AdapterUtil(R.layout.item_list_detail_report, arrayListOf(), { pos, view, item ->
+        adapter = AdapterUtil(R.layout.item_list_detail_report, arrayListOf(), { _, view, item ->
             if (item.imageUser.isEmpty() || item.imageUser == "null") {
                 Glide.with(this).load(R.drawable.ic_profile).into(view.imageViewUserListReportDetail)
             } else {
@@ -93,13 +97,53 @@ class ReportedPostDetailActivity : AppCompatActivity() {
                 item.createdAt
             )
             view.textViewDateListReportDetail.text = dateCreated
-        }, { pos, item ->
+        }, { _, _ ->
 
         })
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
     }
 
+    private fun takedownPost(idPost: String){
+        viewModel.setUpTakedownPost()
+        binding.buttonDelete.setOnClickListener {
+            deletePostConfirmation(idPost)
+        }
+        viewModel.stateTakedownPost.observe(this, {
+            when(it){
+                NetworkState.LOADING -> {
+
+                }
+                NetworkState.SUCCESS -> {
+                    Toast.makeText(this, "Success to delete post", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                NetworkState.FAILED -> {
+                    Toast.makeText(this, "Failed to delete post", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+    }
+    private fun deletePostConfirmation(idPost: String){
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.apply {
+            setCancelable(true)
+            setTitle(getString(R.string.delete_confirmation))
+            setMessage(getString(R.string.delete_post_message))
+            setPositiveButton(
+                getString(R.string.delete)
+            ) { _, _ ->
+                viewModel.takedownPost(idPost)
+            }
+            setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        }
+        alertDialog.show()
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home){
             finish()

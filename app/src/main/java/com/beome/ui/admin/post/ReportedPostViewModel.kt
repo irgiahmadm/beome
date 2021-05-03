@@ -13,6 +13,7 @@ class ReportedPostViewModel : ViewModel(){
     private val _reportedDetailRepo = MutableLiveData<ReportDetailRepository>()
     lateinit var stateReportedPost : LiveData<NetworkState>
     lateinit var stateReportDetailList : LiveData<NetworkState>
+    lateinit var stateTakedownPost : LiveData<NetworkState>
 
     fun setUpRepo(){
         _reportedPostRepo.postValue(reportedtedPostRepo)
@@ -26,9 +27,15 @@ class ReportedPostViewModel : ViewModel(){
         stateReportedPost = Transformations.switchMap(_reportedPostRepo, ReportedPostRepository::stateReportedPost)
     }
 
+    fun setUpTakedownPost(){
+        stateTakedownPost = Transformations.switchMap(_reportedPostRepo, ReportedPostRepository::stateTakedownPost)
+    }
+
     fun setUpReportedDetailList(){
         stateReportDetailList = Transformations.switchMap(_reportedDetailRepo, ReportDetailRepository::stateReportedDetail)
     }
+
+    fun takedownPost(idPost: String) = reportedtedPostRepo.takedownPost(idPost)
 
     fun getReportedPost(idPost: String) = reportedtedPostRepo.getReportedPost(idPost)
 

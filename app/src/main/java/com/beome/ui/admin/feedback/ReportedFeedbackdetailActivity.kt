@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -112,7 +113,7 @@ class ReportedFeedbackdetailActivity : AppCompatActivity() {
     private fun takeDownFeedback(idFeedback: String, idPost: String){
         viewModel.setUpTakedownFeedback()
         binding.buttonDelete.setOnClickListener {
-            viewModel.takedownFeedback(idFeedback, idPost)
+            deleteConfirmation(idFeedback, idPost)
         }
         viewModel.stateTakedownFeedback.observe(this, {
             when(it){
@@ -132,6 +133,25 @@ class ReportedFeedbackdetailActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun deleteConfirmation(idFeedback: String, idPost: String){
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.apply {
+            setCancelable(true)
+            setTitle(getString(R.string.delete_confirmation))
+            setMessage(getString(R.string.delete_feedback_message))
+            setPositiveButton(
+                getString(R.string.delete)
+            ) { _, _ ->
+                viewModel.takedownFeedback(idFeedback, idPost)
+            }
+            setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        }
+        alertDialog.show()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home){
             finish()
