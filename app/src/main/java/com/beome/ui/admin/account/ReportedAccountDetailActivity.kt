@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
@@ -13,6 +14,7 @@ import com.beome.databinding.ActivityReportedAccountDetailBinding
 import com.beome.model.ReportDetail
 import com.beome.utilities.AdapterUtil
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.activity_reported_account_detail.*
 import kotlinx.android.synthetic.main.item_list_detail_report.view.*
 import java.text.SimpleDateFormat
 
@@ -33,12 +35,13 @@ class ReportedAccountDetailActivity : AppCompatActivity() {
         if(intent.hasExtra(ConstantReport.CONSTANT_REPORT_KEY)){
             authKey = intent.getStringExtra(ConstantReport.CONSTANT_REPORT_KEY) as String
         }
+        viewModel.setUpRepo()
         getReportDetail(authKey)
         getListReportDetail(authKey)
+        takedownAccount(authKey)
     }
 
     private fun getReportDetail(authKey: String) {
-        viewModel.setUpRepo()
         viewModel.setUpReportedAccount()
         viewModel.getReportedAccount(authKey).observe(this,{
             if(it.user.photoProfile.isEmpty() || it.user.photoProfile == "null"){
@@ -78,6 +81,31 @@ class ReportedAccountDetailActivity : AppCompatActivity() {
         })
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
+    }
+
+    private fun takedownAccount(authKey: String){
+        viewModel.setUpReportedAccount()
+        binding.buttonDelete.setOnClickListener {
+            deleteConfirmation(authKey)
+        }
+    }
+
+    private fun deleteConfirmation(authKey: String){
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.apply {
+            setCancelable(true)
+            setTitle(getString(R.string.delete_confirmation))
+            setMessage(getString(R.string.delete_feedback_message))
+            setPositiveButton(
+                getString(R.string.delete)
+            ) { _, _ ->
+                viewModel.takedownAccount(authKey)
+            }
+            setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        }
+        alertDialog.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

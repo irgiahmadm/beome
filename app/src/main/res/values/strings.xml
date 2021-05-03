@@ -76,6 +76,7 @@
     <string name="delete_confirmation">Delete Confirmation</string>
     <string name="delete_post_message">Are your sure want to delete this post?</string>
     <string name="delete_feedback_message">Are your sure want to delete this feedback?</string>
+    <string name="delete_account_message">Are your sure want to delete this account?</string>
     <string name="feedback_summary">Feedback Summary</string>
     <string name="already_give_feedback">You give feedback to this post already</string>
     <string name="profile_information">Profile information</string>
@@ -89,4 +90,5 @@
     <string name="report_count">report_count</string>
     <string name="delete_feedback">Delete Feedback</string>
     <string name="delete_post">Delete Post</string>
+    <string name="delete_account">Delete Account</string>
 </resources>

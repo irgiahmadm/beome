@@ -25,7 +25,7 @@ class ReportedPostRepository(private val scope : CoroutineScope) {
         scope.launch {
             withContext(Dispatchers.IO){
                 val refReportedPost = Firebase.firestore.collection("reported_post")
-                refReportedPost.addSnapshotListener { value, error ->
+                refReportedPost.whereEqualTo("post.status", 1).addSnapshotListener { value, error ->
                     stateReportedPost.postValue(NetworkState.LOADING)
                     val tempReportedPost = mutableListOf<ReportedPost>()
                     value?.let {

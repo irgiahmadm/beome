@@ -12,10 +12,12 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class ReportedAccountRepository(private val scope : CoroutineScope) {
     val stateReportedAccount = MutableLiveData<NetworkState>()
+    val stateTakedownAccount = MutableLiveData<NetworkState>()
     private val listReportedAccount = MutableLiveData<List<ReportedAccount>>()
     private val reportedAccount = MutableLiveData<ReportedAccount>()
 
@@ -23,7 +25,7 @@ class ReportedAccountRepository(private val scope : CoroutineScope) {
         scope.launch {
             withContext(Dispatchers.IO){
                 val refReportedPost = Firebase.firestore.collection("reported_account")
-                refReportedPost.addSnapshotListener { value, error ->
+                refReportedPost.whereEqualTo("user.userStatus", 1).addSnapshotListener { value, error ->
                     stateReportedAccount.postValue(NetworkState.LOADING)
                     val tempReportedAccount = mutableListOf<ReportedAccount>()
                     value?.let {
@@ -71,5 +73,24 @@ class ReportedAccountRepository(private val scope : CoroutineScope) {
             }
         }
         return reportedAccount
+    }
+
+    fun takedownAccount(authKey: String){
+        scope.launch {
+            withContext(Dispatchers.IO){
+                val refReportedAccount = Firebase.firestore.collection("reported_account").document(authKey)
+                val refUser = Firebase.firestore.collection("user").document(authKey)
+                stateTakedownAccount.postValue(NetworkState.LOADING)
+                Firebase.firestore.runTransaction {transaction ->
+                    transaction.update(refReportedAccount, "user.userStatus", 2)
+                    transaction.update(refUser, "userStatus", 2)
+                }.addOnSuccessListener {
+                    stateTakedownAccount.postValue(NetworkState.SUCCESS)
+                }.addOnFailureListener {
+                    stateTakedownAccount.postValue(NetworkState.FAILED)
+                    Log.d("err_takedown_acc", it.message.toString())
+                }.await()
+            }
+        }
     }
 }

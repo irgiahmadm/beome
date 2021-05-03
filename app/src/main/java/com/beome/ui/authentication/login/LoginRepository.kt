@@ -26,6 +26,7 @@ class LoginRepository(private val activity : Activity, private val scope: Corout
                     val querySnapshot = collectionUserRef
                         .whereEqualTo("email", email)
                         .whereEqualTo("password", password)
+                        .whereEqualTo("userStatus", 1)
                         .get()
                         .await()
                     if(querySnapshot.documents.isNotEmpty()){

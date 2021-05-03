@@ -13,6 +13,7 @@ class ReportedAccountViewModel : ViewModel() {
     private val _reportedDetailRepo = MutableLiveData<ReportDetailRepository>()
     lateinit var stateReportedAccount : LiveData<NetworkState>
     lateinit var stateReportDetailList : LiveData<NetworkState>
+    lateinit var stateTakedownAccount : LiveData<NetworkState>
 
     fun setUpRepo(){
         _reportedAccountRepo.postValue(reportedtedAccountRepo)
@@ -29,6 +30,12 @@ class ReportedAccountViewModel : ViewModel() {
     fun setUpReportedAccount(){
         stateReportedAccount = Transformations.switchMap(_reportedAccountRepo, ReportedAccountRepository::stateReportedAccount)
     }
+
+    fun setUpTakedowonAccount(){
+        stateReportedAccount = Transformations.switchMap(_reportedAccountRepo, ReportedAccountRepository::stateTakedownAccount)
+    }
+
+    fun takedownAccount(authKey: String) = reportedtedAccountRepo.takedownAccount(authKey)
 
     fun getListReportedAccount() = reportedtedAccountRepo.getListReportedAccount()
 
