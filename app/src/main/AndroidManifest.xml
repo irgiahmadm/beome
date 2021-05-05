@@ -35,7 +35,8 @@
         <activity android:name=".ui.feedback.PostDetailActivity" />
         <activity android:name=".ui.report.ReportActivity" />
         <activity android:name=".ui.add.AddPostActivity" />
-        <activity android:name=".ui.authentication.signup.SignUpActivity" />
+        <activity android:name=".ui.authentication.signup.SignUpActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".ui.authentication.login.LoginActivity"
             android:label="@string/signin"
