@@ -35,22 +35,21 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
     fun followUser(follow : Follow){
         coroutineScope.launch {
             withContext(Dispatchers.IO){
-                try {
                     Firebase.firestore.runTransaction {transaction ->
                         val userRef = Firebase.firestore.collection("user").document(follow.followedId)
                         val reportedUserRef = Firebase.firestore.collection("reported_account").document(follow.followedId)
                         val user = transaction.get(userRef)
                         val reportedUser = transaction.get(reportedUserRef)
                         val newFollower = user["follower"] as Long + 1
-                        val newFolloweronReport = reportedUser["follower"] as Long + 1
+                        val newFolloweronReport = reportedUser["user.follower"] as Long + 1
                         transaction.update(userRef,"follower", newFollower)
-                        transaction.update(userRef,"follower", newFolloweronReport)
+                        transaction.update(reportedUserRef,"user.follower", newFolloweronReport)
                         transaction.set(followRef.document(), follow)
-                        null
-                    }
-                }catch (e : Exception){
-                    Log.d("error_follow", e.localizedMessage!!)
-                }
+                    }.addOnSuccessListener {
+
+                    }.addOnFailureListener {
+                        Log.d("err_follow_user", it.message.toString())
+                    }.await()
             }
         }
     }
@@ -79,11 +78,10 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                                 transaction.delete(follow.reference)
                             }
                             //decrement follower user
-                            val followCounteronReport = reportedUser["follower"] as Long - 1
+                            val followCounteronReport = reportedUser["user.follower"] as Long - 1
                             val followCounter = user["follower"] as Long - 1
                             transaction.update(userRef,"follower", followCounter)
-                            transaction.update(reportedUserRef,"follower", followCounteronReport)
-                            null
+                            transaction.update(reportedUserRef,"user.follower", followCounteronReport)
                         }.await()
                     }
                 }catch (e : Exception){
