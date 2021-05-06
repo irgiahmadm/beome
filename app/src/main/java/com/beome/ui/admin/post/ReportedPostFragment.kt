@@ -42,13 +42,6 @@ class ReportedPostFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun getLisReportedPost(){
-        viewModel.apply {
-            setUpRepo()
-            setUpReportedPost()
-            viewModel.getListReportedPost().observe(viewLifecycleOwner,{
-                adapter.data = it
-            })
-        }
         adapter =
             AdapterUtil(R.layout.item_reported_post, arrayListOf(), { pos, view, reportedPost ->
                 view.textViewTitleReportedPost.text = reportedPost.post.title.capitalize(Locale.getDefault())
@@ -57,6 +50,13 @@ class ReportedPostFragment : Fragment() {
             }, { pos, reportedPost ->
                 startActivity(Intent(requireContext(), ReportedPostDetailActivity::class.java).putExtra(ConstantReport.CONSTANT_REPORT_KEY, reportedPost.post.idPost))
             })
+        viewModel.apply {
+            setUpRepo()
+            setUpReportedPost()
+            viewModel.getListReportedPost().observe(viewLifecycleOwner,{
+                adapter.data = it
+            })
+        }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
         viewModel.stateReportedPost.observe(viewLifecycleOwner,{

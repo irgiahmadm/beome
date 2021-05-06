@@ -10,8 +10,6 @@ import com.beome.R
 import com.beome.ui.authentication.AuthenticationActivity
 import com.beome.ui.utils.UtilsTest.atItem
 import com.beome.ui.utils.UtilsTest.getText
-import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.containsString
 import org.junit.Test
 import org.junit.runner.RunWith
 

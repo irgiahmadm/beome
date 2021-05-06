@@ -43,13 +43,6 @@ class ReportedAccountFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun getLisReportedAccount() {
-        viewModel.apply {
-            setUpRepo()
-            setUpReportedAccount()
-            viewModel.getListReportedAccount().observe(viewLifecycleOwner, {
-                adapter.data = it
-            })
-        }
         adapter =
             AdapterUtil(R.layout.item_reported_account, arrayListOf(), { _, view, reportedData ->
                 view.textViewUsernameReportAccount.text = reportedData.user.username
@@ -69,6 +62,13 @@ class ReportedAccountFragment : Fragment() {
                     ).putExtra(ConstantReport.CONSTANT_REPORT_KEY, reportedData.user.authKey)
                 )
             })
+        viewModel.apply {
+            setUpRepo()
+            setUpReportedAccount()
+            viewModel.getListReportedAccount().observe(viewLifecycleOwner, {
+                adapter.data = it
+            })
+        }
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter

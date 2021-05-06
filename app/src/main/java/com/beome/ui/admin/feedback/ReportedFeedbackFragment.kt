@@ -45,14 +45,8 @@ class ReportedFeedbackFragment : Fragment() {
 
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun getLisReportedFeedback(){
-        viewModel.apply {
-            setUpRepo()
-            setUpReportedFeedback()
-            viewModel.getListReportedFeedback().observe(viewLifecycleOwner,{
-
-                adapter.data = it
-            })
-        }
+        viewModel.setUpRepo()
+        viewModel.setUpReportedFeedback()
         adapter =
             AdapterUtil(R.layout.item_reported_feedback, arrayListOf(), { _, view, reportedData ->
                 view.textViewReportCountFeedback.text = "${reportedData.counter} Reported"
@@ -96,6 +90,9 @@ class ReportedFeedbackFragment : Fragment() {
                         .putExtra(ConstantPost.CONSTANT_ID_POST, reportedData.feedback.idPost)
                 )
             })
+        viewModel.getListReportedFeedback().observe(viewLifecycleOwner, {
+            adapter.data = it
+        })
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
         viewModel.stateReportedFeedback.observe(viewLifecycleOwner,{
