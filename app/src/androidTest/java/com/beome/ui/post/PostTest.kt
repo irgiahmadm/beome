@@ -2,7 +2,7 @@ package com.beome.ui.post
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -10,11 +10,18 @@ import com.beome.R
 import com.beome.ui.authentication.AuthenticationActivity
 import com.beome.ui.utils.UtilsTest.atItem
 import com.beome.ui.utils.UtilsTest.getText
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class PostTest {
+
+    companion object{
+        const val CHANGE_TITLE_POST = "jujutsu"
+        const val CHANGE_DESCRIPTION = "sad jujutsu"
+    }
 
     @Test
     fun testLikePost(){
@@ -68,6 +75,36 @@ class PostTest {
         val likeAfter = (likeBefore!!.toInt() - 1).toString()
         //check like counter is changed or not
         onView(withId(R.id.textViewLikeCount)).check(matches(withText(likeAfter)))
+        //close activity
+        activityScenario.close()
+    }
+
+    @Test
+    fun editPost(){
+        val activityScenario = ActivityScenario.launch(
+            AuthenticationActivity::class.java
+        )
+        //delay
+        Thread.sleep(2000)
+        //click profile menu
+        onView(withId(R.id.navigation_profile)).perform(click())
+        //delay
+        Thread.sleep(2000)
+        //click recycler
+        onView(withId(R.id.recyclerProfilePost)).atItem(0, click())
+        //click edit post
+        onView(withId(R.id.buttonEditPost)).perform(click())
+        //fill title
+        onView(withId(R.id.editTextPostTitle)).perform(scrollTo(), replaceText(CHANGE_TITLE_POST))
+        //fill description
+        onView(withId(R.id.editTextPostDesc)).perform(scrollTo(), replaceText(CHANGE_DESCRIPTION))
+        //click button edit post
+        onView(withId(R.id.buttonEdit)).perform(click())
+        //delay
+        Thread.sleep(2000)
+        //check if there any contain text that changed
+        onView(withText(containsString(CHANGE_TITLE_POST)))
+        onView(withText(containsString(CHANGE_DESCRIPTION)))
         //close activity
         activityScenario.close()
     }
