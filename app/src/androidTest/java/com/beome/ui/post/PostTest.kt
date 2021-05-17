@@ -8,9 +8,9 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.beome.R
 import com.beome.ui.authentication.AuthenticationActivity
+import com.beome.ui.utils.UtilsTest
 import com.beome.ui.utils.UtilsTest.atItem
 import com.beome.ui.utils.UtilsTest.getText
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -106,6 +106,35 @@ class PostTest {
         onView(withText(containsString(CHANGE_TITLE_POST)))
         onView(withText(containsString(CHANGE_DESCRIPTION)))
         //close activity
+        activityScenario.close()
+    }
+
+    @Test
+    fun testGiveFeedback(){
+        val activityScenario = ActivityScenario.launch(
+            AuthenticationActivity::class.java
+        )
+        //delay
+        Thread.sleep(2000)
+        //click recycler view
+        onView(withId(R.id.recyclerRecentPost)).atItem(1, click())
+        //click button give feedback
+        onView(withId(R.id.buttonGiveFeedback)).perform(click())
+        //click rate button 1
+        onView(withId(R.id.recyclerViewFeedbackComponent)).atItem(0,
+            UtilsTest.clickChildViewWithId(R.id.radioButton4)!!
+        )
+        //click rate button 2
+        onView(withId(R.id.recyclerViewFeedbackComponent)).atItem(1,
+            UtilsTest.clickChildViewWithId(R.id.radioButton5)!!
+        )
+        //add comment
+        onView(withId(R.id.editTextComment)).perform(scrollTo(), typeText("Nice work, keep it up!"))
+        //click button submit
+        onView(withId(R.id.buttonSubmitFeedback)).perform(click())
+        //feedback success if back to detail post after submit
+        onView(withText("Detail Post")).check(matches(isDisplayed()))
+        //close
         activityScenario.close()
     }
 }

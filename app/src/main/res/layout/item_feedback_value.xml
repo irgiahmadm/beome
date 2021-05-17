@@ -25,6 +25,7 @@
         android:layout_marginTop="4dp">
 
         <RadioButton
+            android:id="@+id/radioButton1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/one"
@@ -37,6 +38,7 @@
             android:textSize="16sp"/>
 
         <RadioButton
+            android:id="@+id/radioButton2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/two"
@@ -49,6 +51,7 @@
             android:textSize="16sp"/>
 
         <RadioButton
+            android:id="@+id/radioButton3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/three"
@@ -61,6 +64,7 @@
             android:textSize="16sp"/>
 
         <RadioButton
+            android:id="@+id/radioButton4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/four"
@@ -73,6 +77,7 @@
             android:textSize="16sp"/>
 
         <RadioButton
+            android:id="@+id/radioButton5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/five"

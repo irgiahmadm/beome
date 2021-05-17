@@ -24,6 +24,24 @@ object UtilsTest {
         )
     }
 
+    fun clickChildViewWithId(id: Int): ViewAction? {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View>? {
+                return null
+            }
+
+            override fun getDescription(): String {
+                return "Click on a child view with specified id."
+            }
+
+            override fun perform(uiController: UiController, view: View) {
+                val v = view.findViewById<View>(id)
+                v.performClick()
+            }
+        }
+    }
+
+
     fun getText(matcher: Matcher<View?>?): String? {
         val stringHolder = arrayOf<String?>(null)
         onView(matcher).perform(object : ViewAction {
