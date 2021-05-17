@@ -132,6 +132,8 @@ class PostTest {
         onView(withId(R.id.editTextComment)).perform(scrollTo(), typeText("Nice work, keep it up!"))
         //click button submit
         onView(withId(R.id.buttonSubmitFeedback)).perform(click())
+        //delay
+        Thread.sleep(2000)
         //feedback success if back to detail post after submit
         onView(withText("Detail Post")).check(matches(isDisplayed()))
         //close
