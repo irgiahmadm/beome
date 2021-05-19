@@ -189,6 +189,9 @@ class ReportActivity : AppCompatActivity() {
                 binding.textViewSelectReason.text = reason
                 dialog.dismiss()
             }
+            bindingDialog.buttonCancel.setOnClickListener {
+                dialog.dismiss()
+            }
         }
         dialog.apply {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -209,6 +212,9 @@ class ReportActivity : AppCompatActivity() {
                 binding.textViewSelectReason.text = reason
                 dialog.dismiss()
             }
+            bindingDialog.buttonCancel.setOnClickListener {
+                dialog.dismiss()
+            }
         }
         dialog.apply {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -227,6 +233,9 @@ class ReportActivity : AppCompatActivity() {
             bindingDialog.buttonOk.setOnClickListener {
                 reason = radioButton.text.toString()
                 binding.textViewSelectReason.text = reason
+                dialog.dismiss()
+            }
+            bindingDialog.buttonCancel.setOnClickListener {
                 dialog.dismiss()
             }
         }
