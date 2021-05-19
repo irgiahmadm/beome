@@ -91,4 +91,72 @@
     <string name="delete_feedback">Delete Feedback</string>
     <string name="delete_post">Delete Post</string>
     <string name="delete_account">Delete Account</string>
+    <string name="beome_community_guideline">Beome Community Guideline</string>
+    <string name="beome_description">
+        Beome is a platform for creative people around the world
+        to showcase their own work and to discover the creative work of others.
+        These Beome Community Guidelines govern your use
+        of Beome to maintain an engaging and trustworthy community.
+        If you come across content that violates
+        these Guidelines, please follow the instructions in the
+        "Report Abuse" section below.
+    </string>
+    <string name="respectful_and_safe">1.Respectful and Safe</string>
+    <string name="community_guideline_1">
+        We don’t allow abusive or illegal content or behavior. This includes, but is not limited to, the following:\n
+        \n<li>Spam or posts related to the sale of non-creative goods or services</li>
+        \n<li>Pornographic material and explicit nudity</li>
+        \n<li>Harassment and threats</li>
+        \n<li>Hateful or highly offensive content that attacks or dehumanizes
+            a group based on race, ethnicity, national origin, religion,
+            serious disease or disability, gender, age, or sexual orientation</li>
+        \n<li>Graphic violence or gore</li>
+        \n<li>Illegal activities or goods</li>
+        \n<li>Self-harm or the promotion of self-harm</li>
+        \n<li>Depictions of minors in a sexual manner</li>
+        \n<li>Promotion of terrorism or violent extremism</li>
+        \n<li>Dissemination of misleading, fraudulent, or deceptive content
+            that could lead to real-world harm</li>
+        \n<li>Personal or private information of others (like full name, home address,
+            phone number, email address, government issued IDs, or anything else
+            that would let someone locate or contact you in the real world))</li>
+    </string>
+    <string name="supportive">2. Supportive</string>
+    <string name="community_guideline_2">
+        We value artistic expression, but we ask that you keep your feedback and other communications constructive and respectful.
+        We don\'t tolerate abusive, vulgar or insulting comments and messages.
+    </string>
+    <string name="authentic">3. Authentic</string>
+    <string name="community_guideline_3">
+        We disable accounts that engage in behavior that undermines the authenticity of our community, including but not limited to,the following deceptive or harmful behaviors:\n
+        \n<li>Using fake, misleading, or inaccurate information in your profile</li>
+        \n<li>Impersonating other people or entities</li>
+        \n<li>Falsely attributing someone’s work</li>
+    </string>
+    <string name="guide_report_abuse">Guide: Report Abuse on Beome</string>
+    <string name="guide_report_description">
+        If you ever experience a user violating the Community Guidelines you can make a report to us. See below on how to make a report to us:
+    </string>
+    <string name="report_profile">Report A Profile</string>
+    <string name="report_profile_step">
+        \n<li>Go to the Profile Page</li>
+        \n<li>Click on the ... (Three dots) icon on the top right corner of the page</li>
+        \n<li>Click Report</li>
+        \n<li>Select the reason you are reporting the account and add
+            any additional comments that may help us in our review (if applicable)</li>
+    </string>
+    <string name="report_post">Report A Post</string>
+    <string name="report_post_step">
+       \n<li>Go to the Detail Post Page</li>
+        \n<li>Click on the ... (Three dots) icon on the top right corner of the page</li>
+        \n<li>Click Report</li>
+        \n<li>Select the reason you are reporting the post and add any additional comments that may help us in our review (if applicable)</li>
+    </string>
+    <string name="report_feedback">Report A Feedback</string>
+    <string name="report_feedback_step">
+        \n<li>Scroll down to the bottom of the detail post page</li>
+        \n<li>Click on the ... (Three dots) icon on the top right corner of the feedback</li>
+        \n<li>Click Report</li>
+        \n<li>Select the reason you are reporting the feedback and add any additional comments that may help us in our review (if applicable)</li>
+    </string>
 </resources>

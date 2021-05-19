@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Beome">
-        <activity android:name=".ui.admin.feedback.ReportedFeedbackdetailActivity"></activity>
+        <activity android:name=".ui.guideline.CommunityGuidelineActivity"></activity>
+        <activity android:name=".ui.admin.feedback.ReportedFeedbackdetailActivity" />
         <activity android:name=".ui.admin.account.ReportedAccountDetailActivity" />
         <activity android:name=".ui.admin.post.ReportedPostDetailActivity" />
         <activity
@@ -35,8 +36,9 @@
         <activity android:name=".ui.feedback.PostDetailActivity" />
         <activity android:name=".ui.report.ReportActivity" />
         <activity android:name=".ui.add.AddPostActivity" />
-        <activity android:name=".ui.authentication.signup.SignUpActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+        <activity
+            android:name=".ui.authentication.signup.SignUpActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name=".ui.authentication.login.LoginActivity"
             android:label="@string/signin"

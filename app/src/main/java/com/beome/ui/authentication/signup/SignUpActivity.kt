@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.beome.databinding.ActivitySignUpBinding
 import com.beome.model.User
 import com.beome.ui.authentication.login.LoginActivity
+import com.beome.ui.guideline.CommunityGuidelineActivity
 import com.beome.utilities.GlobalHelper
 import com.beome.utilities.NetworkState
 import java.util.*
@@ -66,6 +67,9 @@ class SignUpActivity : AppCompatActivity() {
             dpd.show()
         }
         GlobalHelper.hideShowPassword(binding.editTextPassword, binding.imageViewTogglePassword)
+        binding.textViewCommunityGuideline.setOnClickListener {
+            startActivity(Intent(this, CommunityGuidelineActivity::class.java))
+        }
     }
 
     private fun registerUser(){

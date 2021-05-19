@@ -329,12 +329,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
             <TextView
-                android:id="@+id/textViewRegiter"
+                android:id="@+id/textViewCommunityGuideline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/terms_of_use"
+                android:text="@string/beome_community_guideline"
                 android:textAlignment="center"
                 android:textColor="@color/color_primary"
                 app:layout_constraintEnd_toEndOf="@+id/textView13"
