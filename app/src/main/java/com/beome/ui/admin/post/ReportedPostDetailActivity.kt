@@ -68,11 +68,10 @@ class ReportedPostDetailActivity : AppCompatActivity() {
             } else {
                 Glide.with(this).load(it.post.imgUser).circleCrop().into(binding.imageViewUser)
             }
-            val dateCreated = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(
+            val dateCreated = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(
                 it.post.createdAt
             )
-            val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
-            binding.textViewDateCreated.text = dateFormatted
+            binding.textViewDateCreated.text = dateCreated
         })
     }
 

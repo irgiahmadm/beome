@@ -34,8 +34,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".ui.feedback.PostDetailActivity" />
-        <activity android:name=".ui.report.ReportActivity" />
-        <activity android:name=".ui.add.AddPostActivity" />
+        <activity android:name=".ui.report.ReportActivity" android:label="Report Action"/>
+        <activity android:name=".ui.add.AddPostActivity" android:label="Add Post"/>
         <activity
             android:name=".ui.authentication.signup.SignUpActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />

@@ -3,6 +3,7 @@ package com.beome.model
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
+import java.util.*
 
 @Parcelize
 data class Post(
@@ -17,6 +18,6 @@ data class Post(
     var feedbackCount : Int = 0,
     var likedBy : @RawValue List<String> = arrayListOf(),
     var status : Int = 1,
-    var createdAt: String = "",
-    var updatedAt: String  = ""
+    var createdAt: Date = Date(),
+    var updatedAt: Date  = Date()
 ) : Parcelable

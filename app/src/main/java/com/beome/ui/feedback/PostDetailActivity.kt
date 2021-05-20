@@ -366,11 +366,10 @@ class PostDetailActivity : AppCompatActivity() {
             } else {
                 Glide.with(this).load(post.imgUser).circleCrop().into(binding.imageViewUser)
             }
-            val dateCreated = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(
+            val dateCreated = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(
                 post.createdAt
             )
-            val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
-            binding.textViewDateCreated.text = dateFormatted
+            binding.textViewDateCreated.text = dateCreated
             binding.textViewLikeCount.text = post.likeCount.toString()
         })
     }

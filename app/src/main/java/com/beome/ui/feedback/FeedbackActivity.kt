@@ -55,13 +55,13 @@ class FeedbackActivity : AppCompatActivity() {
             getPostDetail()
             viewModel.setUpFeedbackValue()
             viewModel.setUpUsertoFeedback()
+            getStateUsertoFeedback()
             binding.buttonSubmitFeedback.setOnClickListener {
                 checkFeedbackValue()
-                if(isFeedbackValueValid){
+                if (isFeedbackValueValid) {
                     submitFeedback()
                 }
             }
-            getStateUsertoFeedback()
         } else {
             finish()
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
@@ -113,7 +113,9 @@ class FeedbackActivity : AppCompatActivity() {
 
 
     private fun getStateUsertoFeedback() {
+        Log.d("feedback_stat_running", "feedback_stat_running")
         viewModel.addUserFeedbackState.observe(this, {
+            Log.d("feedback_stat", it.toString())
             when(it){
                 NetworkState.LOADING -> {
 
@@ -156,9 +158,8 @@ class FeedbackActivity : AppCompatActivity() {
                 Glide.with(this).load(it.imgUser).circleCrop().into(binding.imageViewUser)
             }
             val dateCreated =
-                SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).parse(it.createdAt)
-            val dateFormatted = SimpleDateFormat("dd-MM-yyyy").format(dateCreated!!)
-            binding.textViewDateCreated.text = dateFormatted
+                SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(it.createdAt)
+            binding.textViewDateCreated.text = dateCreated
         })
     }
 

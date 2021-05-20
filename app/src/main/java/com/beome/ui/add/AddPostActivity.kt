@@ -1,14 +1,9 @@
 package com.beome.ui.add
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -21,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.beome.MainActivity
 import com.beome.R
 import com.beome.constant.ConstantAuth
-import com.beome.constant.ConstantPost
 import com.beome.databinding.ActivityAddPostBinding
 import com.beome.model.ComponentFeedbackPost
 import com.beome.model.Post
@@ -34,10 +28,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.storage.FirebaseStorage
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.component_feedback.view.*
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
 import java.util.*
 
 class AddPostActivity : AppCompatActivity() {
@@ -150,9 +141,6 @@ class AddPostActivity : AppCompatActivity() {
             val desc = binding.editTextPostDesc.text.toString()
             val username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME)!!
             val imageUser = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_IMAGE)!!
-            val createdDate = SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(
-                Date()
-            )
             if (image == null) {
                 Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
             }
@@ -187,8 +175,8 @@ class AddPostActivity : AppCompatActivity() {
                                 0,
                                 likedBy,
                                 1,
-                                createdDate,
-                                createdDate
+                                Date(),
+                                Date()
                             )
                             viewModel.addPost(post)
                         }
