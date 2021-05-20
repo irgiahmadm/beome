@@ -35,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
         }
         binding.textViewRegiter.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
+            finish()
         }
         GlobalHelper.hideShowPassword(binding.editTextPassword, binding.imageViewTogglePassword)
     }

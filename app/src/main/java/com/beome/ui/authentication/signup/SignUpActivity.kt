@@ -6,14 +6,21 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.util.Patterns
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.beome.MainActivity
+import com.beome.constant.ConstantAuth
 import com.beome.databinding.ActivitySignUpBinding
 import com.beome.model.User
+import com.beome.ui.admin.MainActivityAdmin
 import com.beome.ui.authentication.login.LoginActivity
+import com.beome.ui.authentication.login.LoginViewModel
 import com.beome.ui.guideline.CommunityGuidelineActivity
 import com.beome.utilities.GlobalHelper
 import com.beome.utilities.NetworkState
+import com.beome.utilities.SharedPrefUtil
 import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
@@ -21,6 +28,10 @@ class SignUpActivity : AppCompatActivity() {
     private val viewModel: SignupViewModel by lazy {
         ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(SignupViewModel::class.java)
     }
+    private val viewModelLogin : LoginViewModel by lazy {
+        ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(LoginViewModel::class.java)
+    }
+    private lateinit var sharedPrefUtil: SharedPrefUtil
     private lateinit var user : User
     private val c = Calendar.getInstance()
     private val year = c.get(Calendar.YEAR)
@@ -32,18 +43,23 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        sharedPrefUtil = SharedPrefUtil()
+        sharedPrefUtil.start(this,ConstantAuth.CONSTANT_PREFERENCE)
         viewModel.setUpRepoRegister()
         viewModel.setUpRegisterUser()
         viewModel.setupIsUsernameExist()
         viewModel.setupIsEmailExist()
+        viewModelLogin.setUpLoginUser()
 
         getStateRegister()
+        getStateLogin()
         getStateEmailExist()
         getStateUsernameExist()
         binding.buttonSignup.setOnClickListener {
             registerUser()
         }
         binding.textViewSignIn.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
         binding.editTextBirthDate.inputType = InputType.TYPE_NULL
@@ -183,11 +199,42 @@ class SignUpActivity : AppCompatActivity() {
         })
     }
 
+    private fun getStateLogin(){
+        viewModelLogin.loginState.observe(this,{
+            Log.d("login_state", it.toString())
+            when(it){
+                NetworkState.LOADING -> {
+
+                }
+                NetworkState.SUCCESS -> {
+                    finish()
+                    if(sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_ROLE)?.toInt() == 2){
+                        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                    }else{
+                        startActivity(Intent(this, MainActivityAdmin::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                    }
+                }
+                NetworkState.FAILED -> {
+
+                }
+                NetworkState.NOT_FOUND ->{
+                    Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        })
+    }
+
     private fun getStateRegister(){
         viewModel.registerState.observe(this,{
             when(it){
                 NetworkState.SUCCESS -> {
-                    finish()
+                    val email = binding.editTextEmail.text.toString()
+                    val password = GlobalHelper.sha256(binding.editTextPassword.text.toString())
+                    viewModelLogin.loginUser(email, password)
                 }
                 NetworkState.LOADING -> {
 
