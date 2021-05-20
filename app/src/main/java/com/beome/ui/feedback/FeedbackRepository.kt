@@ -42,12 +42,12 @@ class FeedbackRepository(private val scope: CoroutineScope) {
                     val post = transaction.get(docPostRef)
                     //increment feedbackCount
                     val counterFeedback = post["feedbackCount"] as Long + 1
-                    val counterFeedbackReported = reportedPost["post.feedbackCount"] as Long + 1
                     //insert feedback user
                     transaction.set(userFeedbackPostRef, feedback)
                     //update feedback count
                     transaction.update(docPostRef, "feedbackCount", counterFeedback)
                     if(reportedPost.exists()){
+                        val counterFeedbackReported = reportedPost["post.feedbackCount"] as Long + 1
                         transaction.update(
                             reportedPostRef,
                             "post.feedbackCount",

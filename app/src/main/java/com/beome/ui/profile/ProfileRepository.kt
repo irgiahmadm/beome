@@ -41,9 +41,9 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                         val user = transaction.get(userRef)
                         val reportedUser = transaction.get(reportedUserRef)
                         val newFollower = user["follower"] as Long + 1
-                        val newFolloweronReport = reportedUser["user.follower"] as Long + 1
                         transaction.update(userRef,"follower", newFollower)
                         if(reportedUser.exists()){
+                            val newFolloweronReport = reportedUser["user.follower"] as Long + 1
                             transaction.update(reportedUserRef,"user.follower", newFolloweronReport)
                         }
                         transaction.set(followRef.document(), follow)
@@ -80,10 +80,10 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                                 transaction.delete(follow.reference)
                             }
                             //decrement follower user
-                            val followCounteronReport = reportedUser["user.follower"] as Long - 1
                             val followCounter = user["follower"] as Long - 1
                             transaction.update(userRef,"follower", followCounter)
                             if(reportedUser.exists()){
+                                val followCounteronReport = reportedUser["user.follower"] as Long - 1
                                 transaction.update(reportedUserRef,"user.follower", followCounteronReport)
                             }
                         }.await()
