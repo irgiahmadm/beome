@@ -44,7 +44,7 @@ class SignUpActivity : AppCompatActivity() {
             registerUser()
         }
         binding.textViewSignIn.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
         binding.editTextBirthDate.inputType = InputType.TYPE_NULL
         binding.editTextBirthDate.setOnClickListener {
