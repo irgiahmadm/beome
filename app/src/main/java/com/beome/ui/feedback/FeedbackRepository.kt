@@ -1,5 +1,6 @@
 package com.beome.ui.feedback
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.beome.model.FeedbackPostUser
 import com.beome.utilities.NetworkState
@@ -46,12 +47,15 @@ class FeedbackRepository(private val scope: CoroutineScope) {
                     transaction.set(userFeedbackPostRef, feedback)
                     //update feedback count
                     transaction.update(docPostRef, "feedbackCount", counterFeedback)
-                    transaction.update(
-                        reportedPostRef,
-                        "post.feedbackCount",
-                        counterFeedbackReported
-                    )
+                    if(reportedPost.exists()){
+                        transaction.update(
+                            reportedPostRef,
+                            "post.feedbackCount",
+                            counterFeedbackReported
+                        )
+                    }
                 }.addOnFailureListener {
+                    Log.d("err_add_feedback", it.message.toString())
                     addDataUserState.postValue(NetworkState.FAILED)
                 }.addOnSuccessListener {
                     addDataUserState.postValue(NetworkState.SUCCESS)

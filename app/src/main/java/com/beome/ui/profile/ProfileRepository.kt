@@ -43,7 +43,9 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                         val newFollower = user["follower"] as Long + 1
                         val newFolloweronReport = reportedUser["user.follower"] as Long + 1
                         transaction.update(userRef,"follower", newFollower)
-                        transaction.update(reportedUserRef,"user.follower", newFolloweronReport)
+                        if(reportedUser.exists()){
+                            transaction.update(reportedUserRef,"user.follower", newFolloweronReport)
+                        }
                         transaction.set(followRef.document(), follow)
                     }.addOnSuccessListener {
 
@@ -81,7 +83,9 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
                             val followCounteronReport = reportedUser["user.follower"] as Long - 1
                             val followCounter = user["follower"] as Long - 1
                             transaction.update(userRef,"follower", followCounter)
-                            transaction.update(reportedUserRef,"user.follower", followCounteronReport)
+                            if(reportedUser.exists()){
+                                transaction.update(reportedUserRef,"user.follower", followCounteronReport)
+                            }
                         }.await()
                     }
                 }catch (e : Exception){

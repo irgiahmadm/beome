@@ -34,8 +34,10 @@ class PostRepository(private val scope: CoroutineScope) {
                     val likeCountReport = (reportedPost.get("likeCount") as Long?)?.plus(1)
                     transaction.update(docLikedPostRef, "likedBy", FieldValue.arrayUnion(likedBy))
                     transaction.update(docLikedPostRef, "likeCount", likeCount)
-                    transaction.update(reportedPostRef, "likedBy", FieldValue.arrayUnion(likedBy))
-                    transaction.update(reportedPostRef, "likeCount", likeCountReport)
+                    if(reportedPost.exists()){
+                        transaction.update(reportedPostRef, "likedBy", FieldValue.arrayUnion(likedBy))
+                        transaction.update(reportedPostRef, "likeCount", likeCountReport)
+                    }
                     likePostState.postValue(NetworkState.SUCCESS)
                 }.await()
             }catch (e : Exception){
@@ -57,8 +59,10 @@ class PostRepository(private val scope: CoroutineScope) {
                 val likeCountReported = (reportedPost.get("likeCount") as Long?)?.minus(1)
                 transaction.update(docLikedPostRef, "likedBy", FieldValue.arrayRemove(likedBy))
                 transaction.update(docLikedPostRef, "likeCount", likeCount)
-                transaction.update(reportedPostRef, "likedBy", FieldValue.arrayRemove(likedBy))
-                transaction.update(reportedPostRef, "likeCount", likeCountReported)
+                if(reportedPost.exists()){
+                    transaction.update(reportedPostRef, "likedBy", FieldValue.arrayRemove(likedBy))
+                    transaction.update(reportedPostRef, "likeCount", likeCountReported)
+                }
                 likePostState.postValue(NetworkState.SUCCESS)
             }
         }catch (e : Exception){
