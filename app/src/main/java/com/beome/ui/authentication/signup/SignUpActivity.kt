@@ -17,6 +17,7 @@ import com.beome.model.User
 import com.beome.ui.admin.MainActivityAdmin
 import com.beome.ui.authentication.login.LoginActivity
 import com.beome.ui.authentication.login.LoginViewModel
+import com.beome.ui.authentication.login.LoginViewModelFactory
 import com.beome.ui.guideline.CommunityGuidelineActivity
 import com.beome.utilities.GlobalHelper
 import com.beome.utilities.NetworkState
@@ -28,9 +29,7 @@ class SignUpActivity : AppCompatActivity() {
     private val viewModel: SignupViewModel by lazy {
         ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(SignupViewModel::class.java)
     }
-    private val viewModelLogin : LoginViewModel by lazy {
-        ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(LoginViewModel::class.java)
-    }
+    private lateinit var viewModelLogin : LoginViewModel
     private lateinit var sharedPrefUtil: SharedPrefUtil
     private lateinit var user : User
     private val c = Calendar.getInstance()
@@ -43,6 +42,8 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val viewModelFactory = LoginViewModelFactory(this)
+        viewModelLogin = ViewModelProvider(this, viewModelFactory).get(LoginViewModel(this)::class.java)
         sharedPrefUtil = SharedPrefUtil()
         sharedPrefUtil.start(this,ConstantAuth.CONSTANT_PREFERENCE)
         viewModel.setUpRepoRegister()
