@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
 import android.util.Patterns
-import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import com.beome.databinding.ActivitySignUpBinding
 import com.beome.model.User
@@ -33,8 +32,6 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
         viewModel.setUpRepoRegister()
         viewModel.setUpRegisterUser()
         viewModel.setupIsUsernameExist()
@@ -208,11 +205,4 @@ class SignUpActivity : AppCompatActivity() {
         })
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == android.R.id.home){
-            finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
 }
