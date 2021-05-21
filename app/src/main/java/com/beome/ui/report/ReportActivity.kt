@@ -42,6 +42,17 @@ class ReportActivity : AppCompatActivity() {
         if (intent.hasExtra(ConstantReport.CONSTANT_REPORT)){
             reportCategory = intent.getStringExtra(ConstantReport.CONSTANT_REPORT) as String
         }
+        when(reportCategory){
+            ConstantReport.CONSTANT_REPORT_FEEDBACK -> {
+                title = "Report Feedback"
+            }
+            ConstantReport.CONSTANT_REPORT_POST -> {
+                title = "Report Post"
+            }
+            ConstantReport.CONSTANT_REPORT_ACCOUNT -> {
+                title = "Report Account"
+            }
+        }
         if(intent.hasExtra(ConstantReport.CONSTANT_REPORT_KEY)){
             idReport = intent.getStringExtra(ConstantReport.CONSTANT_REPORT_KEY) as String
         }
