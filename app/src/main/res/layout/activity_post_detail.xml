@@ -100,7 +100,7 @@
             <View
                 android:id="@+id/view3"
                 android:layout_width="0dp"
-                android:layout_height="4dp"
+                android:layout_height="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/background_layout"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -151,8 +151,7 @@
                 android:id="@+id/constraintFeedbackSummary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/view3"
-                tools:layout_editor_absoluteX="58dp">
+                app:layout_constraintTop_toBottomOf="@+id/view3">
 
                 <TextView
                     android:id="@+id/textViewFeedbackSummary"
@@ -160,6 +159,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/feedback_summary"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -170,9 +170,9 @@
                 <ImageView
                     android:id="@+id/imageViewExpand"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
                     android:layout_marginEnd="16dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/constraintFeedbackSummary"
+                    app:layout_constraintBottom_toBottomOf="@+id/textViewFeedbackSummary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textViewFeedbackSummary"
                     app:srcCompat="@drawable/ic_expand" />
@@ -181,7 +181,7 @@
             <View
                 android:id="@+id/view"
                 android:layout_width="wrap_content"
-                android:layout_height="4dp"
+                android:layout_height="8dp"
                 android:background="@color/background_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
