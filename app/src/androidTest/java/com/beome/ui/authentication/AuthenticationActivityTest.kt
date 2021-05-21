@@ -42,8 +42,7 @@ class AuthenticationActivityTest {
         )
         //click register
         onView(withId(R.id.buttonSignup)).perform(click())
-
-//        onView(withText("Beome")).check(matches(isDisplayed()))
+        onView(withText("Beome")).check(matches(isDisplayed()))
         //close activity
         activityScenario.close()
     }
