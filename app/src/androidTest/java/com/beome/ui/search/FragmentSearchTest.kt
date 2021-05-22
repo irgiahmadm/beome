@@ -65,7 +65,7 @@ class FragmentSearchTest {
         //delay
         Thread.sleep(2000)
         //click recycler view
-        onView(withId(R.id.recyclerSearchUser)).atItem(0, click())
+        onView(withId(R.id.recyclerSearchPost)).atItem(0, click())
         //check profile preview user
         onView(ViewMatchers.withText(CoreMatchers.containsString(SEARCH_POST_QUERY)))
         //close activity
