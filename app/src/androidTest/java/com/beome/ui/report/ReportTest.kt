@@ -1,6 +1,7 @@
 package com.beome.ui.report
 
 import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -97,7 +98,9 @@ class ReportTest {
         //click ok
         onView(withText("OK")).perform(click())
         //fill description
-        onView(withId(R.id.editTextTextReportDetail)).perform(scrollTo(), typeText("Test report $typeReport"))
+        onView(withId(R.id.editTextTextReportDetail)).perform(typeText("Test report $typeReport"))
+        //close keyboard
+        Espresso.closeSoftKeyboard()
         //click submit
         onView(withId(R.id.buttonSubmitReport)).perform(click())
         //delay

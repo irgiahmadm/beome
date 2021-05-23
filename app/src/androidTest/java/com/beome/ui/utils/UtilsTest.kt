@@ -16,6 +16,7 @@ import org.hamcrest.Matcher
 
 
 object UtilsTest {
+    // Buat ngeklik rv
     fun ViewInteraction.atItem(pos: Int, action: ViewAction) {
         perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -24,6 +25,7 @@ object UtilsTest {
         )
     }
 
+    // Buat ngeklik child rv
     fun clickChildViewWithId(id: Int): ViewAction? {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View>? {
@@ -61,6 +63,7 @@ object UtilsTest {
         return stringHolder[0]
     }
 
+    // Buat ngetik di searchView
     fun typeSearchViewText(text: String?): ViewAction? {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View> {

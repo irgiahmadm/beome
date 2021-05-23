@@ -19,8 +19,8 @@ import org.junit.runner.RunWith
 class PostTest {
 
     companion object{
-        const val CHANGE_TITLE_POST = "jujutsu"
-        const val CHANGE_DESCRIPTION = "sad jujutsu"
+        const val CHANGE_TITLE_POST = "bar foo"
+        const val CHANGE_DESCRIPTION = "bar foo"
     }
 
     @Test
@@ -32,7 +32,7 @@ class PostTest {
         //delay
         Thread.sleep(2000)
         //click recycler view
-        onView(withId(R.id.recyclerRecentPost)).atItem(0, click())
+        onView(withId(R.id.recyclerRecentPost)).atItem(1, click())
         //delay
         Thread.sleep(2000)
         //get text like count before post is liked
@@ -60,7 +60,7 @@ class PostTest {
         //delay
         Thread.sleep(2000)
         //click recycler view
-        onView(withId(R.id.recyclerRecentPost)).atItem(0, click())
+        onView(withId(R.id.recyclerRecentPost)).atItem(1, click())
         //delay
         Thread.sleep(2000)
         //get text like count before post is liked
@@ -135,7 +135,7 @@ class PostTest {
         //delay
         Thread.sleep(2000)
         //feedback success if back to detail post after submit
-        onView(withText("Detail Post")).check(matches(isDisplayed()))
+        onView(withText("Post Detail")).check(matches(isDisplayed()))
         //close
         activityScenario.close()
     }

@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 class FragmentSearchTest {
 
     companion object{
-        const val SEARCH_POST_QUERY = "katak"
+        const val SEARCH_POST_QUERY = "my"
         const val SEARCH_PEOPLE_QUERY = "irgi"
     }
     @Test
