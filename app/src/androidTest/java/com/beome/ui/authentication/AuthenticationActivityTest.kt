@@ -42,6 +42,9 @@ class AuthenticationActivityTest {
         )
         //click register
         onView(withId(R.id.buttonSignup)).perform(click())
+        //delay
+        Thread.sleep(2000)
+        //register is succes if text Beome at MainActivity is show
         onView(withText("Beome")).check(matches(isDisplayed()))
         //close activity
         activityScenario.close()

@@ -23,7 +23,7 @@ class RecentPostViewModel : ViewModel() {
 
     fun getListRecentPost(idUser: String) : LiveData<List<LikedPostList>>{
         recentPostRepo.getRecentPost()
-            .orderBy("createdAt", Query.Direction.ASCENDING)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
             .whereEqualTo("status", 1)
             .addSnapshotListener { querySnapshot, error ->
             error?.let{
