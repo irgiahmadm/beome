@@ -156,12 +156,6 @@ class EditProfileActivity : AppCompatActivity() {
                     requestFocus()
                 }
             }
-            dateOfBirth.isEmpty() -> {
-                binding.editTextBirthDate.apply {
-                    error = "Date of birth can not be mpty"
-                    requestFocus()
-                }
-            }
             else -> {
                 Log.d("hasil_crop", imageCroppedResult.toString())
                 if(imageCroppedResult != null){

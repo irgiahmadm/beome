@@ -145,47 +145,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/date_of_birth"
-                android:textColor="@color/text_color_primary"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="@+id/textView8"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/background_edit_text"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView9">
-
-                <EditText
-                    android:id="@+id/editTextBirthDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@android:color/transparent"
-                    android:focusableInTouchMode="false"
-                    android:hint="@string/select_date"
-                    android:importantForAutofill="no"
-                    android:inputType="textPersonName"
-                    android:paddingStart="8dp"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="RtlSymmetry,TextFields" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:text="@string/username"
                 android:textColor="@color/text_color_primary"
                 android:textSize="16sp"
