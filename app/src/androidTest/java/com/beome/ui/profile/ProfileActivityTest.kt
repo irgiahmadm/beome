@@ -2,7 +2,7 @@ package com.beome.ui.profile
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -20,6 +20,11 @@ class ProfileActivityTest {
 
     companion object{
         const val SEARCH_PEOPLE_QUERY = "haikal"
+        const val USERNAME = "irgiahmadm"
+        const val FULLNAME = "Irgi Ahmad M"
+        const val EMAIL = "irgiahmadmmaulana@gmail.com"
+        const val OLD_PASSWORD = "irgi160500"
+        const val NEW_PASSWORD = "irgiamau160500"
     }
 
     @Test
@@ -69,6 +74,60 @@ class ProfileActivityTest {
         //check follower count after unfollow
         onView(withId(R.id.textViewFollowersCount)).check(matches(withText(followerAfter)))
         //close activity
+        activityScenario.close()
+    }
+
+    @Test
+    fun editProfileTest(){
+        //start activity
+        val activityScenario = ActivityScenario.launch(
+            AuthenticationActivity::class.java
+        )
+        //click menu profile
+        onView(withId(R.id.navigation_profile)).perform(click())
+        //click edit profile
+        onView(withId(R.id.buttonEditProfile)).perform(click())
+        //fill username
+        onView(withId(R.id.editTextUsername)).perform(clearText(), replaceText(USERNAME))
+        //fill fullname
+        onView(withId(R.id.editTextFullname)).perform(replaceText(FULLNAME))
+        //fill emaill
+        onView(withId(R.id.editTextEmail)).perform(replaceText(EMAIL))
+        //fill birthdate
+        onView(withId(R.id.editTextBirthDate)).perform(click())
+        onView(withText("OK")).perform(click())
+        //click submit
+        onView(withId(R.id.submit_menu)).perform(click())
+        //delay
+        Thread.sleep(2000)
+        //check is usename changed
+        onView(withText(FULLNAME)).check(matches(isDisplayed()))
+        //close
+        activityScenario.close()
+    }
+
+    @Test
+    fun changePasswordTest(){
+        //start activity
+        val activityScenario = ActivityScenario.launch(
+            AuthenticationActivity::class.java
+        )
+        //click menu profile
+        onView(withId(R.id.navigation_profile)).perform(click())
+        //click edit profile
+        onView(withId(R.id.buttonEditProfile)).perform(click())
+        //click button change password
+        onView(withId(R.id.buttonChangePassword)).perform(click())
+        //fill old password
+        onView(withId(R.id.editTextOldPassword)).perform(replaceText(OLD_PASSWORD))
+        //fill new password
+        onView(withId(R.id.editTextNewPassword)).perform(replaceText(NEW_PASSWORD), closeSoftKeyboard())
+        //submit
+        onView(withId(R.id.buttonSubmit)).perform(click())
+        //delay
+        Thread.sleep(2000)
+        //check if back to edit profile
+        onView(withText("Edit Profile")).check(matches(isDisplayed()))
         activityScenario.close()
     }
 

@@ -21,7 +21,7 @@
             android:name=".ui.admin.MainActivityAdmin"
             android:label="Admin" />
         <activity android:name=".ui.profile.ChangePasswordActivity" />
-        <activity android:name=".ui.profile.EditProfileActivity" />
+        <activity android:name=".ui.profile.EditProfileActivity" android:label="Edit Profile"/>
         <activity
             android:name=".ui.post.EditPostActivity"
             android:label="Edit Post" />
