@@ -56,6 +56,7 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
+        setToolbarProperties()
         setContentView(binding.root)
         if(intent.hasExtra(ConstantAuth.CONSTANT_AUTH_KEY)){
             authKey = intent.getStringExtra(ConstantAuth.CONSTANT_AUTH_KEY) as String
@@ -215,6 +216,16 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.submit_menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setToolbarProperties() {
+        binding.toolbar.setOnMenuItemClickListener {
+            onOptionsItemSelected(it)
+        }
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

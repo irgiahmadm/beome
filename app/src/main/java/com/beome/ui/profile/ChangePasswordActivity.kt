@@ -1,5 +1,6 @@
 package com.beome.ui.profile
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -24,6 +25,7 @@ class ChangePasswordActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChangePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setToolbarProperties()
         if(intent.hasExtra(ConstantAuth.CONSTANT_AUTH_KEY)){
             authKey = intent.getStringExtra(ConstantAuth.CONSTANT_AUTH_KEY) as String
         }
@@ -106,6 +108,13 @@ class ChangePasswordActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setToolbarProperties() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

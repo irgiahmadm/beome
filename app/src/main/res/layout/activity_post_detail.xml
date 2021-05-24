@@ -6,15 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".ui.feedback.PostDetailActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Post Detail" />
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/giveFeedbackSection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -60,8 +69,8 @@
                 android:id="@+id/imageViewPost"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -117,12 +126,12 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                tools:listitem="@layout/item_feedback_summary"
-                tools:itemCount="5"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintFeedbackSummary" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintFeedbackSummary"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_feedback_summary" />
 
             <TextView
                 android:id="@+id/textViewFeedback"

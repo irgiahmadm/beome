@@ -61,6 +61,7 @@ class PostDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPostDetailBinding.inflate(layoutInflater)
+        setToolbarProperties()
         setContentView(binding.root)
         title = "Post Detail"
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -385,6 +386,15 @@ class PostDetailActivity : AppCompatActivity() {
         return true
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setToolbarProperties() {
+        binding.toolbar.setOnMenuItemClickListener {
+            onOptionsItemSelected(it)
+        }
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

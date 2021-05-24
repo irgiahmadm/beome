@@ -20,8 +20,8 @@
         <activity
             android:name=".ui.admin.MainActivityAdmin"
             android:label="Admin" />
-        <activity android:name=".ui.profile.ChangePasswordActivity" />
-        <activity android:name=".ui.profile.EditProfileActivity" android:label="Edit Profile"/>
+        <activity android:name=".ui.profile.ChangePasswordActivity" android:theme="@style/NoActionBar"/>
+        <activity android:name=".ui.profile.EditProfileActivity" android:label="Edit Profile" android:theme="@style/NoActionBar"/>
         <activity
             android:name=".ui.post.EditPostActivity"
             android:label="Edit Post" />
@@ -33,17 +33,18 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".ui.feedback.PostDetailActivity" />
-        <activity android:name=".ui.report.ReportActivity"/>
-        <activity android:name=".ui.add.AddPostActivity" android:label="Add Post"/>
+        <activity android:name=".ui.feedback.PostDetailActivity" android:theme="@style/NoActionBar"/>
+        <activity android:name=".ui.report.ReportActivity" android:theme="@style/NoActionBar"/>
+        <activity android:name=".ui.add.AddPostActivity" android:label="Add Post" android:theme="@style/NoActionBar"/>
         <activity
             android:name=".ui.authentication.signup.SignUpActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
-            android:label="Sign Up"/>
+            android:label="Sign Up"
+            android:theme="@style/NoActionBar"/>
         <activity
             android:name=".ui.authentication.login.LoginActivity"
             android:label="@string/signin"
-            android:theme="@style/Theme.Beome" />
+            android:theme="@style/NoActionBar" />
         <activity android:name=".ui.authentication.AuthenticationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

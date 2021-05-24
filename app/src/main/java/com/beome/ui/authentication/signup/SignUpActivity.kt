@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.beome.MainActivity
@@ -36,6 +37,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setToolbarProperties()
         val viewModelFactory = LoginViewModelFactory(this)
         viewModelLogin = ViewModelProvider(this, viewModelFactory).get(LoginViewModel(this)::class.java)
         sharedPrefUtil = SharedPrefUtil()
@@ -223,4 +225,17 @@ class SignUpActivity : AppCompatActivity() {
         })
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setToolbarProperties() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> finish()
+        }
+        return true
+    }
 }

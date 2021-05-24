@@ -1,5 +1,6 @@
 package com.beome.ui.report
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.MenuItem
@@ -37,6 +38,7 @@ class ReportActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReportBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setToolbarProperties()
         sharedPrefUtil = SharedPrefUtil()
         sharedPrefUtil.start(this, ConstantAuth.CONSTANT_PREFERENCE)
         if (intent.hasExtra(ConstantReport.CONSTANT_REPORT)){
@@ -258,7 +260,12 @@ class ReportActivity : AppCompatActivity() {
         }
     }
 
-
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setToolbarProperties() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){

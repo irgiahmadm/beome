@@ -64,8 +64,7 @@ class AddPostActivity : AppCompatActivity() {
                 startActivity(Intent(this, LoginActivity::class.java))
             }
         } else {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setDisplayShowHomeEnabled(true)
+            setToolbarProperties()
             hideShowViewNotLogedIn(View.VISIBLE)
             binding.groupNotSignedIn.visibility = View.GONE
             authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY)!!
@@ -341,6 +340,12 @@ class AddPostActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setToolbarProperties() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == android.R.id.home){
