@@ -1,11 +1,9 @@
 package com.beome.ui.authentication.signup
 
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
@@ -32,10 +30,6 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var viewModelLogin : LoginViewModel
     private lateinit var sharedPrefUtil: SharedPrefUtil
     private lateinit var user : User
-    private val c = Calendar.getInstance()
-    private val year = c.get(Calendar.YEAR)
-    private val month = c.get(Calendar.MONTH)
-    private val day = c.get(Calendar.DAY_OF_MONTH)
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,23 +57,6 @@ class SignUpActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
-        binding.editTextBirthDate.inputType = InputType.TYPE_NULL
-        binding.editTextBirthDate.setOnClickListener {
-            val dpd = DatePickerDialog(this, { _, year, month, dayOfMonth ->
-                val monthStr = if (month.toString().length > 1){
-                    month.toString()
-                }else{
-                    "0${(month+1)}"
-                }
-                val dayStr = if(dayOfMonth.toString().length > 1){
-                    dayOfMonth.toString()
-                }else{
-                    "0$dayOfMonth"
-                }
-                binding.editTextBirthDate.setText("$dayStr-$monthStr-$year")
-            }, year, month, day)
-            dpd.show()
-        }
         GlobalHelper.hideShowPassword(binding.editTextPassword, binding.imageViewTogglePassword)
         binding.textViewCommunityGuideline.setOnClickListener {
             startActivity(Intent(this, CommunityGuidelineActivity::class.java))
@@ -90,7 +67,6 @@ class SignUpActivity : AppCompatActivity() {
         val username = binding.editTextUsername.text.toString()
         val email = binding.editTextEmail.text.toString()
         val password = binding.editTextPassword.text.toString()
-        val birthDate = binding.editTextBirthDate.text.toString()
         val fullname = binding.editTextName.text.toString()
 
         viewModel.isUsernameExist(username.toLowerCase(Locale.getDefault()))
@@ -110,12 +86,6 @@ class SignUpActivity : AppCompatActivity() {
             password.isEmpty() -> {
                 binding.editTextPassword.apply {
                     error = "Password can not be empty"
-                    requestFocus()
-                }
-            }
-            birthDate.isEmpty() -> {
-                binding.editTextBirthDate.apply {
-                    error = "Pick your birthdate"
                     requestFocus()
                 }
             }
@@ -175,7 +145,7 @@ class SignUpActivity : AppCompatActivity() {
                 val username = binding.editTextUsername.text.toString()
                 val password = binding.editTextPassword.text.toString()
                 val email = binding.editTextEmail.text.toString()
-                val birthDate = binding.editTextBirthDate.text.toString()
+                val birthDate = ""
                 val fullname = binding.editTextName.text.toString()
                 val authKey = "${GlobalHelper.getRandomString(12)}${System.currentTimeMillis()}"
                 val createdAt = Date()

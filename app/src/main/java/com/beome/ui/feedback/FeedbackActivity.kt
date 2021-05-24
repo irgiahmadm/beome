@@ -62,6 +62,7 @@ class FeedbackActivity : AppCompatActivity() {
                     submitFeedback()
                 }
             }
+
         } else {
             finish()
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
@@ -194,9 +195,10 @@ class FeedbackActivity : AppCompatActivity() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun setToolbarProperties() {
+        setSupportActionBar(binding.toolbar3)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Give Feedback"
-        val upArrow = resources.getDrawable(R.drawable.ic_close_white,theme)
+        val upArrow = resources.getDrawable(R.drawable.ic_close_black,theme)
         supportActionBar?.setHomeAsUpIndicator(upArrow)
     }
 
