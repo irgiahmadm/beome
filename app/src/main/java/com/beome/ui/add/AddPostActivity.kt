@@ -156,83 +156,94 @@ class AddPostActivity : AppCompatActivity() {
             val desc = binding.editTextPostDesc.text.toString()
             val username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME)!!
             val imageUser = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_IMAGE)!!
-            if (image == null) {
-                Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
-            }
-            if (title.isEmpty()) {
-                binding.editTextPostTitle.apply {
-                    error = "Title can not be empty"
-                    requestFocus()
+            when {
+                image == null -> {
+                    Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
+                    hideProgressBar()
                 }
-            }
-            if(title.length > 32){
-                binding.editTextPostTitle.apply {
-                    error = "Title characters up to 32 characters"
-                    requestFocus()
-                }
-            }
-            if (desc.isEmpty()) {
-                binding.editTextPostDesc.apply {
-                    error = "Description can not be empty"
-                    requestFocus()
-                }
-            }
-            if(desc.length > 120){
-                binding.editTextPostDesc.apply {
-                    error = "Description characters up to 120 characters"
-                    requestFocus()
-                }
-            }
-            if (imageCroppedResult != null) {
-                val reference = storageRef.child("${imageCroppedResult!!.lastPathSegment}")
-                reference.putFile(imageCroppedResult!!)
-                    .addOnSuccessListener {
-                        reference.downloadUrl.addOnSuccessListener {
-                            val downloadUri = it.toString()
-                            val likedBy = arrayListOf<String>()
-                            val post = Post(
-                                idPost,
-                                authKey,
-                                username,
-                                imageUser,
-                                downloadUri,
-                                title,
-                                desc,
-                                0,
-                                0,
-                                likedBy,
-                                1,
-                                Date(),
-                                Date()
-                            )
-                            viewModel.addPost(post)
-                        }
-                        binding.buttonPublish.isEnabled = true
+                title.isEmpty() -> {
+                    binding.editTextPostTitle.apply {
+                        error = "Title can not be empty"
+                        requestFocus()
                     }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
-                        Log.d("err_upload_image", it.localizedMessage!!.toString())
-                        binding.buttonPublish.isEnabled = true
-                        binding.progressBar.visibility = View.INVISIBLE
-                        binding.buttonPublish.text = "PUBLISH"
+                    hideProgressBar()
+                }
+                title.length > 32 -> {
+                    binding.editTextPostTitle.apply {
+                        error = "Title characters up to 32 characters"
+                        requestFocus()
                     }
-                    .addOnProgressListener {
-                        binding.buttonPublish.isEnabled = false
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.buttonPublish.text = ""
-                        /*val progress: Double = (100.0 * it.bytesTransferred) / it.totalByteCount
-                        binding.imageProgress.progress = progress.toInt()*/
+                    hideProgressBar()
+                }
+                desc.isEmpty() -> {
+                    binding.editTextPostDesc.apply {
+                        error = "Description can not be empty"
+                        requestFocus()
                     }
-            }else{
-                Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
+                    hideProgressBar()
+                }
+                desc.length > 500 -> {
+                    binding.editTextPostDesc.apply {
+                        error = "Description characters up to 500 characters"
+                        requestFocus()
+                    }
+                    hideProgressBar()
+                }
+                else -> {
+                    if (imageCroppedResult != null) {
+                        val reference = storageRef.child("${imageCroppedResult!!.lastPathSegment}")
+                        reference.putFile(imageCroppedResult!!)
+                            .addOnSuccessListener {
+                                reference.downloadUrl.addOnSuccessListener {
+                                    val downloadUri = it.toString()
+                                    val likedBy = arrayListOf<String>()
+                                    val post = Post(
+                                        idPost,
+                                        authKey,
+                                        username,
+                                        imageUser,
+                                        downloadUri,
+                                        title,
+                                        desc,
+                                        0,
+                                        0,
+                                        likedBy,
+                                        1,
+                                        Date(),
+                                        Date()
+                                    )
+                                    viewModel.addPost(post)
+                                }
+                                binding.buttonPublish.isEnabled = true
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT)
+                                    .show()
+                                Log.d("err_upload_image", it.localizedMessage!!.toString())
+                                binding.buttonPublish.isEnabled = true
+                                binding.progressBar.visibility = View.GONE
+                                binding.buttonPublish.text = "PUBLISH"
+                            }
+                            .addOnProgressListener {
+                                binding.buttonPublish.isEnabled = false
+                                binding.progressBar.visibility = View.VISIBLE
+                                binding.buttonPublish.text = ""
+                                /*val progress: Double = (100.0 * it.bytesTransferred) / it.totalByteCount
+                            binding.imageProgress.progress = progress.toInt()*/
+                            }
+                    } else {
+                        Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
+                        hideProgressBar()
+                    }
+                }
             }
-
         } else {
             Toast.makeText(
                 this,
                 messageErrComponent,
                 Toast.LENGTH_SHORT
             ).show()
+            hideProgressBar()
         }
     }
 
@@ -371,6 +382,11 @@ class AddPostActivity : AppCompatActivity() {
             Toast.makeText(this, "You should add at least 1 feedback", Toast.LENGTH_SHORT).show()
         }
 
+    }
+
+    private fun hideProgressBar(){
+        binding.progressBar.visibility = View.GONE
+        binding.buttonPublish.text = "PUBLISH"
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
