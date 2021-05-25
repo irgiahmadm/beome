@@ -2,27 +2,23 @@ package com.beome.ui.post
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.beome.model.LikedPostList
 import com.beome.model.Post
-import com.beome.ui.home.recent.RecentPostRepository
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 class PostViewModel : ViewModel() {
-    private val listLikedPost = MutableLiveData<List<Post>>()
-    private val isPostLiked = MutableLiveData<Boolean>()
+    private val listLikedPost = MutableLiveData<List<LikedPostList>>()
     private val postRepo = PostRepository(viewModelScope)
     lateinit var editPostState : LiveData<NetworkState>
     lateinit var deletePostState : LiveData<NetworkState>
     private val _postRepo = MutableLiveData<PostRepository>()
 
-    fun getListLikedPost(idUser: String): LiveData<List<Post>> {
+    fun getListLikedPost(idUser: String): LiveData<List<LikedPostList>> {
 
-        val addedRecentPostList = mutableListOf<Post>()
-
+        val addedRecentPostList = mutableListOf<LikedPostList>()
         postRepo.getListPost()
             .orderBy("createdAt", Query.Direction.ASCENDING)
             .whereEqualTo("status", 1)
@@ -32,9 +28,14 @@ class PostViewModel : ViewModel() {
                     Log.e("err_get_liked_post1", error.localizedMessage!!)
                 }
                 querySnapshot?.let {
-                    for (document in querySnapshot) {
+                    for (document in it){
+                        var isExist: Boolean
                         val post = document.toObject<Post>()
-                        addedRecentPostList.add(post)
+                        isExist  = post.likedBy.any { likedBy ->
+                            likedBy == idUser
+                        }
+                        val likedPostObj = LikedPostList(post, isExist)
+                        addedRecentPostList.add(likedPostObj)
                     }
                     listLikedPost.value = addedRecentPostList
                     Log.d("list_liked_post", addedRecentPostList.toString())

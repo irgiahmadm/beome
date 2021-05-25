@@ -15,6 +15,7 @@ import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
 import com.beome.databinding.FragmentLikeBinding
 import com.beome.model.LikedPost
+import com.beome.model.LikedPostList
 import com.beome.model.Post
 import com.beome.ui.feedback.PostDetailActivity
 import com.beome.ui.post.PostViewModel
@@ -28,7 +29,7 @@ import java.util.*
 
 class LikeFragment : Fragment() {
     private lateinit var binding : FragmentLikeBinding
-    private lateinit var adapterLikedPost : AdapterUtil<Post>
+    private lateinit var adapterLikedPost : AdapterUtil<LikedPostList>
     private val viewModel : PostViewModel by lazy {
         ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(PostViewModel::class.java)
     }
@@ -44,30 +45,37 @@ class LikeFragment : Fragment() {
         sharedPrefUtil.start(context as Activity, ConstantAuth.CONSTANT_PREFERENCE)
         val authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY) as String
         adapterLikedPost = AdapterUtil(R.layout.item_post, arrayListOf(),
-            { _: Int, view: View, post: Post ->
+            { _: Int, view: View, likedPost: LikedPostList ->
                 Glide.with(requireContext())
-                    .load(post.imagePost)
+                    .load(likedPost.post?.imagePost)
                     .placeholder(R.drawable.ic_placeholder_image)
                     .thumbnail(
-                        Glide.with(requireContext()).load(post.imagePost)
+                        Glide.with(requireContext()).load(likedPost.post?.imagePost)
                             .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
                     )
                     .into(view.imageViewPost)
-                if (post.imgUser.isNullOrEmpty() || post.imgUser == "null") {
+                if (likedPost.post?.imgUser.isNullOrEmpty() || likedPost.post?.imgUser == "null") {
                     Glide.with(requireContext()).load(R.drawable.ic_profile)
                         .into(view.imageViewUser)
                 } else {
-                    Glide.with(requireContext()).load(post.imgUser).circleCrop()
+                    Glide.with(requireContext()).load(likedPost.post?.imgUser).circleCrop()
                         .into(view.imageViewUser)
                 }
-                view.textViewUsername.text = post.username
-                view.textViewCountFeedback.text = post.feedbackCount.toString()
-                view.textViewCountLike.text = post.likeCount.toString()
+                view.textViewUsername.text = likedPost.post?.username
+                view.textViewCountFeedback.text = likedPost.post?.feedbackCount.toString()
+                view.textViewCountLike.text = likedPost.post?.likeCount.toString()
                 //check post is liked or not
+                if (likedPost.isLiked) {
+                    view.imageViewLikeActive.visibility = View.VISIBLE
+                    view.imageViewLikeInactive.visibility = View.INVISIBLE
+                } else {
+                    view.imageViewLikeActive.visibility = View.INVISIBLE
+                    view.imageViewLikeInactive.visibility = View.VISIBLE
+                }
                 //toggle like button
                 view.imageViewLikeInactive.setOnClickListener {
                     //like post
-                    viewModel.likePost(post.idPost, authKey)
+                    viewModel.likePost(likedPost.post?.idPost!!, authKey)
                     view.imageViewLikeInactive.visibility = View.INVISIBLE
                     view.imageViewLikeActive.visibility = View.VISIBLE
 
@@ -75,14 +83,14 @@ class LikeFragment : Fragment() {
                 //toggle unlike button
                 view.imageViewLikeActive.setOnClickListener {
                     //unlike post
-                    viewModel.unlikePost(post.idPost, authKey)
+                    viewModel.unlikePost(likedPost.post?.idPost!!, authKey)
                     view.imageViewLikeInactive.visibility = View.VISIBLE
                     view.imageViewLikeActive.visibility = View.INVISIBLE
                 }
-            }, { _, post ->
+            }, { _, likedPost ->
                 val intent = Intent(requireContext(), PostDetailActivity::class.java)
-                intent.putExtra(ConstantPost.CONSTANT_ID_POST, post.idPost)
-                intent.putExtra(ConstantPost.CONSTANT_POST_OWNER_KEY, post.authKey)
+                intent.putExtra(ConstantPost.CONSTANT_ID_POST, likedPost.post?.idPost)
+                intent.putExtra(ConstantPost.CONSTANT_POST_OWNER_KEY, likedPost.post?.authKey)
                 intent.putExtra(ConstantPost.CONSTANT_POST_IS_LIKED, true)
                 startActivity(intent)
             })
