@@ -14,9 +14,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/color_primary"
-        app:title="Favorit"
-        app:titleTextColor="@color/white"/>
+        android:background="@color/white"
+        app:title="Favorite"
+        app:titleTextColor="@color/black"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerLikedPost"
