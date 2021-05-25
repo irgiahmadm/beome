@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.beome.model.*
 import com.beome.utilities.NetworkState
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.core.OrderBy
 import com.google.firebase.firestore.ktx.toObject
 
 class FeedbackViewModel : ViewModel() {
@@ -39,6 +41,7 @@ class FeedbackViewModel : ViewModel() {
 
     fun getListFeedbackPost(idPost: String): LiveData<List<FeedbackPostUser>> {
         feedbackRepo.getFeedbackUsers(idPost)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
             .whereEqualTo("status", 1)
             .addSnapshotListener { listFeedbackUser, errorUser ->
                 errorUser?.let {

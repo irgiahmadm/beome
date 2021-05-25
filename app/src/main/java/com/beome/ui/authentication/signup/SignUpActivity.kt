@@ -70,7 +70,6 @@ class SignUpActivity : AppCompatActivity() {
         val password = binding.editTextPassword.text.toString()
         val fullname = binding.editTextName.text.toString()
 
-        viewModel.isUsernameExist(username.toLowerCase(Locale.getDefault()))
         when {
             username.isEmpty() -> {
                 binding.editTextUsername.apply {
@@ -139,7 +138,7 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
             else -> {
-
+                viewModel.isUsernameExist(username.toLowerCase(Locale.getDefault()))
             }
         }
     }
@@ -154,7 +153,6 @@ class SignUpActivity : AppCompatActivity() {
             } else {
                 val email = binding.editTextEmail.text.toString()
                 viewModel.isEmailExist(email)
-
             }
         })
     }
