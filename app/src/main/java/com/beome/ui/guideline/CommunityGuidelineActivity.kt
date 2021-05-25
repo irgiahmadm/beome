@@ -11,7 +11,7 @@ class CommunityGuidelineActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCommunityGuidelineBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        title = "Community Guideline"
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }

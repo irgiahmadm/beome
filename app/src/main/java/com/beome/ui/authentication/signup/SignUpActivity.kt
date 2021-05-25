@@ -37,7 +37,6 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setToolbarProperties()
         val viewModelFactory = LoginViewModelFactory(this)
         viewModelLogin = ViewModelProvider(this, viewModelFactory).get(LoginViewModel(this)::class.java)
         sharedPrefUtil = SharedPrefUtil()
@@ -79,6 +78,18 @@ class SignUpActivity : AppCompatActivity() {
                     requestFocus()
                 }
             }
+            username.length < 6 -> {
+                binding.editTextUsername.apply {
+                    error = "Username must be longer than 6 characters"
+                    requestFocus()
+                }
+            }
+            username.length > 16 -> {
+                binding.editTextUsername.apply {
+                    error = "Username characters up to 16 characters"
+                    requestFocus()
+                }
+            }
             email.isEmpty() -> {
                 binding.editTextEmail.apply {
                     error = "Email can not be empty"
@@ -88,6 +99,18 @@ class SignUpActivity : AppCompatActivity() {
             password.isEmpty() -> {
                 binding.editTextPassword.apply {
                     error = "Password can not be empty"
+                    requestFocus()
+                }
+            }
+            password.length < 6 -> {
+                binding.editTextUsername.apply {
+                    error = "Password must be longer than 6 characters"
+                    requestFocus()
+                }
+            }
+            password.length > 32 -> {
+                binding.editTextUsername.apply {
+                    error = "Password characters up to 32 characters"
                     requestFocus()
                 }
             }
@@ -225,17 +248,4 @@ class SignUpActivity : AppCompatActivity() {
         })
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private fun setToolbarProperties() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            android.R.id.home -> finish()
-        }
-        return true
-    }
 }

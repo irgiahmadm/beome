@@ -113,11 +113,18 @@ class AddPostActivity : AppCompatActivity() {
         listOfFeedback.clear()
         for (i in 0 until feedbackCounter) {
             val newRow: View = binding.feedbackComponent.getChildAt(i)
-            if (newRow.editTextFeedbackComponent.text.isNotEmpty()) {
-                listOfFeedback.add(
-                    newRow.editTextFeedbackComponent.text.toString()
-                        .toLowerCase(Locale.getDefault())
-                )
+            if(newRow.editTextFeedbackComponent.text.toString().length > 25){
+                newRow.editTextFeedbackComponent.apply {
+                    error = "Character can not more than 25"
+                    requestFocus()
+                }
+            }else{
+                if (newRow.editTextFeedbackComponent.text.isNotEmpty()) {
+                    listOfFeedback.add(
+                        newRow.editTextFeedbackComponent.text.toString()
+                            .toLowerCase(Locale.getDefault())
+                    )
+                }
             }
         }
         Log.d("list of feedback", listOfFeedback.toString())
@@ -131,6 +138,12 @@ class AddPostActivity : AppCompatActivity() {
                 requestFocus()
             }
             messageErrComponent = "Feedback component can not be empty"
+        }
+        if(rowFirst.editTextFeedbackComponent.text.toString().length > 25){
+            rowFirst.editTextFeedbackComponent.apply {
+                error = "Character can not more than 25"
+                requestFocus()
+            }
         }else{
             isFeedBackComponentValid = true
         }
@@ -149,9 +162,21 @@ class AddPostActivity : AppCompatActivity() {
                     requestFocus()
                 }
             }
+            if(title.length > 32){
+                binding.editTextPostTitle.apply {
+                    error = "Title characters up to 32 characters"
+                    requestFocus()
+                }
+            }
             if (desc.isEmpty()) {
                 binding.editTextPostDesc.apply {
                     error = "Description can not be empty"
+                    requestFocus()
+                }
+            }
+            if(desc.length > 120){
+                binding.editTextPostDesc.apply {
+                    error = "Description characters up to 120 characters"
                     requestFocus()
                 }
             }
