@@ -105,8 +105,11 @@ class AddPostActivity : AppCompatActivity() {
         binding.buttonAddFeedback.visibility = visibility
     }
 
-    @SuppressLint("SimpleDateFormat")
+    @SuppressLint("SimpleDateFormat", "UseCompatLoadingForDrawables", "SetTextI18n")
     private fun publishPost() {
+        binding.buttonPublish.isEnabled = false
+        binding.progressBar.visibility = View.VISIBLE
+        binding.buttonPublish.text = ""
         val feedbackCounter = binding.feedbackComponent.childCount
         val rowFirst: View = binding.feedbackComponent.getChildAt(0)
         listOfFeedback = arrayListOf()
@@ -209,9 +212,14 @@ class AddPostActivity : AppCompatActivity() {
                     .addOnFailureListener {
                         Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
                         Log.d("err_upload_image", it.localizedMessage!!.toString())
+                        binding.buttonPublish.isEnabled = true
+                        binding.progressBar.visibility = View.INVISIBLE
+                        binding.buttonPublish.text = "PUBLISH"
                     }
                     .addOnProgressListener {
                         binding.buttonPublish.isEnabled = false
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.buttonPublish.text = ""
                         /*val progress: Double = (100.0 * it.bytesTransferred) / it.totalByteCount
                         binding.imageProgress.progress = progress.toInt()*/
                     }

@@ -211,7 +211,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/background_rounded_button"
+            android:background="@drawable/background_enabled_disabled_button"
             android:backgroundTint="@color/color_primary"
             android:letterSpacing=".3"
             android:text="@string/publish"
