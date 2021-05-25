@@ -102,13 +102,13 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
             password.length < 6 -> {
-                binding.editTextUsername.apply {
+                binding.editTextPassword.apply {
                     error = "Password must be longer than 6 characters"
                     requestFocus()
                 }
             }
             password.length > 32 -> {
-                binding.editTextUsername.apply {
+                binding.editTextPassword.apply {
                     error = "Password characters up to 32 characters"
                     requestFocus()
                 }

@@ -133,6 +133,18 @@ class EditProfileActivity : AppCompatActivity() {
                     requestFocus()
                 }
             }
+            username.length < 6 -> {
+                binding.editTextUsername.apply {
+                    error = "Username must be longer than 6 characters"
+                    requestFocus()
+                }
+            }
+            username.length > 16 -> {
+                binding.editTextUsername.apply {
+                    error = "Username characters up to 16 characters"
+                    requestFocus()
+                }
+            }
             fullname.isEmpty() -> {
                 binding.editTextFullname.apply {
                     error = "Fullname can not be empty"

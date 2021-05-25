@@ -93,9 +93,33 @@ class ChangePasswordActivity : AppCompatActivity() {
                         requestFocus()
                     }
                 }
+                oldPassword.length < 6 -> {
+                    binding.editTextOldPassword.apply {
+                        error = "Password must be longer than 6 characters"
+                        requestFocus()
+                    }
+                }
+                oldPassword.length > 32 -> {
+                    binding.editTextOldPassword.apply {
+                        error = "Password characters up to 32 characters"
+                        requestFocus()
+                    }
+                }
                 newPassword.isEmpty() -> {
                     binding.editTextNewPassword.apply {
                         error = "New password can not be empty"
+                        requestFocus()
+                    }
+                }
+                newPassword.length < 6 -> {
+                    binding.editTextNewPassword.apply {
+                        error = "Password must be longer than 6 characters"
+                        requestFocus()
+                    }
+                }
+                newPassword.length > 32 -> {
+                    binding.editTextNewPassword.apply {
+                        error = "Password characters up to 32 characters"
                         requestFocus()
                     }
                 }
