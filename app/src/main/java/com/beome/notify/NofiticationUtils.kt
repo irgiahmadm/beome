@@ -22,19 +22,18 @@ fun NotificationManager.sendNotification(context : Context, username : String, a
         .setContentText(context.getString(R.string.notif_message, username, action))
         .setContentIntent(pendingIntent)
         .setAutoCancel(true)
-    createChannel(context)
     notify(NOTIFICATION_ID, builder.build())
 }
 
-fun createChannel(context: Context) {
+fun createChannel(context: Context, idNotif : Int, nameNotif : Int, descNotif : Int) {
     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-        val notificationChannel = NotificationChannel(context.getString(R.string.notif_channel_id), context.getString(R.string.notif_channel_name), NotificationManager.IMPORTANCE_HIGH)
+        val notificationChannel = NotificationChannel(context.getString(idNotif), context.getString(nameNotif), NotificationManager.IMPORTANCE_HIGH)
         with(notificationChannel){
             setShowBadge(true)
             enableLights(true)
             lightColor = Color.RED
             enableVibration(true)
-            description = context.getString(R.string.notif_channel_desc)
+            description = context.getString(descNotif)
         }
 
         val notificationManager = context.getSystemService(NotificationManager::class.java)

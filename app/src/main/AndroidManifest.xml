@@ -13,6 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Beome">
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/notif_channel_id"/>
         <activity android:name=".ui.guideline.CommunityGuidelineActivity"></activity>
         <activity android:name=".ui.admin.feedback.ReportedFeedbackdetailActivity" />
         <activity android:name=".ui.admin.account.ReportedAccountDetailActivity" />
