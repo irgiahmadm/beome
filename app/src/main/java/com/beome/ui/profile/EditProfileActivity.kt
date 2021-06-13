@@ -179,7 +179,7 @@ class EditProfileActivity : AppCompatActivity() {
                                 Log.d("image_uri", it.toString())
                                 sendImage = it.toString()
                                 val user = User(photoProfile = sendImage, fullName = fullname, username = username, email = email,
-                                birthDate = dateOfBirth, updatedAt = Date())
+                                birthDate = dateOfBirth, updatedAt = Date(), token = "")
                                 viewModel.editProfile(authKey, user, this)
                             }
                         }
@@ -193,7 +193,7 @@ class EditProfileActivity : AppCompatActivity() {
                 }else{
                     sendImage = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_IMAGE)!!
                     val user = User(photoProfile = sendImage, fullName = fullname, username = username, email = email,
-                        birthDate = dateOfBirth, updatedAt = Date())
+                        birthDate = dateOfBirth, updatedAt = Date(), token = "")
                     viewModel.editProfile(authKey, user, this)
                 }
             }

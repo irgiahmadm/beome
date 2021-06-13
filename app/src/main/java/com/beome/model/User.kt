@@ -18,5 +18,6 @@ data class User(
     var userStatus : Int = 0,
     var role : Int = 0,
     var createdAt: Date = Date(),
-    var updatedAt: Date = Date()
+    var updatedAt: Date = Date(),
+    var token : String = ""
 ) : Parcelable

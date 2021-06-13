@@ -5,20 +5,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.beome.model.LikedPost
 import com.beome.model.LikedPostList
 import com.beome.model.Post
 import com.beome.ui.post.PostRepository
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class RecentPostViewModel : ViewModel() {
     private val listLikedPost = MutableLiveData<List<LikedPostList>>()
     private val listRecenPost = MutableLiveData<List<LikedPostList>>()
-    private val recentPostRepo = RecentPostRepository(Dispatchers.IO)
+    private val recentPostRepo = RecentPostRepository(viewModelScope)
     private val postRepo = PostRepository(viewModelScope)
 
     fun getListRecentPost(idUser: String) : LiveData<List<LikedPostList>>{

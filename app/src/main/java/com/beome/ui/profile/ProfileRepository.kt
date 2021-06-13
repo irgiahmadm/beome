@@ -232,4 +232,53 @@ class ProfileRepository(private val coroutineScope: CoroutineScope) {
         }
     }
 
+    fun updateToken(authKey: String, currentToken: String) {
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    Firebase.firestore.runTransaction { transaction ->
+                        val docUserRef = Firebase.firestore.collection("user").document(authKey)
+                        val user = transaction.get(docUserRef)
+                        val tokenUser = user["token"]
+                        if (tokenUser != currentToken) {
+                            val data = hashMapOf("token" to currentToken)
+                            transaction.set(docUserRef, data, SetOptions.merge())
+                        } else {
+                            Log.d("token_is_same", currentToken)
+                        }
+                    }.addOnSuccessListener {
+                        Log.d("success_updt_token", currentToken)
+                    }.addOnFailureListener {
+                        Log.d("failed_updt_token", it.message.toString())
+                    }.await()
+                } catch (e: Exception) {
+
+                }
+            }
+        }
+    }
+
+    //this function is used when user logout from application
+    fun deleteToken(authKey: String) {
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    Firebase.firestore.runTransaction { transaction ->
+                        val userRef = Firebase.firestore.collection("user").document(authKey)
+                        val data = hashMapOf("token" to "")
+                        transaction.set(userRef, data, SetOptions.merge())
+                    }.addOnSuccessListener {
+                        Log.d("success_delete_token", "")
+                    }.addOnFailureListener {
+                        Log.d("failed_updt_token", it.message.toString())
+                    }.await()
+
+                } catch (e: Exception) {
+
+
+                }
+            }
+        }
+    }
+
 }
