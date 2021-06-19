@@ -3,6 +3,7 @@ package com.beome.ui.report
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
@@ -93,6 +94,7 @@ class ReportActivity : AppCompatActivity() {
                 val createdAt = Date()
                 val updatedAt = Date()
                 val report = ReportDetail(GlobalHelper.getRandomString(16),idReport, reportCategory, reason!!, reportDesc, username, imageUser, createdAt, updatedAt)
+                Log.d("reportCategory", reportCategory)
                 when(reportCategory){
                     ConstantReport.CONSTANT_REPORT_FEEDBACK -> {
                         feedbackObject.counter = 1
@@ -133,7 +135,7 @@ class ReportActivity : AppCompatActivity() {
                 }
                 NetworkState.FAILED -> {
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Failed to report feedback", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Failed to report feedback or change your report reason", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     binding.progressBar.visibility = View.GONE
@@ -156,12 +158,13 @@ class ReportActivity : AppCompatActivity() {
                     finish()
                 }
                 NetworkState.FAILED -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    Toast.makeText(this, "Failed to report post", Toast.LENGTH_SHORT).show()
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, "Failed to report post or change your report reason", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
-                    binding.progressBar.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
                     Toast.makeText(this, "Failed, something went wrong", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             }
         })
