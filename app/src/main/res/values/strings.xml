@@ -92,6 +92,13 @@
     <string name="delete_post">Delete Post</string>
     <string name="delete_account">Delete Account</string>
     <string name="beome_community_guideline">Beome Community Guideline</string>
+    <!--    notification-->
+    <string name="notif_channel_id">activities</string>
+    <string name="notif_channel_name">Activities</string>
+    <string name="notif_channel_desc">Notifity you when someone like and give feedback to your post and follow you</string>
+    <string name="notif_title">Your post is appreciated</string>
+    <string name="notif_message">%1$s is %2$s</string>
+    <!--    notification-->
     <string name="beome_description">
         Beome is a platform for creative people around the world
         to showcase their own work and to discover the creative work of others.

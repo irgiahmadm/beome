@@ -17,6 +17,7 @@ import com.beome.model.LikedPostList
 import com.beome.ui.feedback.PostDetailActivity
 import com.beome.ui.post.PostViewModel
 import com.beome.ui.profile.ProfileUserPreviewActivity
+import com.beome.ui.profile.ProfileViewModel
 import com.beome.utilities.AdapterUtil
 import com.beome.utilities.SharedPrefUtil
 import com.bumptech.glide.Glide
@@ -41,6 +42,12 @@ class RecentPostFragment : Fragment() {
             ViewModelProvider.NewInstanceFactory()
         ).get(PostViewModel::class.java)
     }
+    private val viewModelProfile: ProfileViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ViewModelProvider.NewInstanceFactory()
+        ).get(ProfileViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +57,9 @@ class RecentPostFragment : Fragment() {
         sharedPrefUtil = SharedPrefUtil()
         sharedPrefUtil.start(context as Activity, ConstantAuth.CONSTANT_PREFERENCE)
         val authKey = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_KEY) as String
+        //check token
+        viewModelProfile.checkToken(authKey)
+
         adapterRecentPost = AdapterUtil(R.layout.item_post, arrayListOf(),
             { _, view, post ->
                 Glide.with(requireContext())

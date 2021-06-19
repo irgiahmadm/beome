@@ -194,17 +194,21 @@ class ReportActivity : AppCompatActivity() {
     private fun showDialogReportFeedback() {
         val dialog = Dialog(this)
         val bindingDialog = ComponentDialogReportFeedbackBinding.inflate(layoutInflater)
+        var selectedId: Int?
+        var radioButton : RadioButton? = null
         bindingDialog.radioGroup.setOnCheckedChangeListener { rg, pos ->
-            val selectedId = rg.checkedRadioButtonId
-            val radioButton : RadioButton = bindingDialog.root.findViewById(selectedId)
-            bindingDialog.buttonOk.setOnClickListener {
-                reason = radioButton.text.toString()
+            selectedId = rg.checkedRadioButtonId
+            radioButton = bindingDialog.root.findViewById(selectedId!!)
+        }
+        bindingDialog.buttonOk.setOnClickListener {
+            if(radioButton != null){
+                reason = radioButton!!.text.toString()
                 binding.textViewSelectReason.text = reason
-                dialog.dismiss()
             }
-            bindingDialog.buttonCancel.setOnClickListener {
-                dialog.dismiss()
-            }
+            dialog.dismiss()
+        }
+        bindingDialog.buttonCancel.setOnClickListener {
+            dialog.dismiss()
         }
         dialog.apply {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -217,17 +221,21 @@ class ReportActivity : AppCompatActivity() {
     private fun showDialogReportAccount(){
         val dialog = Dialog(this)
         val bindingDialog = ComponentDialogReportAccountBinding.inflate(layoutInflater)
+        var selectedId: Int?
+        var radioButton : RadioButton? = null
         bindingDialog.radioGroup.setOnCheckedChangeListener { rg, pos ->
-            val selectedId = rg.checkedRadioButtonId
-            val radioButton : RadioButton = bindingDialog.root.findViewById(selectedId)
-            bindingDialog.buttonOk.setOnClickListener {
-                reason = radioButton.text.toString()
+            selectedId = rg.checkedRadioButtonId
+            radioButton = bindingDialog.root.findViewById(selectedId!!)
+        }
+        bindingDialog.buttonOk.setOnClickListener {
+            if(radioButton != null){
+                reason = radioButton!!.text.toString()
                 binding.textViewSelectReason.text = reason
-                dialog.dismiss()
             }
-            bindingDialog.buttonCancel.setOnClickListener {
-                dialog.dismiss()
-            }
+            dialog.dismiss()
+        }
+        bindingDialog.buttonCancel.setOnClickListener {
+            dialog.dismiss()
         }
         dialog.apply {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -240,17 +248,21 @@ class ReportActivity : AppCompatActivity() {
     private fun showDialogReportPost(){
         val dialog = Dialog(this)
         val bindingDialog = ComponentDialogReportPostBinding.inflate(layoutInflater)
+        var selectedId: Int?
+        var radioButton : RadioButton? = null
         bindingDialog.radioGroup.setOnCheckedChangeListener { rg, pos ->
-            val selectedId = rg.checkedRadioButtonId
-            val radioButton : RadioButton = bindingDialog.root.findViewById(selectedId)
-            bindingDialog.buttonOk.setOnClickListener {
-                reason = radioButton.text.toString()
+            selectedId = rg.checkedRadioButtonId
+            radioButton = bindingDialog.root.findViewById(selectedId!!)
+        }
+        bindingDialog.buttonOk.setOnClickListener {
+            if(radioButton != null){
+                reason = radioButton!!.text.toString()
                 binding.textViewSelectReason.text = reason
-                dialog.dismiss()
             }
-            bindingDialog.buttonCancel.setOnClickListener {
-                dialog.dismiss()
-            }
+            dialog.dismiss()
+        }
+        bindingDialog.buttonCancel.setOnClickListener {
+            dialog.dismiss()
         }
         dialog.apply {
             requestWindowFeature(Window.FEATURE_NO_TITLE)

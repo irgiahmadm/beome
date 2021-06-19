@@ -18,7 +18,6 @@ import com.beome.constant.ConstantReport
 import com.beome.databinding.ActivityProfileUserPreviewBinding
 import com.beome.model.Follow
 import com.beome.model.LikedPostList
-import com.beome.model.ReportedAccount
 import com.beome.model.User
 import com.beome.ui.authentication.login.LoginActivity
 import com.beome.ui.feedback.PostDetailActivity

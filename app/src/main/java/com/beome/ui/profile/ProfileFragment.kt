@@ -40,13 +40,14 @@ class ProfileFragment : Fragment() {
             ViewModelProvider.NewInstanceFactory()
         ).get(PostViewModel::class.java)
     }
+
     private lateinit var authKey : String
     private lateinit var sharedPrefUtil: SharedPrefUtil
     private lateinit var adapterListPost : AdapterUtil<LikedPostList>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentProfileBinding.inflate(layoutInflater, container, false)
         sharedPrefUtil = SharedPrefUtil()
         sharedPrefUtil.start(context as Activity, ConstantAuth.CONSTANT_PREFERENCE)
@@ -204,6 +205,7 @@ class ProfileFragment : Fragment() {
                 getString(R.string.logout)
             ) { _, _ ->
                 sharedPrefUtil.clear()
+                viewModel.deleteToken(authKey)
                 startActivity(Intent(requireContext(), MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             }
             setNegativeButton(getString(R.string.cancel)) { dialog, _ ->

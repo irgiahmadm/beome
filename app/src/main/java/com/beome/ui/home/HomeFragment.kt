@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.beome.R
 import com.beome.databinding.FragmentHomeBinding
 import com.beome.adapter.SectionsPagerAdapterHome
+import com.beome.notify.createChannel
+import com.beome.notify.sendNotification
 
 class HomeFragment : Fragment() {
 
@@ -25,6 +28,7 @@ class HomeFragment : Fragment() {
         val sectionPagerAdapter = SectionsPagerAdapterHome(requireContext(), childFragmentManager)
         binding.viewPager.adapter = sectionPagerAdapter
         binding.tabLayout.setupWithViewPager(binding.viewPager)
+        createChannel(requireContext(), R.string.notif_channel_id, R.string.notif_channel_name, R.string.notif_channel_desc)
         return binding.root
     }
 }

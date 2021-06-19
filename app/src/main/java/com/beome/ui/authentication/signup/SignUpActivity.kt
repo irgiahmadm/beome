@@ -186,7 +186,8 @@ class SignUpActivity : AppCompatActivity() {
                     1,
                     2,
                     createdAt,
-                    updatedAt
+                    updatedAt,
+                    ""
                 )
                 viewModel.registerUser(user)
             }

@@ -8,8 +8,10 @@ import com.beome.model.LikedPostList
 import com.beome.model.Post
 import com.beome.model.User
 import com.beome.utilities.NetworkState
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
 
 class ProfileViewModel : ViewModel() {
@@ -130,5 +132,24 @@ class ProfileViewModel : ViewModel() {
                 }
             }
         return listPostUser
+    }
+
+    fun checkToken(authKey: String) {
+        val tokenTask = FirebaseMessaging.getInstance().token
+        tokenTask.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCM", "FCM token failed.", task.exception)
+                return@OnCompleteListener
+            }
+            updateToken(authKey, task.result.toString());
+        })
+    }
+
+    private fun updateToken(authKey: String, oldToken : String){
+        profileRepo.updateToken(authKey, oldToken)
+    }
+
+    fun deleteToken(authKey: String){
+        profileRepo.deleteToken(authKey)
     }
 }
