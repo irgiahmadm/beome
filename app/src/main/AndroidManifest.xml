@@ -16,7 +16,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/notif_channel_id"/>
-        <activity android:name=".ui.guideline.CommunityGuidelineActivity"></activity>
+        <activity android:name=".ui.guideline.CommunityGuidelineActivity" android:theme="@style/NoActionBar"/>
         <activity android:name=".ui.admin.feedback.ReportedFeedbackdetailActivity" />
         <activity android:name=".ui.admin.account.ReportedAccountDetailActivity" />
         <activity android:name=".ui.admin.post.ReportedPostDetailActivity" />

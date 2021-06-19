@@ -61,8 +61,6 @@ class EditProfileActivity : AppCompatActivity() {
         if(intent.hasExtra(ConstantAuth.CONSTANT_AUTH_KEY)){
             authKey = intent.getStringExtra(ConstantAuth.CONSTANT_AUTH_KEY) as String
         }
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         sharedPrefUtil = SharedPrefUtil()
         sharedPrefUtil.start(this,ConstantAuth.CONSTANT_PREFERENCE)
         binding.editTextBirthDate.inputType = InputType.TYPE_NULL

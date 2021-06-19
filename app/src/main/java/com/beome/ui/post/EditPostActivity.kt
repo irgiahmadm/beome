@@ -1,5 +1,6 @@
 package com.beome.ui.post
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -30,8 +31,7 @@ class EditPostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEditPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setToolbarProperties()
         if(intent.hasExtra(ConstantPost.CONSTANT_ID_POST)){
             idPost = intent.getStringExtra(ConstantPost.CONSTANT_ID_POST) as String
             getPostDetail(idPost)
@@ -101,6 +101,16 @@ class EditPostActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setToolbarProperties() {
+        binding.toolbar.setOnMenuItemClickListener {
+            onOptionsItemSelected(it)
+        }
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
