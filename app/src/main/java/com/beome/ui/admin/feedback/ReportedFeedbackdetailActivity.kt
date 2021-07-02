@@ -51,7 +51,6 @@ class ReportedFeedbackdetailActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat")
     private fun getReportedFeedback(idFeedback : String){
-        viewModel.setUpReportedFeedback()
         viewModel.getReportedFeedback(idFeedback).observe(this,{
             if (it.feedback.photoProfile.isNullOrEmpty() || it.feedback.photoProfile == "null") {
                 Glide.with(this).load(R.drawable.ic_profile)

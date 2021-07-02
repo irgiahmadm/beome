@@ -3,6 +3,7 @@ package com.beome.ui.admin.feedback
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,8 +46,6 @@ class ReportedFeedbackFragment : Fragment() {
 
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun getLisReportedFeedback(){
-        viewModel.setUpRepo()
-        viewModel.setUpReportedFeedback()
         adapter =
             AdapterUtil(R.layout.item_reported_feedback, arrayListOf(), { _, view, reportedData ->
                 view.textViewReportCountFeedback.text = "${reportedData.counter} Reported"
@@ -90,24 +89,31 @@ class ReportedFeedbackFragment : Fragment() {
                         .putExtra(ConstantPost.CONSTANT_ID_POST, reportedData.feedback.idPost)
                 )
             })
-        viewModel.getListReportedFeedback().observe(viewLifecycleOwner, {
-            adapter.data = it
-        })
+        viewModel.apply {
+            setUpRepo()
+            setUpReportedFeedback()
+            getListReportedFeedback().observe(viewLifecycleOwner, {
+                Log.d("reportedDataFeedback", it.toString())
+                if(it.isNotEmpty()){
+                    adapter.data = it
+                }
+            })
+        }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
         viewModel.stateReportedFeedback.observe(viewLifecycleOwner,{
             when(it){
                 NetworkState.LOADING -> {
-
+                    binding.recyclerView.visibility = View.VISIBLE
                 }
                 NetworkState.SUCCESS -> {
-
+                    binding.recyclerView.visibility = View.VISIBLE
                 }
                 NetworkState.FAILED -> {
-
+                    binding.recyclerView.visibility = View.VISIBLE
                 }
                 NetworkState.NOT_FOUND -> {
-
+                    binding.recyclerView.visibility = View.GONE
                 }
                 else -> {
                     Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show()

@@ -75,16 +75,16 @@ class ReportedAccountFragment : Fragment() {
         viewModel.stateReportedAccount.observe(viewLifecycleOwner, {
             when (it) {
                 NetworkState.LOADING -> {
-
+                    binding.recyclerView.visibility = View.VISIBLE
                 }
                 NetworkState.SUCCESS -> {
-
+                    binding.recyclerView.visibility = View.VISIBLE
                 }
                 NetworkState.FAILED -> {
-
+                    binding.recyclerView.visibility = View.VISIBLE
                 }
                 NetworkState.NOT_FOUND -> {
-
+                    binding.recyclerView.visibility = View.GONE
                 }
                 else -> {
                     Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT)

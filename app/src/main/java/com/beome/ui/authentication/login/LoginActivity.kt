@@ -59,11 +59,18 @@ class LoginActivity : AppCompatActivity() {
                 }
                 NetworkState.SUCCESS -> {
                     finish()
-                    if(sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_ROLE)?.toInt() == 2){
-                        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                    //check status
+                    if(sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_STATUS)?.toInt() == 1){
+                        Log.d("loginStatus", sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_STATUS).toString())
+                        if(sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_ROLE)?.toInt() == 2){
+                            startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                        }else{
+                            startActivity(Intent(this, MainActivityAdmin::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                        }
                     }else{
-                        startActivity(Intent(this, MainActivityAdmin::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                        Toast.makeText(this, "Your account is banned by admin", Toast.LENGTH_LONG).show()
                     }
+
                 }
                 NetworkState.FAILED -> {
 

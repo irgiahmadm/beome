@@ -32,7 +32,7 @@ class ReportedAccountViewModel : ViewModel() {
     }
 
     fun setUpTakedowonAccount(){
-        stateReportedAccount = Transformations.switchMap(_reportedAccountRepo, ReportedAccountRepository::stateTakedownAccount)
+        stateTakedownAccount = Transformations.switchMap(_reportedAccountRepo, ReportedAccountRepository::stateTakedownAccount)
     }
 
     fun takedownAccount(authKey: String) = reportedtedAccountRepo.takedownAccount(authKey)

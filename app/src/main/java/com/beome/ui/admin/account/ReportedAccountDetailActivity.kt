@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.beome.constant.ConstantReport
 import com.beome.databinding.ActivityReportedAccountDetailBinding
 import com.beome.model.ReportDetail
 import com.beome.utilities.AdapterUtil
+import com.beome.utilities.NetworkState
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_reported_account_detail.*
 import kotlinx.android.synthetic.main.item_list_detail_report.view.*
@@ -84,10 +86,27 @@ class ReportedAccountDetailActivity : AppCompatActivity() {
     }
 
     private fun takedownAccount(authKey: String){
-        viewModel.setUpReportedAccount()
+        viewModel.setUpTakedowonAccount()
         binding.buttonDelete.setOnClickListener {
             deleteConfirmation(authKey)
         }
+        viewModel.stateTakedownAccount.observe(this,{
+            when(it){
+                NetworkState.LOADING -> {
+
+                }
+                NetworkState.SUCCESS -> {
+                    Toast.makeText(this, "Success to delete account", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                NetworkState.FAILED -> {
+                    Toast.makeText(this, "Failed to delete account", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 
     private fun deleteConfirmation(authKey: String){

@@ -86,10 +86,11 @@ class ReportedFeedbackRepository(private val scope : CoroutineScope) {
                     val post = transaction.get(refPost)
                     val reportedPost = transaction.get(refReportedPost)
                     val feedbackCounter = post["feedbackCount"] as Long - 1
-                    val reportedFeedbackCounter = reportedPost["post.feedbackCount"] as Long - 1
-
+                    if(reportedPost.exists()){
+                        val reportedFeedbackCounter = reportedPost["post.feedbackCount"] as Long - 1
+                        transaction.update(refReportedPost, "post.feedbackCount", reportedFeedbackCounter)
+                    }
                     transaction.update(refPost, "feedbackCount", feedbackCounter)
-                    transaction.update(refReportedPost, "post.feedbackCount", reportedFeedbackCounter)
                     transaction.update(refFeedback, "status", 2)
                     transaction.update(refReportedFeedback, "feedback.status", 2)
                 }.addOnFailureListener {

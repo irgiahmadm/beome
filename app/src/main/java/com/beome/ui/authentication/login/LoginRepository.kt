@@ -26,7 +26,6 @@ class LoginRepository(private val activity : Activity, private val scope: Corout
                     val querySnapshot = collectionUserRef
                         .whereEqualTo("email", email)
                         .whereEqualTo("password", password)
-                        .whereEqualTo("userStatus", 1)
                         .get()
                         .await()
                     if(querySnapshot.documents.isNotEmpty()){
@@ -35,6 +34,7 @@ class LoginRepository(private val activity : Activity, private val scope: Corout
                         sharedPrefUtil.set(ConstantAuth.CONSTANT_AUTH_KEY, querySnapshot.documents[0].get("authKey").toString())
                         sharedPrefUtil.set(ConstantAuth.CONSTANT_AUTH_USERNAME, querySnapshot.documents[0].get("username").toString())
                         sharedPrefUtil.set(ConstantAuth.CONSTANT_AUTH_ROLE, querySnapshot.documents[0].get("role").toString())
+                        sharedPrefUtil.set(ConstantAuth.CONSTANT_AUTH_STATUS, querySnapshot.documents[0].get("userStatus").toString())
                         if(querySnapshot.documents[0].get("photoProfile").toString().isNotEmpty()){
                             sharedPrefUtil.set(ConstantAuth.CONSTANT_AUTH_IMAGE, querySnapshot.documents[0].get("photoProfile").toString())
                         }else{
