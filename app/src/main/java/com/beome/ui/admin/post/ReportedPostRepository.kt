@@ -3,7 +3,6 @@ package com.beome.ui.admin.post
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.beome.model.Post
 import com.beome.model.ReportedPost
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.ktx.firestore

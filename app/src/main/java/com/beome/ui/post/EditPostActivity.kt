@@ -1,21 +1,18 @@
 package com.beome.ui.post
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.beome.MainActivity
 import com.beome.R
 import com.beome.constant.ConstantPost
 import com.beome.databinding.ActivityEditPostBinding
 import com.beome.ui.feedback.FeedbackViewModel
 import com.beome.utilities.NetworkState
 import com.bumptech.glide.Glide
-import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 class EditPostActivity : AppCompatActivity() {

@@ -14,7 +14,7 @@ import com.google.firebase.firestore.ktx.toObject
 class RecentPostViewModel : ViewModel() {
     private val listLikedPost = MutableLiveData<List<LikedPostList>>()
     private val listRecenPost = MutableLiveData<List<LikedPostList>>()
-    private val recentPostRepo = RecentPostRepository(viewModelScope)
+    private val recentPostRepo = RecentPostRepository()
     private val postRepo = PostRepository(viewModelScope)
 
     fun getListRecentPost(idUser: String) : LiveData<List<LikedPostList>>{

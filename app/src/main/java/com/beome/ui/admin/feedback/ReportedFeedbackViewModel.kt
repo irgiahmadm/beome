@@ -12,7 +12,7 @@ class ReportedFeedbackViewModel : ViewModel() {
     private val reportedDetailRepo = ReportDetailRepository(viewModelScope)
     private val _reportedDetailRepo = MutableLiveData<ReportDetailRepository>()
     lateinit var stateReportedFeedback : LiveData<NetworkState>
-    lateinit var stateReportDetailList : LiveData<NetworkState>
+    private lateinit var stateReportDetailList : LiveData<NetworkState>
     lateinit var stateTakedownFeedback : LiveData<NetworkState>
 
     fun setUpRepo(){

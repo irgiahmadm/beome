@@ -2,12 +2,7 @@ package com.beome.ui.authentication.login
 
 import android.app.Activity
 import androidx.lifecycle.*
-import com.beome.model.User
-import com.beome.ui.authentication.signup.SignupRepository
 import com.beome.utilities.NetworkState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LoginViewModel(activity : Activity) : ViewModel() {
     private val loginRepo = LoginRepository(activity, viewModelScope)

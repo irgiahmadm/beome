@@ -5,7 +5,6 @@ import androidx.lifecycle.*
 import com.beome.model.*
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.core.OrderBy
 import com.google.firebase.firestore.ktx.toObject
 
 class FeedbackViewModel : ViewModel() {
@@ -15,7 +14,7 @@ class FeedbackViewModel : ViewModel() {
     private val listFeedbackComponent = MutableLiveData<List<ComponentFeedbackPost>>()
     private val feedbackRepo = FeedbackRepository(viewModelScope)
     lateinit var addUserFeedbackState: LiveData<NetworkState>
-    lateinit var addFeedbackValueState: LiveData<NetworkState>
+    private lateinit var addFeedbackValueState: LiveData<NetworkState>
     private val _feedbackRepo = MutableLiveData<FeedbackRepository>()
 
 

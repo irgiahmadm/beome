@@ -52,7 +52,7 @@ class RecentPostFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentRecentPostBinding.inflate(layoutInflater, container, false)
         sharedPrefUtil = SharedPrefUtil()
         sharedPrefUtil.start(context as Activity, ConstantAuth.CONSTANT_PREFERENCE)

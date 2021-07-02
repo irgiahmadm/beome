@@ -5,7 +5,6 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.text.InputType
@@ -15,11 +14,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.beome.R
 import com.beome.constant.ConstantAuth
 import com.beome.databinding.ActivityEditProfileBinding
-import com.beome.model.Post
 import com.beome.model.User
 import com.beome.utilities.*
 import com.bumptech.glide.Glide
@@ -27,11 +26,8 @@ import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.model.Image
 import com.google.firebase.storage.FirebaseStorage
 import com.yalantis.ucrop.UCrop
-import kotlinx.android.synthetic.main.activity_edit_profile.*
-import kotlinx.android.synthetic.main.activity_post_detail.*
 import java.io.File
 import java.util.*
-import java.util.regex.Pattern
 
 class EditProfileActivity : AppCompatActivity() {
     private lateinit var binding : ActivityEditProfileBinding

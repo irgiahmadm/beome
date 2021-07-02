@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.beome.R
-import com.beome.databinding.FragmentHomeBinding
 import com.beome.adapter.SectionsPagerAdapterHome
+import com.beome.databinding.FragmentHomeBinding
 import com.beome.notify.createChannel
-import com.beome.notify.sendNotification
 
 class HomeFragment : Fragment() {
 
@@ -21,7 +20,7 @@ class HomeFragment : Fragment() {
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         homeViewModel =
                 ViewModelProvider(this).get(HomeViewModel::class.java)
         binding = FragmentHomeBinding.inflate(inflater, container, false)

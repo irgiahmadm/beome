@@ -10,7 +10,6 @@ import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import com.esafirm.imagepicker.features.ImagePicker
@@ -47,12 +46,6 @@ object GlobalHelper {
             .start()
     }
 
-    fun startImagePickerFromFragment(fragment : Fragment){
-        ImagePicker.create(fragment)
-            .single()
-            .showCamera(false)
-            .start()
-    }
 
     fun hideShowPassword(editTextPassword : EditText, togglePassword : ImageView){
         var isPasswordVisible = false

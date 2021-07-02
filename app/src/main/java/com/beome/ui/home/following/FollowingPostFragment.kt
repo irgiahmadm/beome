@@ -13,7 +13,6 @@ import com.beome.R
 import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
 import com.beome.databinding.FragmentFollowingPostBinding
-import com.beome.databinding.FragmentRecentPostBinding
 import com.beome.model.LikedPostList
 import com.beome.ui.feedback.PostDetailActivity
 import com.beome.ui.post.PostViewModel
@@ -47,7 +46,7 @@ class FollowingPostFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentFollowingPostBinding.inflate(layoutInflater, container, false)
         sharedPrefUtil = SharedPrefUtil()

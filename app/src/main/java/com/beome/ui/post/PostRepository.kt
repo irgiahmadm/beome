@@ -2,8 +2,6 @@ package com.beome.ui.post
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.beome.model.LikedPost
-import com.beome.model.Post
 import com.beome.utilities.NetworkState
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
@@ -13,10 +11,9 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
-import kotlin.coroutines.CoroutineContext
 
 class PostRepository(private val scope: CoroutineScope) {
-    val likePostState = MutableLiveData<NetworkState>()
+    private val likePostState = MutableLiveData<NetworkState>()
     val editPostState = MutableLiveData<NetworkState>()
     val deletePostState = MutableLiveData<NetworkState>()
 

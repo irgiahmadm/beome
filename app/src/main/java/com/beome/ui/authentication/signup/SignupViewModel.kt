@@ -1,6 +1,5 @@
 package com.beome.ui.authentication.signup
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.beome.model.User
 import com.beome.utilities.NetworkState

@@ -11,7 +11,6 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
-import kotlin.coroutines.CoroutineContext
 
 class LoginRepository(private val activity : Activity, private val scope: CoroutineScope) {
     private val collectionUserRef = Firebase.firestore.collection("user")

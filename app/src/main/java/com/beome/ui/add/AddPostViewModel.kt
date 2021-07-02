@@ -3,7 +3,6 @@ package com.beome.ui.add
 import androidx.lifecycle.*
 import com.beome.model.ComponentFeedbackPost
 import com.beome.model.Post
-import com.beome.ui.authentication.signup.SignupRepository
 import com.beome.utilities.NetworkState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

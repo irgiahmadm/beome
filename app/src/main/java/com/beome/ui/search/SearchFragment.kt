@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.beome.R
 import com.beome.adapter.SectionsPagerAdapterSearch
 import com.beome.databinding.FragmentSearchBinding
 
@@ -18,7 +17,7 @@ class SearchFragment : Fragment() {
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         dashboardViewModel =
                 ViewModelProvider(this).get(SearchViewModel::class.java)
         binding = FragmentSearchBinding.inflate(inflater, container, false)

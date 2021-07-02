@@ -384,6 +384,7 @@ class AddPostActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun hideProgressBar(){
         binding.progressBar.visibility = View.GONE
         binding.buttonPublish.text = "PUBLISH"

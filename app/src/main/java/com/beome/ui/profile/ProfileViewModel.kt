@@ -12,7 +12,6 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.messaging.FirebaseMessaging
-import kotlinx.coroutines.Dispatchers
 
 class ProfileViewModel : ViewModel() {
     private val profileUser = MutableLiveData<User>()
@@ -141,7 +140,7 @@ class ProfileViewModel : ViewModel() {
                 Log.w("FCM", "FCM token failed.", task.exception)
                 return@OnCompleteListener
             }
-            updateToken(authKey, task.result.toString());
+            updateToken(authKey, task.result.toString())
         })
     }
 

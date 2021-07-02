@@ -9,7 +9,6 @@ import com.beome.model.LikedPostList
 import com.beome.model.Post
 import com.beome.ui.post.PostRepository
 import com.google.firebase.firestore.ktx.toObject
-import kotlinx.coroutines.Dispatchers
 
 class FollowingPostViewModel : ViewModel(){
 

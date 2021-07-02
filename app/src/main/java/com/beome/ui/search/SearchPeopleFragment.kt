@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.R
 import com.beome.constant.ConstantAuth
@@ -20,7 +19,6 @@ import com.beome.ui.profile.ProfileUserPreviewActivity
 import com.beome.utilities.AdapterUtil
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_list_user.view.*
-import kotlinx.android.synthetic.main.item_post.view.*
 
 class SearchPeopleFragment : Fragment() {
     private lateinit var binding : FragmentSearchPeopleBinding
@@ -28,15 +26,11 @@ class SearchPeopleFragment : Fragment() {
     private val viewModel : SearchViewModel by lazy {
         ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(SearchViewModel::class.java)
     }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentSearchPeopleBinding.inflate(inflater,container, false)
         binding.searchViewPeople.apply {

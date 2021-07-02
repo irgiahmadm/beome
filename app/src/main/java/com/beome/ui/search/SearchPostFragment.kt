@@ -17,7 +17,6 @@ import com.beome.constant.ConstantAuth
 import com.beome.constant.ConstantPost
 import com.beome.databinding.FragmentSearchPostBinding
 import com.beome.model.LikedPostList
-import com.beome.model.Post
 import com.beome.ui.feedback.PostDetailActivity
 import com.beome.ui.post.PostViewModel
 import com.beome.ui.profile.ProfileUserPreviewActivity
@@ -47,7 +46,7 @@ class SearchPostFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentSearchPostBinding.inflate(inflater,container, false)
         sharedPrefUtil = SharedPrefUtil()

@@ -33,7 +33,7 @@ class SectionsPagerAdapterAdmin(private val context: Context, fragmentManager: F
         return tabTitles.size
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         return context.resources.getString(tabTitles[position])
     }
 

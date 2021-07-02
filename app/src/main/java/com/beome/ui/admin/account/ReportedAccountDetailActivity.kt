@@ -16,7 +16,6 @@ import com.beome.model.ReportDetail
 import com.beome.utilities.AdapterUtil
 import com.beome.utilities.NetworkState
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_reported_account_detail.*
 import kotlinx.android.synthetic.main.item_list_detail_report.view.*
 import java.text.SimpleDateFormat
 
