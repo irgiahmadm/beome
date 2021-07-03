@@ -130,7 +130,6 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
                 Glide.with(this).load(it.photoProfile).circleCrop().into(binding.imageViewUserProfile)
             }
             binding.textViewFollowersCount.text = it.follower.toString()
-            binding.textViewPostsCount.text = it.post.toString()
             binding.toolbar.title = it.username
         })
 
@@ -216,7 +215,7 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
                 intent.putExtra(ConstantPost.CONSTANT_POST_IS_LIKED, post.isLiked)
                 startActivity(intent)
             })
-        viewModel.getListPostUser(authKeyUserPreview).observe(this,{
+        viewModel.getListPostUserPreview(authKeyUserPreview, authKeyUserLogedIn).observe(this,{
             adapterListPost.data = it
             binding.textViewPostsCount.text = it.size.toString()
         })

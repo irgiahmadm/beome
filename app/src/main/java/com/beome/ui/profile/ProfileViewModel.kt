@@ -133,6 +133,33 @@ class ProfileViewModel : ViewModel() {
         return listPostUser
     }
 
+    fun getListPostUserPreview(authKeyPreview: String, authKeyLogedIn : String) : LiveData<List<LikedPostList>>{
+        profileRepo.getPostByUser()
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .whereEqualTo("status", 1)
+            .whereEqualTo("authKey", authKeyPreview)
+            .addSnapshotListener { querySnapshot, error ->
+                error?.let{
+                    Log.e("err_get_recet_post", error.localizedMessage!!)
+                    return@addSnapshotListener
+                }
+                val tempListPostUser = mutableListOf<LikedPostList>()
+                querySnapshot?.let {
+                    for (document in it){
+                        var isExist: Boolean
+                        val post = document.toObject<Post>()
+                        isExist  = post.likedBy.any { likedBy ->
+                            likedBy == authKeyLogedIn
+                        }
+                        val likedPostObj = LikedPostList(post, isExist)
+                        tempListPostUser.add(likedPostObj)
+                    }
+                    listPostUser.value = tempListPostUser
+                }
+            }
+        return listPostUser
+    }
+
     fun checkToken(authKey: String) {
         val tokenTask = FirebaseMessaging.getInstance().token
         tokenTask.addOnCompleteListener(OnCompleteListener { task ->

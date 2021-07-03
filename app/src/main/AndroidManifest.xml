@@ -27,7 +27,8 @@
         <activity android:name=".ui.profile.EditProfileActivity" android:label="Edit Profile" android:theme="@style/NoActionBar"/>
         <activity
             android:name=".ui.post.EditPostActivity"
-            android:label="Edit Post" />
+            android:label="Edit Post"
+            android:theme="@style/NoActionBar"/>
         <activity
             android:name=".ui.profile.ProfileUserPreviewActivity"
             android:theme="@style/NoActionBar" />

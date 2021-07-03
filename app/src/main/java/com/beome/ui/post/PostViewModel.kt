@@ -65,6 +65,6 @@ class PostViewModel : ViewModel() {
         _postRepo.postValue(postRepo)
     }
 
-    fun deletePost(idPost: String) =
-        postRepo.deletePost(idPost)
+    fun deletePost(idPost: String, authKey : String) =
+        postRepo.deletePost(idPost, authKey)
 }

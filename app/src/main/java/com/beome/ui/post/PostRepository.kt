@@ -91,13 +91,31 @@ class PostRepository(private val scope: CoroutineScope) {
         }
     }
 
-    fun deletePost(idPost: String){
+    fun deletePost(idPost: String, authKey : String){
         scope.launch {
             withContext(Dispatchers.IO){
                 try {
-                    deletePostState.postValue(NetworkState.LOADING)
-                    val docPostRef = Firebase.firestore.collection("post").document(idPost)
-                    docPostRef.update("status", 0).await()
+
+                    Firebase.firestore.runTransaction {transaction ->
+                        deletePostState.postValue(NetworkState.LOADING)
+                        val docPostRef = Firebase.firestore.collection("post").document(idPost)
+                        val docUserRef = Firebase.firestore.collection("user").document(authKey)
+                        val docReportedUserRef = Firebase.firestore.collection("reported_account").document(authKey)
+                        val docReportedPostRef = Firebase.firestore.collection("reported_post").document(idPost)
+                        val user = transaction.get(docPostRef)
+                        val reportedUser = transaction.get(docPostRef)
+                        val reportedPost = transaction.get(docReportedPostRef)
+                        val postCounter = (user.get("post") as Long?)?.minus(1)
+                        if(reportedUser.exists()){
+                            val postCounterReportedUser = (reportedUser.get("post") as Long?)?.minus(1)
+                            transaction.update(docReportedUserRef, "user.post", postCounterReportedUser)
+                        }
+                        if(reportedPost.exists()){
+                            transaction.update(docPostRef, "post.status", 0)
+                        }
+                        transaction.update(docPostRef, "status", 0)
+                        transaction.update(docUserRef, "post", postCounter)
+                    }
                     deletePostState.postValue(NetworkState.SUCCESS)
                 }catch (e : Exception){
                     Log.d("err_delete_post", "deletePost: ${e.message}")

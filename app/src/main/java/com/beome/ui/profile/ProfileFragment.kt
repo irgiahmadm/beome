@@ -3,6 +3,7 @@ package com.beome.ui.profile
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
@@ -82,6 +83,7 @@ class ProfileFragment : Fragment() {
 
     private fun getProfileUser(){
         viewModel.getProfileUser(authKey).observe(viewLifecycleOwner,{
+            Log.d("userDataProfile", authKey +" -post"+ it.post)
             binding.textViewFullname.text = it.fullName
             if(it.photoProfile.isEmpty() || it.photoProfile == "null"){
                 Glide.with(requireContext()).load(R.drawable.ic_profile).into(binding.imageViewUserProfile)
@@ -89,7 +91,6 @@ class ProfileFragment : Fragment() {
                 Glide.with(requireContext()).load(it.photoProfile).circleCrop().into(binding.imageViewUserProfile)
             }
             binding.textViewFollowersCount.text = it.follower.toString()
-            binding.textViewPostsCount.text = it.post.toString()
             binding.toolbar.title = it.username
         })
 

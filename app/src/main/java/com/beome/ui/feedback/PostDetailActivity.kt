@@ -200,7 +200,7 @@ class PostDetailActivity : AppCompatActivity() {
             setPositiveButton(
                 getString(R.string.delete)
             ) { _, _ ->
-                viewModelPost.deletePost(idPost)
+                viewModelPost.deletePost(idPost, authKey)
             }
             setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
