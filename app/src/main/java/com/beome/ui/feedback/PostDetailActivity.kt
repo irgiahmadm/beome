@@ -102,15 +102,8 @@ class PostDetailActivity : AppCompatActivity() {
             if(intent.hasExtra(ConstantPost.CONSTANT_POST_IS_LIKED)){
                 isLiked = intent.getBooleanExtra(ConstantPost.CONSTANT_POST_IS_LIKED, false)
             }
-            Log.d("IS_LIKED_DETAIL", isLiked.toString())
             likeUnlikeAction()
-            if(isLiked){
-                binding.imageViewLikeInactiveButton.visibility = View.INVISIBLE
-                binding.imageViewLikeActiveButton.visibility = View.VISIBLE
-            }else{
-                binding.imageViewLikeInactiveButton.visibility = View.VISIBLE
-                binding.imageViewLikeActiveButton.visibility = View.INVISIBLE
-            }
+            getLikedStatus()
             getDetailPost()
             getListFeedback()
             getStateDeletePost()
@@ -145,8 +138,20 @@ class PostDetailActivity : AppCompatActivity() {
                 }
             }
 
-
         }
+    }
+
+    private fun getLikedStatus(){
+        viewModelPost.getLikedStatus(authKey, idPost).observe(this,{
+            Log.d("likedStatus", it.toString())
+            if(it){
+                binding.imageViewLikeInactiveButton.visibility = View.INVISIBLE
+                binding.imageViewLikeActiveButton.visibility = View.VISIBLE
+            }else{
+                binding.imageViewLikeInactiveButton.visibility = View.VISIBLE
+                binding.imageViewLikeActiveButton.visibility = View.INVISIBLE
+            }
+        })
     }
 
     private fun likeUnlikeAction(){

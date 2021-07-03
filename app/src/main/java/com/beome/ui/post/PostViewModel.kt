@@ -11,13 +11,13 @@ import com.google.firebase.firestore.ktx.toObject
 
 class PostViewModel : ViewModel() {
     private val listLikedPost = MutableLiveData<List<LikedPostList>>()
+    private val isPostLiked = MutableLiveData<Boolean>()
     private val postRepo = PostRepository(viewModelScope)
     lateinit var editPostState : LiveData<NetworkState>
     lateinit var deletePostState : LiveData<NetworkState>
     private val _postRepo = MutableLiveData<PostRepository>()
 
     fun getListLikedPost(idUser: String): LiveData<List<LikedPostList>> {
-
         val addedRecentPostList = mutableListOf<LikedPostList>()
         postRepo.getListPost()
             .orderBy("createdAt", Query.Direction.ASCENDING)
@@ -42,6 +42,27 @@ class PostViewModel : ViewModel() {
                 }
             }
         return listLikedPost
+    }
+
+    fun getLikedStatus(authKey: String, idPost: String) : LiveData<Boolean>{
+        postRepo.getListPost()
+            .orderBy("createdAt", Query.Direction.ASCENDING)
+            .whereEqualTo("status", 1)
+            .whereArrayContains("likedBy", authKey)
+            .whereEqualTo("idPost", idPost)
+            .addSnapshotListener { querySnapshot, error ->
+                error?.let {
+                    Log.e("err_get_liked_status1", error.localizedMessage!!)
+                }
+                var isLiked = false
+                querySnapshot?.let {
+                    if(it.documents.isNotEmpty()){
+                        isLiked = true
+                    }
+                    isPostLiked.value = isLiked
+                }
+            }
+        return isPostLiked
     }
 
     fun likePost(idPost : String, likedBy: String) =
