@@ -10,6 +10,7 @@ import com.google.firebase.firestore.ktx.toObject
 class FeedbackViewModel : ViewModel() {
     private val detailPost = MutableLiveData<Post>()
     private val listFeedbackPost = MutableLiveData<List<FeedbackPostUser>>()
+    private val userPoint = MutableLiveData<Long>()
     private val isGiveFeedbackPost = MutableLiveData<Boolean>()
     private val listFeedbackComponent = MutableLiveData<List<ComponentFeedbackPost>>()
     private val feedbackRepo = FeedbackRepository(viewModelScope)
@@ -36,6 +37,21 @@ class FeedbackViewModel : ViewModel() {
                 }
             }
         return detailPost
+    }
+
+    fun getBadge(authKey : String) : LiveData<Long>{
+        feedbackRepo.getUsersBadge()
+            .get().addOnSuccessListener {
+                var tempUserPoint = 0L
+                for (document in it){
+                    if(document.get("authKey") == authKey){
+                        tempUserPoint = document.get("userPoint") as Long
+                        break
+                    }
+                }
+                userPoint.value = tempUserPoint
+            }
+        return userPoint
     }
 
     fun getListFeedbackPost(idPost: String): LiveData<List<FeedbackPostUser>> {

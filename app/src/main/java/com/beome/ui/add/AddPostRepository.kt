@@ -14,41 +14,63 @@ import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
-class AddPostRepository(coroutineContext : CoroutineContext) {
+class AddPostRepository(coroutineContext: CoroutineContext) {
     private val collectionFeedbackComponentRef = Firebase.firestore.collection("feedback_component")
     val addPostState = MutableLiveData<NetworkState>()
     val addComponentState = MutableLiveData<NetworkState>()
-    private val job= Job()
-    private val scope = CoroutineScope(coroutineContext+job)
-    fun addPost(post : Post){
+    private val job = Job()
+    private val scope = CoroutineScope(coroutineContext + job)
+    fun addPost(post: Post) {
         scope.launch {
-            try {
-                val collectionPostRef = Firebase.firestore.collection("post").document(post.idPost)
-                addPostState.postValue(NetworkState.LOADING)
-                collectionPostRef.set(post).await()
-                Firebase.firestore.runTransaction { transaction ->
-                    val docRef = Firebase.firestore.collection("user").document(post.authKey)
-                    val user = transaction.get(docRef)
-                    val counter = user["post"] as Long + 1
-                    transaction.update(docRef, "post", counter)
-                }.await()
-                addPostState.postValue(NetworkState.SUCCESS)
-            }catch (e : Exception){
+            val collectionPostRef = Firebase.firestore.collection("post").document(post.idPost)
+            addPostState.postValue(NetworkState.LOADING)
+            collectionPostRef.set(post).await()
+            //feedback repository
+            Firebase.firestore.runTransaction { transaction ->
+                val docUserRef = Firebase.firestore.collection("user").document(post.authKey)
+                val docReportedUserRef =
+                    Firebase.firestore.collection("reported_account").document(post.authKey)
+                val user = transaction.get(docUserRef)
+                val reportedUser = transaction.get(docReportedUserRef)
+                //counter post
+                val counterPost = user["post"] as Long + 1
+                //counter point
+                val counterPoint = user["userPoint"] as Long + 3
+                if (reportedUser.exists()) {
+                    val reportedCounter = reportedUser["user.post"] as Long + 1
+                    val reportedUserCounterPoint = reportedUser["user.userPoint"] as Long + 3
+                    transaction.update(docReportedUserRef, "user.post", reportedCounter)
+                    transaction.update(
+                        docReportedUserRef,
+                        "user.userPoint",
+                        reportedUserCounterPoint
+                    )
+                }
+                transaction.update(docUserRef, "post", counterPost)
+                transaction.update(docUserRef, "userPoint", counterPoint)
+                //update feedback user point
+
+            }.addOnFailureListener {
                 addPostState.postValue(NetworkState.FAILED)
-                Log.d("error_add_post", e.localizedMessage!!)
-            }
+                Log.d("error_add_post", it.message!!)
+            }.await()
+            addPostState.postValue(NetworkState.SUCCESS)
         }
     }
 
-    fun addComponentFeedbackPost(componentFeedbackPost: ComponentFeedbackPost, listSize: Int, counter : Int){
+    fun addComponentFeedbackPost(
+        componentFeedbackPost: ComponentFeedbackPost,
+        listSize: Int,
+        counter: Int
+    ) {
         scope.launch {
             try {
                 addComponentState.postValue(NetworkState.LOADING)
                 collectionFeedbackComponentRef.add(componentFeedbackPost).await()
-                if(listSize == counter){
+                if (listSize == counter) {
                     addComponentState.postValue(NetworkState.SUCCESS)
                 }
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 addComponentState.postValue(NetworkState.FAILED)
                 Log.d("error_add_fdbck_cmpnnt", e.localizedMessage!!)
             }

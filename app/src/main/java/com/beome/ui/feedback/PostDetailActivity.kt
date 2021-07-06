@@ -238,6 +238,7 @@ class PostDetailActivity : AppCompatActivity() {
                         intent.putExtra(ConstantAuth.CONSTANT_AUTH_KEY, feedback.authKey)
                         startActivity(intent)
                     }
+
                     val dateCreated =
                         SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(feedback.createdAt)
                     view.textViewDateFeedback.text = dateCreated
@@ -273,7 +274,6 @@ class PostDetailActivity : AppCompatActivity() {
                         Glide.with(this).load(feedback.photoProfile).circleCrop()
                             .into(view.imageViewUserFeedback)
                     }
-
                     view.textViewCommentFeedback.text = feedback.comment
                     adapterFeedbackValue = AdapterUtil(
                         R.layout.item_feedback_component,

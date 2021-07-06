@@ -82,13 +82,30 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getProfileUser(){
-        viewModel.getProfileUser(authKey).observe(viewLifecycleOwner,{
-            Log.d("userDataProfile", authKey +" -post"+ it.post)
+        viewModel.getProfileUser(authKey).observe(viewLifecycleOwner, {
+            Log.d("userDataProfile", authKey + " -post" + it.post)
             binding.textViewFullname.text = it.fullName
-            if(it.photoProfile.isEmpty() || it.photoProfile == "null"){
-                Glide.with(requireContext()).load(R.drawable.ic_profile).into(binding.imageViewUserProfile)
-            }else{
-                Glide.with(requireContext()).load(it.photoProfile).circleCrop().into(binding.imageViewUserProfile)
+            when {
+                it.userPoint in 150..499 -> {
+                    binding.textViewBadge.text = getString(R.string.enthusiast)
+                    binding.viewBadge.setBackgroundResource(R.drawable.bg_badge_enthusiast)
+                    binding.imageViewBadge.setImageResource(R.drawable.ic_enthusiast_badge_white)
+                }
+                it.userPoint >= 500 -> {
+                    binding.textViewBadge.text = getString(R.string.guru)
+                    binding.viewBadge.setBackgroundResource(R.drawable.bg_badge_guru)
+                    binding.imageViewBadge.setImageResource(R.drawable.ic_guru_badge_white)
+                }
+                else -> {
+                    binding.viewBadge.visibility = View.GONE
+                }
+            }
+            if (it.photoProfile.isEmpty() || it.photoProfile == "null") {
+                Glide.with(requireContext()).load(R.drawable.ic_profile)
+                    .into(binding.imageViewUserProfile)
+            } else {
+                Glide.with(requireContext()).load(it.photoProfile).circleCrop()
+                    .into(binding.imageViewUserProfile)
             }
             binding.textViewFollowersCount.text = it.follower.toString()
             binding.toolbar.title = it.username
@@ -138,6 +155,7 @@ class ProfileFragment : Fragment() {
                     Glide.with(this).load(post.post?.imgUser).circleCrop()
                         .into(view.imageViewUser)
                 }
+                view.textViewTitle.text = post.post?.title
                 view.textViewUsername.text = post.post?.username
                 view.textViewUsername.setOnClickListener {
                     val intent = Intent(requireContext(), ProfileUserPreviewActivity::class.java)

@@ -105,7 +105,7 @@ class FeedbackActivity : AppCompatActivity() {
                 val feedbackPostUserValue = FeedbackPostUserValue(listFeedbackValue[i].componentName, listFeedbackValue[i].componentValue!!)
                 tempListFeedbackValue.add(feedbackPostUserValue)
             }
-            val feedbackPostUser = FeedbackPostUser(authKey, idPost, GlobalHelper.getRandomString(20), username, image, comment, createdDate, 1, tempListFeedbackValue)
+            val feedbackPostUser = FeedbackPostUser(authKey, idPost, GlobalHelper.getRandomString(20), username, image, comment, createdDate, 1,tempListFeedbackValue)
             viewModel.addUserFeedback(idPost, feedbackPostUser)
         } else {
             Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()

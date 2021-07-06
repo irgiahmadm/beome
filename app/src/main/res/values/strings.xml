@@ -166,4 +166,11 @@
         \n<li>Click Report</li>
         \n<li>Select the reason you are reporting the feedback and add any additional comments that may help us in our review (if applicable)</li>
     </string>
+    <string name="enthusiast">Enthusiast</string>
+    <string name="guru">Guru</string>
+    <string name="category">Category</string>
+    <string name="category_note">Select up to 3 category</string>
+    <string name="suggested_feedback">Suggested Feedback</string>
+    <string name="custom_feedback">Custom Feedback</string>
+    <string name="add">add</string>
 </resources>

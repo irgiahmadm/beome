@@ -135,7 +135,7 @@
             <EditText
                 android:id="@+id/editTextPostDesc"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="100dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
@@ -145,7 +145,61 @@
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp" />
-
+            <TextView
+                android:id="@+id/textViewLabelCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/category"
+                android:textColor="@color/text_color_primary"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/textViewNoteCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/category_note"
+                android:textSize="14sp" />
+            <CheckBox
+                android:id="@+id/cbGraphicDesign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Graphic Design"/>
+            <CheckBox
+                android:id="@+id/cbIllustration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Illustration"/>
+            <CheckBox
+                android:id="@+id/cbUIUX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="UI/UX"/>
+            <TextView
+                android:id="@+id/textViewLabelSuggested"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/suggested_feedback"
+                android:textColor="@color/text_color_primary"
+                android:textSize="20sp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSuggestedFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"/>
             <TextView
                 android:id="@+id/textViewLabelFeedback"
                 android:layout_width="match_parent"
@@ -153,18 +207,9 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/feedback"
+                android:text="@string/custom_feedback"
                 android:textColor="@color/text_color_primary"
                 android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/textViewNoteFeedback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/rate_feedback_information"
-                android:textSize="14sp" />
 
             <LinearLayout
                 android:id="@+id/feedbackComponent"
@@ -188,7 +233,8 @@
                 android:onClick="onAddFieldFeedback"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:text="@string/add_feedback"
+                android:text="@string/add"
+                android:textAllCaps="true"
                 android:textColor="@color/color_primary"
                 tools:ignore="RtlHardcoded" />
         </LinearLayout>

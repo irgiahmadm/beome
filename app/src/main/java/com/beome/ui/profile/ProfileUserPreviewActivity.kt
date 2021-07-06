@@ -131,6 +131,21 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
             }
             binding.textViewFollowersCount.text = it.follower.toString()
             binding.toolbar.title = it.username
+            when {
+                it.userPoint in 150..499 -> {
+                    binding.textViewBadge.text = getString(R.string.enthusiast)
+                    binding.viewBadge.setBackgroundResource(R.drawable.bg_badge_enthusiast)
+                    binding.imageViewBadge.setImageResource(R.drawable.ic_enthusiast_badge_white)
+                }
+                it.userPoint >= 500 -> {
+                    binding.textViewBadge.text = getString(R.string.guru)
+                    binding.viewBadge.setBackgroundResource(R.drawable.bg_badge_guru)
+                    binding.imageViewBadge.setImageResource(R.drawable.ic_guru_badge_white)
+                }
+                else -> {
+                    binding.viewBadge.visibility = View.GONE
+                }
+            }
         })
 
         viewModel.userState.observe(this, {
@@ -177,6 +192,7 @@ class ProfileUserPreviewActivity : AppCompatActivity() {
                     Glide.with(this).load(post.post?.imgUser).circleCrop()
                         .into(view.imageViewUser)
                 }
+                view.textViewTitle.text = post.post?.title
                 view.textViewUsername.text = post.post?.username
                 view.textViewUsername.setOnClickListener {
                     val intent = Intent(this, ProfileUserPreviewActivity::class.java)

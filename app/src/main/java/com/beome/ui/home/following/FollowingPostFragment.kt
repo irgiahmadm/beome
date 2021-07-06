@@ -74,6 +74,7 @@ class FollowingPostFragment : Fragment() {
                     Glide.with(requireContext()).load(post.post?.imgUser).circleCrop()
                         .into(view.imageViewUser)
                 }
+                view.textViewTitle.text = post.post?.title
                 view.textViewUsername.text = post.post?.username
                 view.textViewUsername.setOnClickListener {
                     val intent = Intent(requireContext(), ProfileUserPreviewActivity::class.java)

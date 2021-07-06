@@ -35,16 +35,53 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
+
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:src="@drawable/ic_followers"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFullname" />
+        app:layout_constraintTop_toBottomOf="@+id/viewBadge" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/viewBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_badge_enthusiast"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/textViewFullname"
+        app:layout_constraintStart_toStartOf="@+id/textViewFullname"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFullname">
+
+        <TextView
+            android:id="@+id/textViewBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/enthusiast"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewBadge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageViewBadge"
+            app:layout_constraintTop_toTopOf="@+id/imageViewBadge" />
+
+        <ImageView
+            android:id="@+id/imageViewBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/ic_enthusiast_badge_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <TextView
         android:id="@+id/textViewLabelFollower"
         android:layout_width="wrap_content"
@@ -84,10 +121,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/ic_post"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFullname" />
+        app:layout_constraintTop_toBottomOf="@+id/viewBadge" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
