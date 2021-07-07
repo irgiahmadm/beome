@@ -37,6 +37,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.item_feedback_component.view.*
 import kotlinx.android.synthetic.main.item_feedback_summary.view.*
 import kotlinx.android.synthetic.main.item_list_feedback.view.*
+import kotlinx.android.synthetic.main.item_tags.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,6 +52,7 @@ class PostDetailActivity : AppCompatActivity() {
     private lateinit var adapterFeedbackUser : AdapterUtil<FeedbackPostUser>
     private lateinit var adapterFeedbackValue : AdapterUtil<FeedbackPostUserValue>
     private lateinit var adapterFeedbackSummary : AdapterUtil<FeedbackSummary>
+    private lateinit var adapterTag : AdapterUtil<String>
     private lateinit var postSend : Post
     private val viewModel: FeedbackViewModel by lazy{
         ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(FeedbackViewModel::class.java)
@@ -377,7 +379,23 @@ class PostDetailActivity : AppCompatActivity() {
             )
             binding.textViewDateCreated.text = dateCreated
             binding.textViewLikeCount.text = post.likeCount.toString()
+            //set list tag data
+            adapterTag.data = post.listTagPost
         })
+        getListTag()
+    }
+
+    private fun getListTag(){
+        adapterTag = AdapterUtil(R.layout.item_tags, arrayListOf(),{pos, view, item->
+            view.textViewTag.text = item
+            view.ivDeleteTag.visibility = View.GONE
+        },{pos, item->
+
+        })
+        binding.rvTags.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = adapterTag
+        }
     }
 
 

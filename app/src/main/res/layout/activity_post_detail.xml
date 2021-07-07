@@ -97,10 +97,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginBottom="8dp"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/view3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="@+id/textViewTitle"
@@ -115,7 +113,7 @@
                 android:background="@color/background_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/rvTags" />
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -197,7 +195,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/recyclerViewFeedbackSummary" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTags"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Tags"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/textViewDescription"
+                app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
