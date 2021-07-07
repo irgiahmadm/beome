@@ -363,8 +363,7 @@ class AddPostActivity : AppCompatActivity() {
                                             Date(),
                                             Date()
                                         )
-                                        Log.d("DATA_POST, ", post.toString())
-                                        //viewModel.addPost(post)
+                                        viewModel.addPost(post)
                                     }
                                     binding.buttonPublish.isEnabled = true
                                 }

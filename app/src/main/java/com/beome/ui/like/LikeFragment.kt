@@ -50,6 +50,7 @@ class LikeFragment : Fragment() {
                             .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
                     )
                     .into(view.imageViewPost)
+                view.textViewTitle.text = likedPost.post?.title
                 if (likedPost.post?.imgUser.isNullOrEmpty() || likedPost.post?.imgUser == "null") {
                     Glide.with(requireContext()).load(R.drawable.ic_profile)
                         .into(view.imageViewUser)
