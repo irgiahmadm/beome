@@ -14,6 +14,8 @@ import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import com.esafirm.imagepicker.features.ImagePicker
 import java.security.MessageDigest
+import java.util.*
+import kotlin.collections.ArrayList
 
 object GlobalHelper {
     fun getRandomString(length: Int) : String {
@@ -97,6 +99,15 @@ object GlobalHelper {
             rotate.fillAfter = true
             imageView.startAnimation(rotate)
         }
+    }
+
+    fun listToLowerCase(listData : ArrayList<String>) : ArrayList<String>{
+        val listLowerCase : ArrayList<String> = arrayListOf()
+        for (i in listData.indices) {
+            val data = listData[i].toLowerCase(Locale.ROOT)
+            listLowerCase.add(data)
+        }
+        return listLowerCase
     }
 
 }

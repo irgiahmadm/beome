@@ -17,6 +17,9 @@ data class Post(
     var likeCount: Int = 0,
     var feedbackCount : Int = 0,
     var likedBy : @RawValue List<String> = arrayListOf(),
+    var componentFeedback : @RawValue List<String> = arrayListOf(),
+    var listTagPost : @RawValue List<String> = arrayListOf(),
+    var searchKeyword : @RawValue List<String> = arrayListOf(),
     var status : Int = 1,
     var createdAt: Date = Date(),
     var updatedAt: Date  = Date()

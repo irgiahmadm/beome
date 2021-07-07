@@ -13,11 +13,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.beome.MainActivity
 import com.beome.R
 import com.beome.constant.ConstantAuth
 import com.beome.databinding.ActivityAddPostBinding
-import com.beome.model.ComponentFeedbackPost
 import com.beome.model.Post
 import com.beome.ui.authentication.login.LoginActivity
 import com.beome.utilities.*
@@ -28,13 +28,16 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.storage.FirebaseStorage
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.component_feedback.view.*
+import kotlinx.android.synthetic.main.item_suggested_feedback.view.*
+import kotlinx.android.synthetic.main.item_tags.view.*
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 class AddPostActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddPostBinding
     private lateinit var sharedPrefUtil: SharedPrefUtil
-    private lateinit var listOfFeedback: ArrayList<String>
+
     private lateinit var idPost: String
     private lateinit var messageErrComponent : String
     private var isFeedBackComponentValid = false
@@ -47,7 +50,18 @@ class AddPostActivity : AppCompatActivity() {
     private var image: Image? = null
     private var imageCroppedResult: Uri? = null
     private lateinit var authKey: String
+    private lateinit var adapterSuggestedFeedback : AdapterUtil<String>
+    private lateinit var adapterTags : AdapterUtil<String>
     private val storageRef = FirebaseStorage.getInstance().getReference("imagepost")
+    private var arrayListCategoryFeedback : ArrayList<String> = arrayListOf()
+    private var arrayListComponentFeedback : ArrayList<String> = arrayListOf()
+    private var arrayListTagPost : ArrayList<String> = arrayListOf()
+
+    private var arrayListSearchKeyword : ArrayList<String> = arrayListOf()
+
+    private var arrayListSuggestedFeedback : ArrayList<String> = arrayListOf()
+    private var tempListSuggestedFeedback : ArrayList<String> = arrayListOf()
+    private var tempListCustomFeedback : ArrayList<String> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddPostBinding.inflate(layoutInflater)
@@ -75,10 +89,10 @@ class AddPostActivity : AppCompatActivity() {
                 binding.imageViewAddImage.visibility = View.GONE
                 binding.textViewChangeImage.visibility = View.VISIBLE
             }
-            //init feedback field
-            addFeedbackField()
             viewModel.setUpAddPost()
             getAddPostState()
+            handleCheckBox()
+            handleTagPost()
             binding.imageViewAddImage.setOnClickListener {
                 GlobalHelper.startImagePickerFromActvitty(this)
             }
@@ -91,6 +105,136 @@ class AddPostActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleTagPost(){
+        binding.buttonAddTag.setOnClickListener {
+            val editTextTag = binding.editTextTag
+            if(arrayListTagPost.size < 5){
+                if(editTextTag.text.toString().isEmpty()){
+                    editTextTag.apply {
+                        error = "Tag can not be empty"
+                        requestFocus()
+                    }
+                }else{
+                    if(arrayListTagPost.size > 0){
+                        if(arrayListTagPost.size == arrayListTagPost.distinct().count()){
+                            Toast.makeText(this, "There is same tag", Toast.LENGTH_SHORT).show()
+                        }else{
+                            arrayListTagPost.add(editTextTag.text.toString())
+                            adapterTags.refresh()
+                        }
+                    }else{
+                        arrayListTagPost.add(editTextTag.text.toString())
+                        adapterTags.refresh()
+                    }
+                }
+            }else{
+                Toast.makeText(this, "Tags is full", Toast.LENGTH_SHORT).show()
+            }
+        }
+        setTagList(arrayListTagPost)
+    }
+
+    private fun setTagList(lisTagsPost : ArrayList<String>){
+        adapterTags = AdapterUtil(R.layout.item_tags, lisTagsPost, {_, view, item ->
+            view.textViewTag.text = item
+            view.ivDeleteTag.setOnClickListener {
+                arrayListTagPost.remove(item)
+                adapterTags.refresh()
+            }
+        },{pos, item ->
+
+        })
+        binding.rvTags.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvTags.adapter = adapterTags
+    }
+
+    private fun handleCheckBox(){
+        val listGraphicDesign = arrayListOf("Symmetry and Balance", "Golden Ratio", "Rule of Third")
+        binding.cbGraphicDesign.setOnCheckedChangeListener { button, isChecked ->
+            if(isChecked){
+                arrayListSuggestedFeedback.addAll(listGraphicDesign)
+                adapterSuggestedFeedback.refresh()
+                arrayListCategoryFeedback.add(button.text.toString())
+            }else{
+                arrayListSuggestedFeedback.removeAll(listGraphicDesign)
+                adapterSuggestedFeedback.refresh()
+                arrayListCategoryFeedback.remove(button.text.toString())
+                handleUncheckCategory(listGraphicDesign, tempListSuggestedFeedback, arrayListComponentFeedback)
+            }
+        }
+        val listIllustration = arrayListOf("Value", "Pattern", "Style")
+        binding.cbIllustration.setOnCheckedChangeListener { button, isChecked ->
+            if(isChecked){
+                arrayListSuggestedFeedback.addAll(listIllustration)
+                adapterSuggestedFeedback.refresh()
+                arrayListCategoryFeedback.add(button.text.toString())
+            }else{
+                arrayListSuggestedFeedback.removeAll(listIllustration)
+                adapterSuggestedFeedback.refresh()
+                arrayListCategoryFeedback.remove(button.text.toString())
+                handleUncheckCategory(listIllustration, tempListSuggestedFeedback, arrayListComponentFeedback)
+            }
+        }
+        val listUIUX = arrayListOf("Intuitive", "Usability", "User Friendly")
+        binding.cbUIUX.setOnCheckedChangeListener { button, isChecked ->
+            if(isChecked){
+                arrayListSuggestedFeedback.addAll(listUIUX)
+                adapterSuggestedFeedback.refresh()
+                arrayListCategoryFeedback.add(button.text.toString())
+            }else{
+                arrayListSuggestedFeedback.removeAll(listUIUX)
+                adapterSuggestedFeedback.refresh()
+                arrayListCategoryFeedback.remove(button.text.toString())
+                handleUncheckCategory(listUIUX, tempListSuggestedFeedback, arrayListComponentFeedback)
+            }
+        }
+        setListSuggestedFeedback(arrayListSuggestedFeedback)
+    }
+
+    private fun handleUncheckCategory(listCategory : ArrayList<String>, listTempFeedback : ArrayList<String>, listFeedbackComponent : ArrayList<String>){
+        if(listTempFeedback.size > 0){
+            for (i in listTempFeedback.indices){
+                for (j in listCategory.indices){
+                    Log.d("DATA_POST_TEMP", "$listTempFeedback - $listCategory")
+                    if(listTempFeedback.size > 0){
+                        if(listTempFeedback[i] == listCategory[j]){
+                            listTempFeedback.remove(listTempFeedback[i])
+                        }
+                    }
+                }
+            }
+        }
+        if(listFeedbackComponent.size > 0){
+            for (i in listFeedbackComponent.indices){
+                for (j in listCategory.indices){
+                    Log.d("DATA_POST_COMP", "$listFeedbackComponent - $listCategory")
+                    if(listFeedbackComponent.size > 0){
+                        if(listFeedbackComponent[i] == listCategory[j]){
+                            listFeedbackComponent.remove(listFeedbackComponent[i])
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setListSuggestedFeedback(listSuggestedFeedback : ArrayList<String>){
+        adapterSuggestedFeedback = AdapterUtil(R.layout.item_suggested_feedback, listSuggestedFeedback, {pos,view,item->
+            view.checkBox.text = item
+            view.checkBox.setOnCheckedChangeListener { _, isChecked ->
+                if(isChecked){
+                    tempListSuggestedFeedback.add(item)
+                }else{
+                    tempListSuggestedFeedback.remove(item)
+                }
+            }
+        },{pos,item ->
+
+        })
+        binding.rvSuggestedFeedback.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvSuggestedFeedback.adapter = adapterSuggestedFeedback
+    }
+
     private fun hideShowViewNotLogedIn(visibility: Int) {
         binding.textViewChangeImage.visibility = visibility
         binding.imageViewAddImage.visibility = visibility
@@ -98,7 +242,6 @@ class AddPostActivity : AppCompatActivity() {
         binding.textViewLabelTitle.visibility = visibility
         binding.textViewLabelDescription.visibility = visibility
         binding.textViewLabelFeedback.visibility = visibility
-        binding.textViewNoteFeedback.visibility = visibility
         binding.editTextPostDesc.visibility = visibility
         binding.editTextPostTitle.visibility = visibility
         binding.constraintLayoutPublish.visibility = visibility
@@ -107,144 +250,155 @@ class AddPostActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat", "UseCompatLoadingForDrawables", "SetTextI18n")
     private fun publishPost() {
-        binding.buttonPublish.isEnabled = false
-        binding.progressBar.visibility = View.VISIBLE
-        binding.buttonPublish.text = ""
         val feedbackCounter = binding.feedbackComponent.childCount
-        val rowFirst: View = binding.feedbackComponent.getChildAt(0)
-        listOfFeedback = arrayListOf()
-        listOfFeedback.clear()
-        for (i in 0 until feedbackCounter) {
-            val newRow: View = binding.feedbackComponent.getChildAt(i)
-            if(newRow.editTextFeedbackComponent.text.toString().length > 25){
-                newRow.editTextFeedbackComponent.apply {
-                    error = "Character can not more than 25"
-                    requestFocus()
-                }
-            }else{
-                if (newRow.editTextFeedbackComponent.text.isNotEmpty()) {
-                    listOfFeedback.add(
-                        newRow.editTextFeedbackComponent.text.toString()
-                            .toLowerCase(Locale.getDefault())
-                    )
+        val viewCustomFeedback1 = binding.feedbackComponent.getChildAt(0)
+        val viewCustomFeedback2 = binding.feedbackComponent.getChildAt(1)
+        //clear list custom feedback if click publish again
+        tempListCustomFeedback.clear()
+
+        if(arrayListCategoryFeedback.isEmpty()){
+            //check if there is any category checked
+            Toast.makeText(this, "Please add 1 suggested feedback", Toast.LENGTH_LONG).show()
+        }
+        else if(tempListSuggestedFeedback.isEmpty()){
+            //check if there is any suggested feedback that checked
+            Toast.makeText(this, "Please add 1 suggested feedback", Toast.LENGTH_LONG).show()
+        }else if(feedbackCounter > 0){
+            for (i in 0 until feedbackCounter) {
+                val newRow: View = binding.feedbackComponent.getChildAt(i)
+                if(newRow.editTextFeedbackComponent.text.toString().length > 25){
+                    newRow.editTextFeedbackComponent.apply {
+                        error = "Character can not more than 25"
+                        requestFocus()
+                    }
+                }else{
+                    if (newRow.editTextFeedbackComponent.text.isNotEmpty()) {
+                        tempListCustomFeedback.add(
+                            newRow.editTextFeedbackComponent.text.toString()
+                                .toLowerCase(Locale.getDefault())
+                        )
+                    }
                 }
             }
-        }
-        Log.d("list of feedback", listOfFeedback.toString())
-        if (feedbackCounter != 1) {
-            isFeedBackComponentValid = listOfFeedback.size == listOfFeedback.distinct().count()
+        }else if(feedbackCounter > 1) {
+            val customFeedback1 = viewCustomFeedback1.editTextFeedbackComponent.text.toString()
+            val customFeedback2 = viewCustomFeedback2.editTextFeedbackComponent.text.toString()
+            //check if there is any same component on custom feedback
+            isFeedBackComponentValid = customFeedback1 == customFeedback2
             messageErrComponent = "There is same feedback, please change"
-        }
-        if (feedbackCounter == 1 && rowFirst.editTextFeedbackComponent.text.toString().isEmpty()) {
-            rowFirst.editTextFeedbackComponent.apply {
-                error = "Feedback component can not be empty"
-                requestFocus()
-            }
-            messageErrComponent = "Feedback component can not be empty"
-        }
-        if(rowFirst.editTextFeedbackComponent.text.toString().length > 25){
-            rowFirst.editTextFeedbackComponent.apply {
-                error = "Character can not more than 25"
-                requestFocus()
-            }
         }else{
             isFeedBackComponentValid = true
-        }
-        if (isFeedBackComponentValid) {
-            idPost = GlobalHelper.getRandomString(20)
-            val title = binding.editTextPostTitle.text.toString().toLowerCase(Locale.getDefault())
-            val desc = binding.editTextPostDesc.text.toString()
-            val username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME)!!
-            val imageUser = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_IMAGE)!!
-            when {
-                image == null -> {
-                    Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
-                    hideProgressBar()
-                }
-                title.isEmpty() -> {
-                    binding.editTextPostTitle.apply {
-                        error = "Title can not be empty"
-                        requestFocus()
-                    }
-                    hideProgressBar()
-                }
-                title.length > 32 -> {
-                    binding.editTextPostTitle.apply {
-                        error = "Title characters up to 32 characters"
-                        requestFocus()
-                    }
-                    hideProgressBar()
-                }
-                desc.isEmpty() -> {
-                    binding.editTextPostDesc.apply {
-                        error = "Description can not be empty"
-                        requestFocus()
-                    }
-                    hideProgressBar()
-                }
-                desc.length > 500 -> {
-                    binding.editTextPostDesc.apply {
-                        error = "Description characters up to 500 characters"
-                        requestFocus()
-                    }
-                    hideProgressBar()
-                }
-                else -> {
-                    if (imageCroppedResult != null) {
-                        val reference = storageRef.child("${imageCroppedResult!!.lastPathSegment}")
-                        reference.putFile(imageCroppedResult!!)
-                            .addOnSuccessListener {
-                                reference.downloadUrl.addOnSuccessListener {
-                                    val downloadUri = it.toString()
-                                    val likedBy = arrayListOf<String>()
-                                    val post = Post(
-                                        idPost,
-                                        authKey,
-                                        username,
-                                        imageUser,
-                                        downloadUri,
-                                        title,
-                                        desc,
-                                        0,
-                                        0,
-                                        likedBy,
-                                        1,
-                                        Date(),
-                                        Date()
-                                    )
-                                    viewModel.addPost(post)
-                                }
-                                binding.buttonPublish.isEnabled = true
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT)
-                                    .show()
-                                Log.d("err_upload_image", it.localizedMessage!!.toString())
-                                binding.buttonPublish.isEnabled = true
-                                binding.progressBar.visibility = View.GONE
-                                binding.buttonPublish.text = "PUBLISH"
-                            }
-                            .addOnProgressListener {
-                                binding.buttonPublish.isEnabled = false
-                                binding.progressBar.visibility = View.VISIBLE
-                                binding.buttonPublish.text = ""
-                                /*val progress: Double = (100.0 * it.bytesTransferred) / it.totalByteCount
-                            binding.imageProgress.progress = progress.toInt()*/
-                            }
-                    } else {
+            if (isFeedBackComponentValid) {
+                idPost = GlobalHelper.getRandomString(20)
+                val title = binding.editTextPostTitle.text.toString().toLowerCase(Locale.getDefault())
+                val desc = binding.editTextPostDesc.text.toString()
+                val username = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_USERNAME)!!
+                val imageUser = sharedPrefUtil.get(ConstantAuth.CONSTANT_AUTH_IMAGE)!!
+                when {
+                    image == null -> {
                         Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
                         hideProgressBar()
                     }
+                    title.isEmpty() -> {
+                        binding.editTextPostTitle.apply {
+                            error = "Title can not be empty"
+                            requestFocus()
+                        }
+                        hideProgressBar()
+                    }
+                    title.length > 32 -> {
+                        binding.editTextPostTitle.apply {
+                            error = "Title characters up to 32 characters"
+                            requestFocus()
+                        }
+                        hideProgressBar()
+                    }
+                    desc.isEmpty() -> {
+                        binding.editTextPostDesc.apply {
+                            error = "Description can not be empty"
+                            requestFocus()
+                        }
+                        hideProgressBar()
+                    }
+                    desc.length > 500 -> {
+                        binding.editTextPostDesc.apply {
+                            error = "Description characters up to 500 characters"
+                            requestFocus()
+                        }
+                        hideProgressBar()
+                    }
+                    else -> {
+                        if (imageCroppedResult != null) {
+                            binding.buttonPublish.isEnabled = false
+                            binding.progressBar.visibility = View.VISIBLE
+                            binding.buttonPublish.text = ""
+                            //add list feedback component
+                            arrayListComponentFeedback.addAll(tempListSuggestedFeedback)
+                            arrayListComponentFeedback.addAll(tempListCustomFeedback)
+                            //ad list searchKeyword
+                            arrayListSearchKeyword.addAll(arrayListComponentFeedback)
+                            arrayListSearchKeyword.addAll(arrayListCategoryFeedback)
+                            arrayListSearchKeyword.addAll(arrayListTagPost)
+                            val reference = storageRef.child("${imageCroppedResult!!.lastPathSegment}")
+                            reference.putFile(imageCroppedResult!!)
+                                .addOnSuccessListener {
+                                    reference.downloadUrl.addOnSuccessListener {
+                                        val downloadUri = it.toString()
+                                        val likedBy = arrayListOf<String>()
+                                        val post = Post(
+                                            idPost,
+                                            authKey,
+                                            username,
+                                            imageUser,
+                                            downloadUri,
+                                            title,
+                                            desc,
+                                            0,
+                                            0,
+                                            likedBy,
+                                            GlobalHelper.listToLowerCase(arrayListComponentFeedback),
+                                            GlobalHelper.listToLowerCase(arrayListTagPost),
+                                            GlobalHelper.listToLowerCase(arrayListSearchKeyword),
+                                            1,
+                                            Date(),
+                                            Date()
+                                        )
+                                        Log.d("DATA_POST, ", post.toString())
+                                        //viewModel.addPost(post)
+                                    }
+                                    binding.buttonPublish.isEnabled = true
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT)
+                                        .show()
+                                    Log.d("err_upload_image", it.localizedMessage!!.toString())
+                                    binding.buttonPublish.isEnabled = true
+                                    binding.progressBar.visibility = View.GONE
+                                    binding.buttonPublish.text = "PUBLISH"
+                                }
+                                .addOnProgressListener {
+                                    binding.buttonPublish.isEnabled = false
+                                    binding.progressBar.visibility = View.VISIBLE
+                                    binding.buttonPublish.text = ""
+                                    /*val progress: Double = (100.0 * it.bytesTransferred) / it.totalByteCount
+                                binding.imageProgress.progress = progress.toInt()*/
+                                }
+                        } else {
+                            Toast.makeText(this, "Image is not added", Toast.LENGTH_SHORT).show()
+                            hideProgressBar()
+                        }
+                    }
                 }
+            } else {
+                Toast.makeText(
+                    this,
+                    messageErrComponent,
+                    Toast.LENGTH_SHORT
+                ).show()
+                hideProgressBar()
             }
-        } else {
-            Toast.makeText(
-                this,
-                messageErrComponent,
-                Toast.LENGTH_SHORT
-            ).show()
-            hideProgressBar()
         }
+
     }
 
     private fun getAddPostState() {
@@ -254,7 +408,7 @@ class AddPostActivity : AppCompatActivity() {
 
                 }
                 NetworkState.SUCCESS -> {
-                    viewModel.setUpComponentFeedback()
+                    /*viewModel.setUpComponentFeedback()
                     getComponentFeedbackState()
                     var counter = 0
                     (0 until listOfFeedback.size).forEach { i ->
@@ -267,7 +421,7 @@ class AddPostActivity : AppCompatActivity() {
                             listOfFeedback.size,
                             counter
                         )
-                    }
+                    }*/
                 }
                 NetworkState.FAILED -> {
                     Toast.makeText(this, "Add post failed", Toast.LENGTH_SHORT).show()
@@ -360,7 +514,7 @@ class AddPostActivity : AppCompatActivity() {
 
     @SuppressLint("InflateParams")
     private fun addFeedbackField() {
-        if (binding.feedbackComponent.childCount < 5) {
+        if (binding.feedbackComponent.childCount < 2 && tempListSuggestedFeedback.size < 5 && arrayListComponentFeedback.size < 5) {
             val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val rowView: View = inflater.inflate(R.layout.component_feedback, null)
             binding.feedbackComponent.addView(rowView)
@@ -375,13 +529,7 @@ class AddPostActivity : AppCompatActivity() {
     }
 
     fun onDeleteFieldFeedback(v: View) {
-        val feedbackCount = binding.feedbackComponent.childCount
-        if (feedbackCount >= 2) {
-            binding.feedbackComponent.removeView(v.parent as View)
-        } else {
-            Toast.makeText(this, "You should add at least 1 feedback", Toast.LENGTH_SHORT).show()
-        }
-
+        binding.feedbackComponent.removeView(v.parent as View)
     }
 
     @SuppressLint("SetTextI18n")

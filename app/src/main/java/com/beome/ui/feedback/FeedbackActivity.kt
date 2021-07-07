@@ -30,7 +30,7 @@ import java.util.*
 
 class FeedbackActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFeedbackBinding
-    private lateinit var adapter: AdapterUtil<ComponentFeedbackPost>
+    private lateinit var adapter: AdapterUtil<String>
     private lateinit var sharedPrefUtil: SharedPrefUtil
     private var isFeedbackValueValid = false
     private val listFeedbackValue = arrayListOf<ComponentFeedbackSend>()
@@ -140,6 +140,24 @@ class FeedbackActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat")
     private fun getPostDetail() {
+        //list feedback component
+        adapter = AdapterUtil(R.layout.item_feedback_value, arrayListOf(),
+            { pos, view, feedbackComponent ->
+                view.textViewComponentName.text = feedbackComponent
+                view.radioGroup.setOnCheckedChangeListener { radioGroup, checkedId ->
+                    val radioButton: RadioButton = findViewById(checkedId)
+                    val feedbackPost = ComponentFeedbackSend()
+                    feedbackPost.componentValue = radioButton.text.toString().toInt()
+                    feedbackPost.componentName = feedbackComponent
+                    listFeedbackValue[pos] = feedbackPost
+                }
+            }, { _, _ ->
+
+            })
+        binding.recyclerViewFeedbackComponent.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerViewFeedbackComponent.adapter = adapter
+
         viewModel.getPostDetail(idPost).observe(this, {
             Log.d("TEST_VALUE_DATA", it.toString())
             Glide.with(this)
@@ -161,36 +179,25 @@ class FeedbackActivity : AppCompatActivity() {
             val dateCreated =
                 SimpleDateFormat(ConstantPost.CONSTANT_POST_TIMESTAMP_FORMAT).format(it.createdAt)
             binding.textViewDateCreated.text = dateCreated
-        })
-    }
 
-    private fun getFeedbackComponent() {
-        adapter = AdapterUtil(R.layout.item_feedback_value, arrayListOf(),
-            { pos, view, feedbackComponent ->
-                view.textViewComponentName.text = feedbackComponent.componentName
-                view.radioGroup.setOnCheckedChangeListener { radioGroup, checkedId ->
-                    val radioButton: RadioButton = findViewById(checkedId)
-                    val feedbackPost = ComponentFeedbackSend()
-                    feedbackPost.componentValue = radioButton.text.toString().toInt()
-                    feedbackPost.componentName = feedbackComponent.componentName.toString()
-                    listFeedbackValue[pos] = feedbackPost
-                }
-            }, { _, _ ->
-
-            })
-        viewModel.getFeedbackComponent(idPost).observe(this, {
             listFeedbackValue.clear()
-            for (i in it.indices) {
+            for (i in it.componentFeedback.indices) {
                 val componentSend = ComponentFeedbackSend()
-                componentSend.componentName = it[i].componentName.toString()
+                componentSend.componentName = it.componentFeedback[i]
                 componentSend.componentValue = 0
                 listFeedbackValue.add(componentSend)
             }
-            adapter.data = it
+            adapter.data = it.componentFeedback
         })
-        binding.recyclerViewFeedbackComponent.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.recyclerViewFeedbackComponent.adapter = adapter
+
+
+    }
+
+    private fun getFeedbackComponent() {
+        viewModel.getFeedbackComponent(idPost).observe(this, {
+
+        })
+
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")

@@ -18,9 +18,9 @@ class AdapterUtil<T>(
             notifyDataSetChanged()
         }
 
-   /* fun refresh() {
+    fun refresh() {
         notifyDataSetChanged()
-    }*/
+    }
 
     class ViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: T, view: (Int, View, T) -> Unit) {

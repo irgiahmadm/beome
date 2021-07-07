@@ -94,6 +94,7 @@ class ProfileViewModel : ViewModel() {
                 var tempUser: User
                 value?.let {
                     if(value.documents.isNotEmpty()){
+                        Log.d("documentUser", value.documents[0].toString())
                         val user = value.documents[0].toObject<User>()
                         tempUser = user!!
                         profileUser.value = tempUser

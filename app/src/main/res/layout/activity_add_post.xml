@@ -146,6 +146,67 @@
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp" />
             <TextView
+                android:id="@+id/textViewLabelTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/tags"
+                android:textColor="@color/text_color_primary"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textViewNoteTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/tags_note"
+                android:textSize="14sp" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp">
+
+                <EditText
+                    android:id="@+id/editTextTag"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
+                    android:inputType="textPersonName"
+                    android:hint="@string/input_tag"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:maxLength="20"
+                    android:background="@drawable/background_edit_text"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/buttonAddTag"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/buttonAddTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:text="@string/add_tag"
+                    android:background="@drawable/background_slight_rounded_button_outlined"
+                    android:textColor="@color/color_primary"
+                    app:layout_constraintBottom_toBottomOf="@+id/editTextTag"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/editTextTag" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"/>
+            <TextView
                 android:id="@+id/textViewLabelCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -210,7 +271,15 @@
                 android:text="@string/custom_feedback"
                 android:textColor="@color/text_color_primary"
                 android:textSize="20sp" />
-
+            <TextView
+                android:id="@+id/textViewNoteCustFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/cust_feedback_note"
+                android:textSize="14sp" />
             <LinearLayout
                 android:id="@+id/feedbackComponent"
                 android:layout_width="match_parent"

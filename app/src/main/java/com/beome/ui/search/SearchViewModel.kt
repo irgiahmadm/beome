@@ -35,8 +35,7 @@ class SearchViewModel : ViewModel() {
         }else{
 
             searchRepository.getListPost()
-                .whereGreaterThanOrEqualTo("title", searchQuery.toLowerCase(Locale.getDefault()))
-                .whereLessThanOrEqualTo("title", searchQuery.toLowerCase(Locale.getDefault())+ "\uf8ff")
+                .whereArrayContains("searchKeyword", searchQuery.toLowerCase(Locale.getDefault()))
                 .whereEqualTo("status", 1)
                 .get()
                 .addOnSuccessListener {
