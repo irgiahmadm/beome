@@ -116,7 +116,7 @@ class AddPostActivity : AppCompatActivity() {
                     }
                 }else{
                     if(arrayListTagPost.size > 0){
-                        if(arrayListTagPost.size == arrayListTagPost.distinct().count()){
+                        if(arrayListTagPost.contains(editTextTag.text.toString())){
                             Toast.makeText(this, "There is same tag", Toast.LENGTH_SHORT).show()
                         }else{
                             arrayListTagPost.add(editTextTag.text.toString())
@@ -126,6 +126,7 @@ class AddPostActivity : AppCompatActivity() {
                         arrayListTagPost.add(editTextTag.text.toString())
                         adapterTags.refresh()
                     }
+                    editTextTag.text.clear()
                 }
             }else{
                 Toast.makeText(this, "Tags is full", Toast.LENGTH_SHORT).show()
@@ -251,8 +252,7 @@ class AddPostActivity : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat", "UseCompatLoadingForDrawables", "SetTextI18n")
     private fun publishPost() {
         val feedbackCounter = binding.feedbackComponent.childCount
-        val viewCustomFeedback1 = binding.feedbackComponent.getChildAt(0)
-        val viewCustomFeedback2 = binding.feedbackComponent.getChildAt(1)
+
         //clear list custom feedback if click publish again
         tempListCustomFeedback.clear()
 
@@ -281,6 +281,8 @@ class AddPostActivity : AppCompatActivity() {
                 }
             }
         }else if(feedbackCounter > 1) {
+            val viewCustomFeedback1 = binding.feedbackComponent.getChildAt(0)
+            val viewCustomFeedback2 = binding.feedbackComponent.getChildAt(1)
             val customFeedback1 = viewCustomFeedback1.editTextFeedbackComponent.text.toString()
             val customFeedback2 = viewCustomFeedback2.editTextFeedbackComponent.text.toString()
             //check if there is any same component on custom feedback
@@ -363,6 +365,7 @@ class AddPostActivity : AppCompatActivity() {
                                             Date(),
                                             Date()
                                         )
+                                        Log.d("POST_DATA", post.toString())
                                         viewModel.addPost(post)
                                     }
                                     binding.buttonPublish.isEnabled = true
@@ -407,20 +410,18 @@ class AddPostActivity : AppCompatActivity() {
 
                 }
                 NetworkState.SUCCESS -> {
-                    /*viewModel.setUpComponentFeedback()
-                    getComponentFeedbackState()
-                    var counter = 0
-                    (0 until listOfFeedback.size).forEach { i ->
-                        counter++
-                        val randomString = GlobalHelper.getRandomString(10)
-                        val componentFeedbackPost =
-                            ComponentFeedbackPost(randomString, idPost, listOfFeedback[i])
-                        viewModel.addComponentFeedbackPost(
-                            componentFeedbackPost,
-                            listOfFeedback.size,
-                            counter
-                        )
-                    }*/
+                    Snackbar.make(
+                        this,
+                        binding.constraintLayoutAddPost,
+                        "Your artwork is published",
+                        Snackbar.LENGTH_SHORT
+                    )
+                    startActivity(
+                        Intent(
+                            this,
+                            MainActivity::class.java
+                        ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )
                 }
                 NetworkState.FAILED -> {
                     Toast.makeText(this, "Add post failed", Toast.LENGTH_SHORT).show()
